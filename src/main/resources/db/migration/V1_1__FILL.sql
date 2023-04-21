@@ -1,0 +1,7 @@
+INSERT INTO Roles (name)
+VALUES ('AUTHOR');
+INSERT INTO Roles (name)
+VALUES ('RESPONDENT');
+INSERT INTO Roles (name)
+VALUES ('ADMIN');
+

@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/codeforge'
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+#  jackson:
+#    property-naming-strategy: SNAKE_CASE
+jwt:
+  secret: 'roezrjeoijROrjeOJrojgreogkeropGJeroijGREOjreojORIJGergRJerioJERiogjEORIgiojGOEIJej23FOjIOJwfioRJeklgkrjekjERKGJerkljerklgjeKERLJkljGErklerjKLERjGergKLERjklregl'
+  expiration: 86400
