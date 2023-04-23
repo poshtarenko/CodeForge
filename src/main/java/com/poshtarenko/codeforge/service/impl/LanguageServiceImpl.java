@@ -9,18 +9,19 @@ import com.poshtarenko.codeforge.repository.LanguageRepository;
 import com.poshtarenko.codeforge.service.LanguageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class LanguageServiceImpl implements LanguageService {
 
-    LanguageRepository languageRepository;
-    LanguageMapper categoryRepository;
+    private final LanguageRepository languageRepository;
+    private final LanguageMapper categoryRepository;
 
-    @Autowired
     public LanguageServiceImpl(LanguageRepository languageRepository, LanguageMapper categoryRepository) {
         this.languageRepository = languageRepository;
         this.categoryRepository = categoryRepository;
@@ -31,8 +32,7 @@ public class LanguageServiceImpl implements LanguageService {
         return languageRepository.findById(id)
                 .map(categoryRepository::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Language.class, "" +
-                        "Language with id " + id + " not found")
+                        Language.class, "Language with id " + id + " not found")
                 );
     }
 

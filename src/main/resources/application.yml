@@ -6,6 +6,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: validate
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -13,4 +15,4 @@ spring:
 #    property-naming-strategy: SNAKE_CASE
 jwt:
   secret: 'roezrjeoijROrjeOJrojgreogkeropGJeroijGREOjreojORIJGergRJerioJERiogjEORIgiojGOEIJej23FOjIOJwfioRJeklgkrjekjERKGJerkljerklgjeKERLJkljGErklerjKLERjGergKLERjklregl'
-  expiration: 86400
+  expiration: 8640000

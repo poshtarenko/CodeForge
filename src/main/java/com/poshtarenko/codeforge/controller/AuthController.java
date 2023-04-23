@@ -29,12 +29,11 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class AuthController {
 
-    AuthenticationManager authenticationManager;
-    PasswordEncoder passwordEncoder;
-    UserService userService;
-    JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
+    private final UserService userService;
+    private final JwtUtils jwtUtils;
 
-    @Autowired
     public AuthController(AuthenticationManager authenticationManager,
                           PasswordEncoder passwordEncoder,
                           UserService userService,

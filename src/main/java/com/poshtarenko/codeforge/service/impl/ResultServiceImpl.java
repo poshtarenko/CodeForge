@@ -12,16 +12,17 @@ import com.poshtarenko.codeforge.repository.ResultRepository;
 import com.poshtarenko.codeforge.service.ResultService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ResultServiceImpl implements ResultService {
 
-    ResultRepository resultRepository;
-    ResultMapper resultMapper;
+    private final ResultRepository resultRepository;
+    private final ResultMapper resultMapper;
 
-    @Autowired
     public ResultServiceImpl(ResultRepository resultRepository, ResultMapper resultMapper) {
         this.resultRepository = resultRepository;
         this.resultMapper = resultMapper;
@@ -32,8 +33,7 @@ public class ResultServiceImpl implements ResultService {
         return resultRepository.findById(id)
                 .map(resultMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Result.class, "" +
-                        "Result with id " + id + " not found")
+                        Result.class, "Result with id " + id + " not found")
                 );
     }
 

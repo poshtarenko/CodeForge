@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Problems")
+@Table(name = "Answers")
 public class Answer extends BaseEntity {
 
     @Column(name = "code")
@@ -27,8 +27,8 @@ public class Answer extends BaseEntity {
     Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "result_id")
-    Result result;
+    @JoinColumn(name = "respondent_id")
+    Respondent respondent;
 
     @Column(name = "evaluation_time")
     Long evaluationTime;

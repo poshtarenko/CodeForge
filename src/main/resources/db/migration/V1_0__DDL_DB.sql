@@ -78,9 +78,9 @@ create table Results
 create table Answers
 (
     id              BIGSERIAL PRIMARY KEY,
-    code            TEXT                                                NOT NULL,
-    is_completed    BOOLEAN                                             NOT NULL,
-    evaluation_time INT                                                 NOT NULL,
-    result_id       BIGSERIAL REFERENCES Results (id) ON DELETE CASCADE NOT NULL,
-    task_id         BIGSERIAL REFERENCES Tasks (id) ON DELETE CASCADE   NOT NULL
+    code            TEXT                                                    NOT NULL,
+    is_completed    BOOLEAN                                                 NOT NULL,
+    evaluation_time BIGINT                                                  NOT NULL,
+    respondent_id   BIGSERIAL REFERENCES Respondents (id) ON DELETE CASCADE NOT NULL,
+    task_id         BIGSERIAL REFERENCES Tasks (id) ON DELETE CASCADE       NOT NULL
 );

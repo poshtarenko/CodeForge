@@ -17,14 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
-    RespondentRepository respondentRepository;
-    RoleRepository roleRepository;
-    AuthorRepository authorRepository;
-    UserRepository userRepository;
+    private final RespondentRepository respondentRepository;
+    private final RoleRepository roleRepository;
+    private final AuthorRepository authorRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
     public UserServiceImpl(RespondentRepository respondentRepository,
                            RoleRepository roleRepository,
                            AuthorRepository authorRepository,
@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public void register(SignUpRequest signUpRequest) {
         if (signUpRequest.getRole().equals(ERole.RESPONDENT)) {
             Respondent respondent = new Respondent(

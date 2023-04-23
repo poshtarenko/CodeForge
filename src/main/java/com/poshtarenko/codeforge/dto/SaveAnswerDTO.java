@@ -1,9 +1,9 @@
 package com.poshtarenko.codeforge.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public record SaveAnswerDTO(
         String code,
         Long taskId,
-        Long resultId,
-        Long evaluationTime,
-        Boolean isCompleted) {
+        @JsonIgnore Long respondentId) {
 }

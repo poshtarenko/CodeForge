@@ -11,6 +11,8 @@ public interface ProblemService {
 
     ViewProblemDTO find(long id);
 
+    ViewProblemDTO findByTask(long taskId);
+
     ViewProblemDTO save(SaveProblemDTO problemDTO);
 
     ViewProblemDTO update(UpdateProblemDTO problemDTO);

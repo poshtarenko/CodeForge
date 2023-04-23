@@ -14,15 +14,13 @@ public interface AnswerMapper {
     AnswerMapper INSTANCE = Mappers.getMapper(AnswerMapper.class);
 
     @Mapping(source = "task", target = "taskId")
-    @Mapping(source = "result", target = "resultId")
+    @Mapping(source = "respondent", target = "respondentId")
     ViewAnswerDTO toDto(Answer entity);
 
     @Mapping(source = "taskId", target = "task")
-    @Mapping(source = "resultId", target = "result")
+    @Mapping(source = "respondentId", target = "respondent")
     Answer toEntity(SaveAnswerDTO dto);
 
-    @Mapping(source = "taskId", target = "task")
-    @Mapping(source = "resultId", target = "result")
     Answer toEntity(UpdateAnswerDTO dto);
 
 }

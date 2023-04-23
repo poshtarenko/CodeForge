@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    @Query("select count(a) > 0 from Answer a where a.id = :answerId and a.result.respondent.id = :respondentId")
+    @Query("select count(a) > 0 from Answer a where a.id = :answerId and a.respondent.id = :respondentId")
     Boolean checkAccess(long answerId, long respondentId);
 }

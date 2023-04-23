@@ -1,9 +1,13 @@
 package com.poshtarenko.codeforge.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.poshtarenko.codeforge.dto.SaveAnswerDTO;
 import com.poshtarenko.codeforge.dto.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.UpdateAnswerDTO;
 import com.poshtarenko.codeforge.dto.UpdateTaskDTO;
+import com.poshtarenko.codeforge.dto.ViewAnswerDTO;
 import com.poshtarenko.codeforge.dto.ViewTaskDTO;
+import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
@@ -31,10 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureMockMvc
 @WebAppConfiguration
 @ActiveProfiles("test")
-@WithMockCustomUser(role = ERole.AUTHOR)
-public class TaskControllerTest {
+@WithMockCustomUser(role = ERole.RESPONDENT)
+public class AnswerControllerTest {
 
-    private static final String BASE_URL = "/task";
+    private static final String BASE_URL = "/answer";
 
     @Autowired
     MockMvc mvc;
@@ -45,12 +49,12 @@ public class TaskControllerTest {
     @Autowired
     TestDataInitializer dataInitializer;
 
-    Task task;
+    Answer answer;
 
     @BeforeEach
     public void setup() {
         dataInitializer.setupData();
-        task = dataInitializer.getTask();
+        answer = dataInitializer.getAnswer();
     }
 
     @AfterEach
@@ -60,12 +64,11 @@ public class TaskControllerTest {
 
     @Test
     @SneakyThrows
-    public void createTask() {
-        SaveTaskDTO request = new SaveTaskDTO(
-                "New note...",
-                3,
-                task.getProblem().getId(),
-                task.getTest().getId()
+    public void createAnswer() {
+        SaveAnswerDTO request = new SaveAnswerDTO(
+                answer.getCode(),
+                answer.getTask().getId(),
+                null
         );
 
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post(BASE_URL)
@@ -74,68 +77,61 @@ public class TaskControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        ViewTaskDTO response = objectMapper.readValue(
+        ViewAnswerDTO response = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
-                ViewTaskDTO.class
+                ViewAnswerDTO.class
         );
 
-        assertEquals(response.note(), request.note());
-        assertEquals(response.maxScore(), request.maxScore());
-        assertEquals(response.problemId(), request.problemId());
-        assertEquals(response.testId(), request.testId());
+        assertEquals(response.code(), request.code());
+        assertEquals(response.taskId(), request.taskId());
+        assertEquals(response.isCompleted(), true);
     }
 
     @Test
     @SneakyThrows
-    public void viewTask() {
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + task.getId()))
+    public void viewAnswer() {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + answer.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        ViewTaskDTO response = objectMapper.readValue(
+        ViewAnswerDTO response = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
-                ViewTaskDTO.class
+                ViewAnswerDTO.class
         );
 
-        assertEquals(task.getId(), response.id());
-        assertEquals(task.getMaxScore(), response.maxScore());
-        assertEquals(task.getProblem().getId(), response.problemId());
-        assertEquals(task.getTest().getId(), response.testId());
+        assertEquals(answer.getId(), response.id());
+        assertEquals(answer.getCode(), response.code());
+        assertEquals(answer.getRespondent().getId(), response.respondentId());
+        assertEquals(answer.getTask().getId(), response.taskId());
     }
 
     @Test
     @SneakyThrows
-    public void updateTask() {
-        UpdateTaskDTO request = new UpdateTaskDTO(
-                task.getId(),
-                task.getNote() + "updated",
-                task.getMaxScore() + 1,
-                task.getProblem().getId(),
-                task.getTest().getId()
+    public void updateAnswer() {
+        UpdateAnswerDTO request = new UpdateAnswerDTO(
+                answer.getId(),
+                answer.getCode() + "updated"
         );
 
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/" + task.getId())
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/" + answer.getId())
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        ViewTaskDTO response = objectMapper.readValue(
+        ViewAnswerDTO response = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
-                ViewTaskDTO.class
+                ViewAnswerDTO.class
         );
 
         assertEquals(response.id(), request.id());
-        assertEquals(response.note(), request.note());
-        assertEquals(response.maxScore(), request.maxScore());
-        assertEquals(response.problemId(), request.problemId());
-        assertEquals(response.testId(), request.testId());
+        assertEquals(response.code(), request.code());
     }
 
     @Test
     @SneakyThrows
-    public void deleteTask() {
-        mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + task.getId()))
+    public void deleteAnswer() {
+        mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + answer.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
     }

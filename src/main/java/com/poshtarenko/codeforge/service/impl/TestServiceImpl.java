@@ -21,10 +21,9 @@ import static java.util.stream.Collectors.toList;
 @Transactional
 public class TestServiceImpl implements TestService {
 
-    TestRepository testRepository;
-    TestMapper testMapper;
+    private final TestRepository testRepository;
+    private final TestMapper testMapper;
 
-    @Autowired
     public TestServiceImpl(TestRepository testRepository, TestMapper testMapper) {
         this.testRepository = testRepository;
         this.testMapper = testMapper;
@@ -35,8 +34,7 @@ public class TestServiceImpl implements TestService {
         return testRepository.findById(id)
                 .map(testMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class, "" +
-                        "Test with id " + id + " not found")
+                        Test.class, "Test with id " + id + " not found")
                 );
     }
 

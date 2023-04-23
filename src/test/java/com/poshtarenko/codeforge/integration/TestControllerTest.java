@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poshtarenko.codeforge.dto.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.ViewTestDTO;
+import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
 import com.poshtarenko.codeforge.integration.security.WithMockCustomUser;
 import lombok.SneakyThrows;
@@ -29,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureMockMvc
 @WebAppConfiguration
 @ActiveProfiles("test")
-@WithMockCustomUser(roles = "AUTHOR")
+@WithMockCustomUser(role = ERole.AUTHOR)
 public class TestControllerTest {
 
     private static final String BASE_URL = "/test";

@@ -25,12 +25,7 @@ public class TestSecurityContextFactory implements WithSecurityContextFactory<Wi
     public SecurityContext createSecurityContext(WithMockCustomUser customUser) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-        ERole role = Arrays.stream(customUser.roles())
-                .map(ERole::valueOf)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("User roles are empty"));
-
-        UserDetailsImpl userDetails = usersInitializer.getUserDetails(role);
+        UserDetailsImpl userDetails = usersInitializer.getUserDetails(customUser.role());
 
         Authentication auth = new UsernamePasswordAuthenticationToken(
                 userDetails,

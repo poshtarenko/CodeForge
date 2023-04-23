@@ -12,16 +12,17 @@ import com.poshtarenko.codeforge.repository.TaskRepository;
 import com.poshtarenko.codeforge.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 public class TaskServiceImpl implements TaskService {
 
-    TaskRepository taskRepository;
-    TaskMapper taskMapper;
+    private final TaskRepository taskRepository;
+    private final TaskMapper taskMapper;
 
-    @Autowired
     public TaskServiceImpl(TaskRepository taskRepository, TaskMapper taskMapper) {
         this.taskRepository = taskRepository;
         this.taskMapper = taskMapper;
@@ -32,8 +33,7 @@ public class TaskServiceImpl implements TaskService {
         return taskRepository.findById(id)
                 .map(taskMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Task.class, "" +
-                        "Task with id " + id + " not found")
+                        Task.class, "Task with id " + id + " not found")
                 );
     }
 

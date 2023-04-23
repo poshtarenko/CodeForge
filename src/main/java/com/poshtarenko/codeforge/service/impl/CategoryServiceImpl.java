@@ -9,18 +9,19 @@ import com.poshtarenko.codeforge.repository.CategoryRepository;
 import com.poshtarenko.codeforge.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
-    CategoryRepository categoryRepository;
-    CategoryMapper categoryMapper;
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
-    @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
@@ -31,8 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findById(id)
                 .map(categoryMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Category.class, "" +
-                        "Category with id " + id + " not found")
+                        Category.class, "Category with id " + id + " not found")
                 );
     }
 

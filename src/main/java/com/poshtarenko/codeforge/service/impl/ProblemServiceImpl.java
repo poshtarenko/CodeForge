@@ -11,16 +11,17 @@ import com.poshtarenko.codeforge.repository.ProblemRepository;
 import com.poshtarenko.codeforge.service.ProblemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ProblemServiceImpl implements ProblemService {
 
-    ProblemRepository problemRepository;
-    ProblemMapper problemMapper;
+    private final ProblemRepository problemRepository;
+    private final ProblemMapper problemMapper;
 
-    @Autowired
     public ProblemServiceImpl(ProblemRepository problemRepository, ProblemMapper problemMapper) {
         this.problemRepository = problemRepository;
         this.problemMapper = problemMapper;
@@ -31,8 +32,16 @@ public class ProblemServiceImpl implements ProblemService {
         return problemRepository.findById(id)
                 .map(problemMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Problem.class, "" +
-                        "Problem with id " + id + " not found")
+                        Problem.class, "Problem with id " + id + " not found")
+                );
+    }
+
+    @Override
+    public ViewProblemDTO findByTask(long taskId) {
+        return problemRepository.findByTask(taskId)
+                .map(problemMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Problem.class, "Problem by task_id " + taskId + " not found")
                 );
     }
 
