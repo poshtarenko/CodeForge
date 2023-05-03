@@ -1,6 +1,5 @@
 package com.poshtarenko.codeforge.exception;
 
-import com.poshtarenko.codeforge.entity.BaseEntity;
 import com.poshtarenko.codeforge.entity.ERole;
 
 public class NotEnoughRightsException extends RuntimeException {

@@ -2,6 +2,7 @@ package com.poshtarenko.codeforge.integration.security;
 
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -12,14 +13,11 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 @Component
+@RequiredArgsConstructor
 public class TestSecurityContextFactory implements WithSecurityContextFactory<WithMockCustomUser> {
 
 
     private final TestSecurityUsersInitializer usersInitializer;
-
-    public TestSecurityContextFactory(TestSecurityUsersInitializer usersInitializer) {
-        this.usersInitializer = usersInitializer;
-    }
 
     @Override
     public SecurityContext createSecurityContext(WithMockCustomUser customUser) {

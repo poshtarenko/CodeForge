@@ -6,5 +6,5 @@ public record ViewTaskDTO(
         Integer maxScore,
         Long problemId,
         Long testId
-        ) {
+) {
 }

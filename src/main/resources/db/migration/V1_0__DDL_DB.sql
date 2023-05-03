@@ -6,6 +6,14 @@ CREATE TABLE Users
     password VARCHAR(128) NOT NULL
 );
 
+CREATE TABLE RefreshToken
+(
+    id         BIGSERIAL PRIMARY KEY,
+    token      VARCHAR(128)                    NOT NULL,
+    expiration TIMESTAMP                       NOT NULL,
+    user_id    BIGSERIAL REFERENCES Users (id) NOT NULL
+);
+
 CREATE TABLE Respondents
 (
     id BIGSERIAL REFERENCES Users (id) PRIMARY KEY

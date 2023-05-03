@@ -4,5 +4,5 @@ import com.poshtarenko.codeforge.pojo.CodeEvaluationRequest;
 import com.poshtarenko.codeforge.pojo.CodeEvaluationResult;
 
 public interface CodeEvaluationProvider {
-    public CodeEvaluationResult evaluateCode(CodeEvaluationRequest request);
+    CodeEvaluationResult evaluateCode(CodeEvaluationRequest request);
 }

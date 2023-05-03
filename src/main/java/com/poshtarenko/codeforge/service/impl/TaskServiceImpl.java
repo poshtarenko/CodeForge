@@ -10,23 +10,19 @@ import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.TaskRepository;
 import com.poshtarenko.codeforge.service.TaskService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
-
-    public TaskServiceImpl(TaskRepository taskRepository, TaskMapper taskMapper) {
-        this.taskRepository = taskRepository;
-        this.taskMapper = taskMapper;
-    }
 
     @Override
     public ViewTaskDTO find(long id) {
@@ -35,6 +31,13 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         Task.class, "Task with id " + id + " not found")
                 );
+    }
+
+    @Override
+    public List<ViewTaskDTO> findByTest(long testId) {
+        return taskRepository.findByTestId(testId).stream()
+                .map(taskMapper::toDto)
+                .toList();
     }
 
     @Override

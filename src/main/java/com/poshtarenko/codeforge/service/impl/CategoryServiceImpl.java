@@ -3,29 +3,23 @@ package com.poshtarenko.codeforge.service.impl;
 import com.poshtarenko.codeforge.dto.ViewCategoryDTO;
 import com.poshtarenko.codeforge.dto.mapper.CategoryMapper;
 import com.poshtarenko.codeforge.entity.Category;
-import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.CategoryRepository;
 import com.poshtarenko.codeforge.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
-
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
-        this.categoryRepository = categoryRepository;
-        this.categoryMapper = categoryMapper;
-    }
 
     @Override
     public ViewCategoryDTO find(long id) {

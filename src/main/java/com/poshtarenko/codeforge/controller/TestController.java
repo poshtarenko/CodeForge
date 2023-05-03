@@ -1,14 +1,12 @@
 package com.poshtarenko.codeforge.controller;
 
-import com.poshtarenko.codeforge.security.util.SecurityUtils;
 import com.poshtarenko.codeforge.dto.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.ERole;
-import com.poshtarenko.codeforge.entity.Test;
-import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
-import com.poshtarenko.codeforge.exception.EntityNotFoundException;
+import com.poshtarenko.codeforge.security.util.SecurityUtils;
 import com.poshtarenko.codeforge.service.TestService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,13 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/test")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 public class TestController {
 
     private final TestService testService;
-
-    public TestController(TestService testService) {
-        this.testService = testService;
-    }
 
     @GetMapping("/{id}")
     public ViewTestDTO findTest(@PathVariable long id) {

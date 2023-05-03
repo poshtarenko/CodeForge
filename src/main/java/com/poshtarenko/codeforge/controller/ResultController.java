@@ -1,12 +1,11 @@
 package com.poshtarenko.codeforge.controller;
 
-import com.poshtarenko.codeforge.dto.SaveAnswerDTO;
-import com.poshtarenko.codeforge.dto.UpdateAnswerDTO;
-import com.poshtarenko.codeforge.dto.ViewAnswerDTO;
+import com.poshtarenko.codeforge.dto.SaveResultDTO;
+import com.poshtarenko.codeforge.dto.UpdateResultDTO;
+import com.poshtarenko.codeforge.dto.ViewResultDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.util.SecurityUtils;
-import com.poshtarenko.codeforge.service.AnswerService;
-import lombok.RequiredArgsConstructor;
+import com.poshtarenko.codeforge.service.ResultService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,56 +18,50 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/answer")
+@RequestMapping("/result")
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequiredArgsConstructor
-public class AnswerController {
+public class ResultController {
 
-    private final AnswerService answerService;
+    private final ResultService resultService;
+
+    public ResultController(ResultService resultService) {
+        this.resultService = resultService;
+    }
 
     @GetMapping("/{id}")
-    public ViewAnswerDTO findAnswer(@PathVariable long id) {
+    public ViewResultDTO findResult(@PathVariable long id) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
         long userId = SecurityUtils.getUserId();
-        answerService.checkAccess(id, userId);
+        resultService.checkAccess(id, userId);
 
-        return answerService.find(id);
+        return resultService.find(id);
     }
 
     @PostMapping
-    public ViewAnswerDTO createAnswer(@RequestBody SaveAnswerDTO answerDTO) {
+    public ViewResultDTO createResult(@RequestBody SaveResultDTO resultDTO) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
-
-        SaveAnswerDTO saveAnswerDTO = new SaveAnswerDTO(
-                answerDTO.code(),
-                answerDTO.taskId(),
+        SaveResultDTO saveResultDTO = new SaveResultDTO(
+                resultDTO.testId(),
                 SecurityUtils.getUserId()
         );
-
-        return answerService.save(saveAnswerDTO);
+        return resultService.save(saveResultDTO);
     }
 
     @PutMapping("/{id}")
-    public ViewAnswerDTO updateAnswer(@PathVariable long id, @RequestBody UpdateAnswerDTO answerDTO) {
+    public ViewResultDTO updateResult(@RequestBody UpdateResultDTO resultDTO) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
         long userId = SecurityUtils.getUserId();
-        answerService.checkAccess(id, userId);
-
-        UpdateAnswerDTO updateAnswerDTO = new UpdateAnswerDTO(
-                id,
-                answerDTO.code()
-        );
-
-        return answerService.update(updateAnswerDTO);
+        resultService.checkAccess(resultDTO.id(), userId);
+        return resultService.update(resultDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAnswer(@PathVariable long id) {
+    public ResponseEntity<?> deleteResult(@PathVariable long id) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
         long userId = SecurityUtils.getUserId();
-        answerService.checkAccess(id, userId);
+        resultService.checkAccess(id, userId);
 
-        answerService.delete(id);
+        resultService.delete(id);
         return ResponseEntity.ok().build();
     }
 

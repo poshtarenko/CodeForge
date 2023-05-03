@@ -7,6 +7,7 @@ import java.util.List;
 public class Main {
 
     private static final Solution solution = new Solution();
+
     public static void main(String[] args) {
         List<Integer> listUnsorted = new ArrayList<>();
         listUnsorted.add(3);
@@ -28,7 +29,7 @@ public class Main {
 }
 
 class Solution {
-    public List<Integer> sort(List<Integer> list){
+    public List<Integer> sort(List<Integer> list) {
         Collections.sort(list);
         return list;
     }

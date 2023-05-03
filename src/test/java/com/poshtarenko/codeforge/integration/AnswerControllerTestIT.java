@@ -2,16 +2,14 @@ package com.poshtarenko.codeforge.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poshtarenko.codeforge.dto.SaveAnswerDTO;
-import com.poshtarenko.codeforge.dto.SaveTaskDTO;
 import com.poshtarenko.codeforge.dto.UpdateAnswerDTO;
-import com.poshtarenko.codeforge.dto.UpdateTaskDTO;
 import com.poshtarenko.codeforge.dto.ViewAnswerDTO;
-import com.poshtarenko.codeforge.dto.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.ERole;
-import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
 import com.poshtarenko.codeforge.integration.security.WithMockCustomUser;
+import com.poshtarenko.codeforge.pojo.CodeEvaluationResult;
+import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -29,6 +28,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -36,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @WebAppConfiguration
 @ActiveProfiles("test")
 @WithMockCustomUser(role = ERole.RESPONDENT)
-public class AnswerControllerTest {
+public class AnswerControllerTestIT {
 
     private static final String BASE_URL = "/answer";
 
@@ -49,12 +50,16 @@ public class AnswerControllerTest {
     @Autowired
     TestDataInitializer dataInitializer;
 
+    @MockBean
+    CodeEvaluationProvider codeEvaluationProvider;
+
     Answer answer;
 
     @BeforeEach
     public void setup() {
         dataInitializer.setupData();
         answer = dataInitializer.getAnswer();
+        when(codeEvaluationProvider.evaluateCode(any())).thenReturn(new CodeEvaluationResult(true, 1L));
     }
 
     @AfterEach

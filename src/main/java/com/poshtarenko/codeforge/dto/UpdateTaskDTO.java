@@ -6,5 +6,5 @@ public record UpdateTaskDTO(
         Integer maxScore,
         Long problemId,
         Long testId
-        ) {
+) {
 }

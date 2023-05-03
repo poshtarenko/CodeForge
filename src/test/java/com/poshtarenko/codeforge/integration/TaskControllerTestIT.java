@@ -1,10 +1,11 @@
 package com.poshtarenko.codeforge.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.SaveTestDTO;
-import com.poshtarenko.codeforge.dto.UpdateTestDTO;
-import com.poshtarenko.codeforge.dto.ViewTestDTO;
+import com.poshtarenko.codeforge.dto.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.UpdateTaskDTO;
+import com.poshtarenko.codeforge.dto.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.ERole;
+import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
 import com.poshtarenko.codeforge.integration.security.WithMockCustomUser;
 import lombok.SneakyThrows;
@@ -31,9 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @WebAppConfiguration
 @ActiveProfiles("test")
 @WithMockCustomUser(role = ERole.AUTHOR)
-public class TestControllerTest {
+public class TaskControllerTestIT {
 
-    private static final String BASE_URL = "/test";
+    private static final String BASE_URL = "/task";
 
     @Autowired
     MockMvc mvc;
@@ -44,12 +45,12 @@ public class TestControllerTest {
     @Autowired
     TestDataInitializer dataInitializer;
 
-    com.poshtarenko.codeforge.entity.Test test;
+    Task task;
 
     @BeforeEach
     public void setup() {
         dataInitializer.setupData();
-        test = dataInitializer.getTest();
+        task = dataInitializer.getTask();
     }
 
     @AfterEach
@@ -59,11 +60,12 @@ public class TestControllerTest {
 
     @Test
     @SneakyThrows
-    public void createTest() {
-        SaveTestDTO request = new SaveTestDTO(
-                "New test",
-                100,
-                test.getAuthor().getId()
+    public void createTask() {
+        SaveTaskDTO request = new SaveTaskDTO(
+                "New note...",
+                3,
+                task.getProblem().getId(),
+                task.getTest().getId()
         );
 
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post(BASE_URL)
@@ -72,64 +74,68 @@ public class TestControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        ViewTestDTO response = objectMapper.readValue(
+        ViewTaskDTO response = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
-                ViewTestDTO.class
+                ViewTaskDTO.class
         );
 
-        assertEquals(response.name(), request.name());
-        assertEquals(response.maxDuration(), request.maxDuration());
-        assertEquals(response.authorId(), request.authorId());
+        assertEquals(response.note(), request.note());
+        assertEquals(response.maxScore(), request.maxScore());
+        assertEquals(response.problemId(), request.problemId());
+        assertEquals(response.testId(), request.testId());
     }
 
     @Test
     @SneakyThrows
-    public void viewTest() {
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + test.getId()))
+    public void viewTask() {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + task.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        ViewTestDTO response = objectMapper.readValue(
+        ViewTaskDTO response = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
-                ViewTestDTO.class
+                ViewTaskDTO.class
         );
 
-        assertEquals(test.getId(), response.id());
-        assertEquals(test.getMaxDuration(), response.maxDuration());
-        assertEquals(test.getAuthor().getId(), response.authorId());
+        assertEquals(task.getId(), response.id());
+        assertEquals(task.getMaxScore(), response.maxScore());
+        assertEquals(task.getProblem().getId(), response.problemId());
+        assertEquals(task.getTest().getId(), response.testId());
     }
 
     @Test
     @SneakyThrows
-    public void updateTest() {
-        UpdateTestDTO request = new UpdateTestDTO(
-                test.getId(),
-                "Updated test name",
-                999,
-                test.getAuthor().getId()
+    public void updateTask() {
+        UpdateTaskDTO request = new UpdateTaskDTO(
+                task.getId(),
+                task.getNote() + "updated",
+                task.getMaxScore() + 1,
+                task.getProblem().getId(),
+                task.getTest().getId()
         );
 
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/" + test.getId())
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/" + task.getId())
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        ViewTestDTO response = objectMapper.readValue(
+        ViewTaskDTO response = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
-                ViewTestDTO.class
+                ViewTaskDTO.class
         );
 
         assertEquals(response.id(), request.id());
-        assertEquals(response.name(), request.name());
-        assertEquals(response.maxDuration(), request.maxDuration());
-        assertEquals(response.authorId(), request.authorId());
+        assertEquals(response.note(), request.note());
+        assertEquals(response.maxScore(), request.maxScore());
+        assertEquals(response.problemId(), request.problemId());
+        assertEquals(response.testId(), request.testId());
     }
 
     @Test
     @SneakyThrows
-    public void deleteTest() {
-        mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + test.getId()))
+    public void deleteTask() {
+        mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + task.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
     }

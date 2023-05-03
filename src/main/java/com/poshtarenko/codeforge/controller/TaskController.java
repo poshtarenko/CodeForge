@@ -1,15 +1,12 @@
 package com.poshtarenko.codeforge.controller;
 
 import com.poshtarenko.codeforge.dto.SaveTaskDTO;
-import com.poshtarenko.codeforge.dto.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.UpdateTaskDTO;
-import com.poshtarenko.codeforge.dto.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.ViewTaskDTO;
-import com.poshtarenko.codeforge.dto.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.util.SecurityUtils;
 import com.poshtarenko.codeforge.service.TaskService;
-import com.poshtarenko.codeforge.service.TestService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,13 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/task")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
-
-    public TaskController(TaskService taskService) {
-        this.taskService = taskService;
-    }
 
     @GetMapping("/{id}")
     public ViewTaskDTO findTask(@PathVariable long id) {

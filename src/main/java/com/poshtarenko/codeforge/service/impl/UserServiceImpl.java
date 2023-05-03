@@ -10,7 +10,7 @@ import com.poshtarenko.codeforge.repository.RoleRepository;
 import com.poshtarenko.codeforge.repository.UserRepository;
 import com.poshtarenko.codeforge.security.pojo.SignUpRequest;
 import com.poshtarenko.codeforge.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,22 +18,13 @@ import java.util.Collections;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final RespondentRepository respondentRepository;
     private final RoleRepository roleRepository;
     private final AuthorRepository authorRepository;
     private final UserRepository userRepository;
-
-    public UserServiceImpl(RespondentRepository respondentRepository,
-                           RoleRepository roleRepository,
-                           AuthorRepository authorRepository,
-                           UserRepository userRepository) {
-        this.respondentRepository = respondentRepository;
-        this.roleRepository = roleRepository;
-        this.authorRepository = authorRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     public void register(SignUpRequest signUpRequest) {

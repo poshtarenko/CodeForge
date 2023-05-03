@@ -1,7 +1,5 @@
 package com.poshtarenko.codeforge.dto;
 
-import com.poshtarenko.codeforge.entity.Problem;
-
 import java.util.List;
 
 public record ViewTestDTO(

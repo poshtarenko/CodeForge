@@ -7,6 +7,7 @@ import com.poshtarenko.codeforge.pojo.HackerEarthCodeEvaluationRequest;
 import com.poshtarenko.codeforge.pojo.HackerEarthCodeEvaluationResult;
 import com.poshtarenko.codeforge.pojo.HackerEarthQueueingResponse;
 import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class HackerEarthClient implements CodeEvaluationProvider {
 
     private static final String API_URL = "https://api.hackerearth.com/";
@@ -40,10 +42,6 @@ public class HackerEarthClient implements CodeEvaluationProvider {
             .build();
 
     private final ObjectMapper objectMapper;
-
-    public HackerEarthClient(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
 
     @SneakyThrows
     public CodeEvaluationResult evaluateCode(CodeEvaluationRequest request) {

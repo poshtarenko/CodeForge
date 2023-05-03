@@ -9,23 +9,17 @@ import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.ProblemRepository;
 import com.poshtarenko.codeforge.service.ProblemService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ProblemServiceImpl implements ProblemService {
 
     private final ProblemRepository problemRepository;
     private final ProblemMapper problemMapper;
-
-    public ProblemServiceImpl(ProblemRepository problemRepository, ProblemMapper problemMapper) {
-        this.problemRepository = problemRepository;
-        this.problemMapper = problemMapper;
-    }
 
     @Override
     public ViewProblemDTO find(long id) {

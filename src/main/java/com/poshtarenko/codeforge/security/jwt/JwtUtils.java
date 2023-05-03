@@ -1,11 +1,9 @@
 package com.poshtarenko.codeforge.security.jwt;
 
-import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -19,13 +17,12 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     int jwtExpirationMs;
 
-    public String generateJwtToken(Authentication authentication) {
-
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-
-        return Jwts.builder().setSubject((userPrincipal.getUsername())).setIssuedAt(new Date())
+    public String generateJwt(String email) {
+        return Jwts.builder().setSubject(email)
+                .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
     }
 
     public boolean validateJwtToken(String jwt) {

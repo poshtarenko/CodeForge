@@ -5,5 +5,5 @@ public record SaveTaskDTO(
         Integer maxScore,
         Long problemId,
         Long testId
-        ) {
+) {
 }

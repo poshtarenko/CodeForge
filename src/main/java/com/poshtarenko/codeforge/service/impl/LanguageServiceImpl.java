@@ -3,29 +3,23 @@ package com.poshtarenko.codeforge.service.impl;
 import com.poshtarenko.codeforge.dto.ViewLanguageDTO;
 import com.poshtarenko.codeforge.dto.mapper.LanguageMapper;
 import com.poshtarenko.codeforge.entity.Language;
-import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.LanguageRepository;
 import com.poshtarenko.codeforge.service.LanguageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class LanguageServiceImpl implements LanguageService {
 
     private final LanguageRepository languageRepository;
     private final LanguageMapper categoryRepository;
-
-    public LanguageServiceImpl(LanguageRepository languageRepository, LanguageMapper categoryRepository) {
-        this.languageRepository = languageRepository;
-        this.categoryRepository = categoryRepository;
-    }
 
     @Override
     public ViewLanguageDTO find(long id) {

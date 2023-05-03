@@ -12,12 +12,15 @@ import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsServiceImpl;
 import com.poshtarenko.codeforge.service.UserService;
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class TestSecurityUsersInitializer {
 
     private final UserService userService;
@@ -28,24 +31,23 @@ public class TestSecurityUsersInitializer {
 
     private Map<ERole, UserDetailsImpl> userDetailsMap;
 
-    public TestSecurityUsersInitializer(UserService userService,
-                                        UserRepository userRepository,
-                                        AuthorRepository authorRepository,
-                                        RespondentRepository respondentRepository,
-                                        UserDetailsServiceImpl userDetailsService) {
-        this.userService = userService;
-        this.userRepository = userRepository;
-        this.authorRepository = authorRepository;
-        this.respondentRepository = respondentRepository;
-        this.userDetailsService = userDetailsService;
-    }
-
     @PostConstruct
     private void setup() {
+        authorRepository.deleteAll();
+        respondentRepository.deleteAll();
+        userRepository.deleteAll();
+
         userDetailsMap = new HashMap<>();
         for (ERole role : ERole.values()) {
             userDetailsMap.put(role, registerUser(role));
         }
+    }
+
+    @PreDestroy
+    private void clear() {
+        authorRepository.deleteAll();
+        respondentRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     private UserDetailsImpl registerUser(ERole role) {

@@ -4,6 +4,7 @@ import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.Category;
 import com.poshtarenko.codeforge.entity.Language;
 import com.poshtarenko.codeforge.entity.Problem;
+import com.poshtarenko.codeforge.entity.Result;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.integration.security.TestSecurityUsersInitializer;
@@ -14,9 +15,11 @@ import com.poshtarenko.codeforge.repository.ProblemRepository;
 import com.poshtarenko.codeforge.repository.ResultRepository;
 import com.poshtarenko.codeforge.repository.TaskRepository;
 import com.poshtarenko.codeforge.repository.TestRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class TestDataInitializer {
 
     private final TestSecurityUsersInitializer usersInitializer;
@@ -34,24 +37,7 @@ public class TestDataInitializer {
     private Category category;
     private Problem problem;
     private Answer answer;
-
-    public TestDataInitializer(TestSecurityUsersInitializer usersInitializer,
-                               TestRepository testRepository,
-                               TaskRepository taskRepository,
-                               ProblemRepository problemRepository,
-                               LanguageRepository languageRepository,
-                               CategoryRepository categoryRepository,
-                               AnswerRepository answerRepository,
-                               ResultRepository resultRepository) {
-        this.usersInitializer = usersInitializer;
-        this.testRepository = testRepository;
-        this.taskRepository = taskRepository;
-        this.problemRepository = problemRepository;
-        this.languageRepository = languageRepository;
-        this.categoryRepository = categoryRepository;
-        this.answerRepository = answerRepository;
-        this.resultRepository = resultRepository;
-    }
+    private Result result;
 
     public void setupData() {
         category = createCategory();
@@ -60,6 +46,7 @@ public class TestDataInitializer {
         test = createTest();
         task = createTask(problem, test);
         answer = createAnswer(task);
+        result = createResult(test);
     }
 
     public void clearData() {
@@ -115,6 +102,14 @@ public class TestDataInitializer {
         ));
     }
 
+    private Result createResult(Test test) {
+        return resultRepository.save(new Result(
+                30,
+                test,
+                usersInitializer.getRespondent()
+        ));
+    }
+
     public Test getTest() {
         return test;
     }
@@ -137,5 +132,9 @@ public class TestDataInitializer {
 
     public Answer getAnswer() {
         return answer;
+    }
+
+    public Result getResult() {
+        return result;
     }
 }

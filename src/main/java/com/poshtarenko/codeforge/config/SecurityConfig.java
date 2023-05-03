@@ -2,8 +2,7 @@ package com.poshtarenko.codeforge.config;
 
 import com.poshtarenko.codeforge.security.jwt.AuthEntryPointJwt;
 import com.poshtarenko.codeforge.security.jwt.AuthTokenFilter;
-import com.poshtarenko.codeforge.security.userdetails.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +18,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private static final String[] WHITELIST = {
@@ -31,11 +31,7 @@ public class SecurityConfig {
             "/error"
     };
 
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    private final AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {

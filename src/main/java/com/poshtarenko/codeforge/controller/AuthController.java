@@ -2,17 +2,18 @@ package com.poshtarenko.codeforge.controller;
 
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.jwt.JwtUtils;
+import com.poshtarenko.codeforge.security.pojo.JwtRefreshRequest;
 import com.poshtarenko.codeforge.security.pojo.JwtResponse;
 import com.poshtarenko.codeforge.security.pojo.SignInRequest;
 import com.poshtarenko.codeforge.security.pojo.SignUpRequest;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import com.poshtarenko.codeforge.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.poshtarenko.codeforge.service.impl.RefreshTokenServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,30 +22,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
+    private final RefreshTokenServiceImpl refreshTokenService;
     private final JwtUtils jwtUtils;
 
-    public AuthController(AuthenticationManager authenticationManager,
-                          PasswordEncoder passwordEncoder,
-                          UserService userService,
-                          JwtUtils jwtUtils) {
-        this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtils = jwtUtils;
-        this.userService = userService;
-    }
-
-    @PostMapping("/sign_in")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody SignInRequest signInRequest) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(
@@ -52,23 +42,19 @@ public class AuthController {
                         signInRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+
+        String jwt = jwtUtils.generateJwt(userDetails.getEmail());
+        String refreshToken = refreshTokenService.createToken(userDetails.getId());
 
         return ResponseEntity.ok(new JwtResponse(
                         jwt,
-                        userDetails.getId(),
-                        userDetails.getEmail(),
-                        roles
+                        refreshToken
                 )
         );
     }
 
-    @PostMapping("/sign_up")
+    @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody SignUpRequest signUpRequest) {
         if (signUpRequest.getRole().equals(ERole.ADMIN)) {
             throw new RuntimeException("Can not be registered as admin");
@@ -77,5 +63,10 @@ public class AuthController {
         signUpRequest.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         userService.register(signUpRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshJwt(@RequestBody JwtRefreshRequest refreshRequest) {
+        return ResponseEntity.ok(refreshTokenService.refreshToken(refreshRequest));
     }
 }

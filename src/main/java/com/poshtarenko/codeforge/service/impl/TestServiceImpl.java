@@ -9,7 +9,7 @@ import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.TestRepository;
 import com.poshtarenko.codeforge.service.TestService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,15 +19,11 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
 
     private final TestRepository testRepository;
     private final TestMapper testMapper;
-
-    public TestServiceImpl(TestRepository testRepository, TestMapper testMapper) {
-        this.testRepository = testRepository;
-        this.testMapper = testMapper;
-    }
 
     @Override
     public ViewTestDTO find(long id) {
