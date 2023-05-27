@@ -1,0 +1,128 @@
+import React, {useEffect, useRef, useState} from "react";
+import {ILanguage} from "../../../models/entity/ILanguage";
+import {ICategory} from "../../../models/entity/ICategory";
+import {IProblem} from "../../../models/entity/IProblem";
+import LanguageService from "../../../services/LanguageService";
+import CategoryService from "../../../services/CategoryService";
+import ProblemService from "../../../services/ProblemService";
+import "./addTaskModal.css";
+import TaskService from "../../../services/TaskService";
+import {Simulate} from "react-dom/test-utils";
+
+
+interface IProps {
+    testId: number,
+    onSubmit: Function,
+}
+
+const AddTaskModal: React.FC<IProps> = ({testId, onSubmit}) => {
+
+    const [languages, setLanguages] = useState<ILanguage[]>([]);
+    const [categories, setCategories] = useState<ICategory[]>([]);
+    const [problems, setProblems] = useState<IProblem[]>([]);
+
+    const [language, setLanguage] = useState<ILanguage>({} as ILanguage);
+    const [category, setCategory] = useState<ICategory>({} as ICategory);
+
+    const [problem, setProblem] = useState<IProblem>({} as IProblem);
+    const [note, setNote] = useState<string>("");
+    const [score, setScore] = useState<number>(0);
+
+    const problemSelect = useRef<HTMLSelectElement>(null);
+
+    useEffect(() => {
+        loadLanguages();
+        loadCategories();
+        loadProblems();
+    }, []);
+
+    async function loadLanguages() {
+        try {
+            const response = await LanguageService.getAllLanguages();
+            setLanguages(response.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function loadCategories() {
+        try {
+            const response = await CategoryService.getAllCategories();
+            setCategories(response.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function loadProblems() {
+        try {
+            const response = await ProblemService.getAllProblems();
+            await setProblems(response.data);
+            await console.log(problems);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function addTask() {
+        await TaskService.createTask({note: note, maxScore: score, problemId: problem.id, testId: testId});
+        await onSubmit();
+    }
+
+    function getProblemsFiltered(problems: IProblem[], category: string, language: string): IProblem[] {
+        return problems.filter(p => p.category.name === category && p.language.name === language);
+    }
+
+    function selectLanguage(id: number) {
+        setLanguage(languages.find((l => l.id === id))!);
+        problemSelect.current!.value = "NONE";
+    }
+
+    function selectCategory(id: number) {
+        setCategory(categories.find((c => c.id === id))!);
+        problemSelect.current!.value = "NONE";
+    }
+
+    return (
+        <div className={"add-task-modal"}>
+            <p className={"modal-title"}>Додати завдання</p>
+            <p className={"input-title"}>Задача</p>
+            <div className={"problem-selection"}>
+                <select className={"add-task-input language-select add-task-modal-select"}
+                        onChange={(e) => selectLanguage(Number(e.target.value))}
+                        defaultValue={"NONE"}>
+                    <option value="NONE" disabled>Мова</option>
+                    {languages.map(language =>
+                        <option key={Number(language.id)} value={String(language.id)}>{language.name}</option>)}
+                </select>
+                <select className={"add-task-input category-select add-task-modal-select"}
+                        onChange={(e) => selectCategory(Number(e.target.value))}
+                        defaultValue={"NONE"}>
+                    <option value="NONE" disabled>Категорія</option>
+                    {categories.map(category =>
+                        <option key={Number(category.id)} value={String(category.id)}>{category.name}</option>)}
+                </select>
+            </div>
+            <select ref={problemSelect} className={"add-task-input problem-select add-task-modal-select"}
+                    onChange={(e) => setProblem(problems.find(p => p.id === Number(e.target.value))!)}
+                    defaultValue={"NONE"}>
+                <option value="NONE" disabled>Задача</option>
+                {getProblemsFiltered(problems, category.name, language.name).map(problem =>
+                    <option key={Number(problem.id)} value={String(problem.id)}>{problem.name}</option>)}
+            </select>
+            <p className={"problem-desc"}>{problem.description}</p>
+            <p className={"input-title"}>Примітка</p>
+            <textarea onChange={(e) => setNote(e.target.value)}
+                      className={"add-task-input task-note-input"}>
+            </textarea>
+            <p className={"input-title"}>Кількість балів</p>
+            <input onChange={(e) => setScore(Number(e.target.value))}
+                   className={"add-task-input task-score-input"}
+                   type="number"/>
+            <button className={"create-task-button standard-button"} onClick={addTask}>Зберегти</button>
+        </div>
+    );
+
+}
+
+export default AddTaskModal;

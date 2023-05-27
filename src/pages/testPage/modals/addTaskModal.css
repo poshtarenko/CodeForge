@@ -1,0 +1,87 @@
+.add-task-modal {
+    width: 450px;
+    display: flex;
+    flex-direction: column;
+}
+
+.add-task-modal .modal-title {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.add-task-modal .problem-selection {
+    display: flex;
+    gap: 15px;
+}
+
+.add-task-modal .add-task-modal-select {
+    outline: none;
+    padding: 0 7px;
+    height: 50px;
+    font-size: 17px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    background-size: 0.65rem auto;
+    cursor: pointer;
+}
+
+.add-task-modal .language-select {
+    width: 50%;
+}
+
+.add-task-modal .category-select {
+    width: 50%;
+}
+
+.add-task-modal .problem-select {
+    margin-top: 15px;
+}
+
+.add-task-modal .problem-desc {
+    margin-top: 10px;
+    font-size: 18px;
+    color: #595959;
+}
+
+.add-task-modal .input-title {
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.add-task-modal .task-note-input {
+    resize: none;
+    font-size: 18px;
+    outline: none;
+    padding: 15px 9px;
+    height: 80px;
+}
+
+.add-task-modal .task-score-input {
+    font-size: 18px;
+    outline: none;
+    padding: 15px 9px;
+    height: 40px;
+    width: 150px;
+    font-family: 'JetBrains Mono', serif;
+}
+
+.add-task-modal .create-task-button {
+    margin-top: 20px;
+    height: 40px;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.add-task-modal .add-task-input {
+    border-radius: 5px;
+    border: #424242 1px solid;
+}
+
+.add-task-modal .add-task-input:focus {
+    border: #277BE9 solid 2px;
+
+}
+
