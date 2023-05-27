@@ -1,9 +1,8 @@
-package com.poshtarenko.codeforge.dto;
+package com.poshtarenko.codeforge.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public record UpdateTestDTO(
-        @JsonIgnore Long id,
+public record SaveTestDTO(
         String name,
         Integer maxDuration,
         @JsonIgnore Long authorId) {

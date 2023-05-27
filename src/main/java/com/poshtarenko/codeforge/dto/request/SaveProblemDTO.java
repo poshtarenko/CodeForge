@@ -1,7 +1,6 @@
-package com.poshtarenko.codeforge.dto;
+package com.poshtarenko.codeforge.dto.request;
 
-public record ViewProblemDTO(
-        Long id,
+public record SaveProblemDTO(
         String name,
         String description,
         Long languageId,

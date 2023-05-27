@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.service;
 
 
-import com.poshtarenko.codeforge.dto.ViewLanguageDTO;
+import com.poshtarenko.codeforge.dto.response.ViewLanguageDTO;
 
 import java.util.List;
 

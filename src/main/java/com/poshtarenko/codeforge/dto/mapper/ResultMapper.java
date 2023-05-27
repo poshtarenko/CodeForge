@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.SaveResultDTO;
-import com.poshtarenko.codeforge.dto.ViewResultDTO;
+import com.poshtarenko.codeforge.dto.request.SaveResultDTO;
+import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
 import com.poshtarenko.codeforge.entity.Result;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

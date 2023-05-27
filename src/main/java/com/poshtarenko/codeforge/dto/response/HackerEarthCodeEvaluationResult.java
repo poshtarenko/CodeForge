@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.pojo;
+package com.poshtarenko.codeforge.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
@@ -14,4 +15,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     @Query("select a from Answer a where a.respondent.id = :respondentId and a.task.test.id = :testId")
     List<Answer> findByRespondentAndTest(long respondentId, long testId);
+
+    Optional<Answer> findByTaskIdAndRespondentId(long respondentId, long taskId);
 }

@@ -1,11 +1,11 @@
 package com.poshtarenko.codeforge.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.pojo.CodeEvaluationRequest;
-import com.poshtarenko.codeforge.pojo.CodeEvaluationResult;
-import com.poshtarenko.codeforge.pojo.HackerEarthCodeEvaluationRequest;
-import com.poshtarenko.codeforge.pojo.HackerEarthCodeEvaluationResult;
-import com.poshtarenko.codeforge.pojo.HackerEarthQueueingResponse;
+import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
+import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
+import com.poshtarenko.codeforge.dto.request.HackerEarthCodeEvaluationRequest;
+import com.poshtarenko.codeforge.dto.response.HackerEarthCodeEvaluationResult;
+import com.poshtarenko.codeforge.dto.response.HackerEarthQueueingResponse;
 import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -22,6 +22,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -33,7 +35,16 @@ public class HackerEarthClient implements CodeEvaluationProvider {
     private static final String AUTH_HEADER_VALUE = "8bd98e6f777bb6a2a30cb31108117162aca67d8a";
     private static final String QUEUEING_URL = "/v4/partner/code-evaluation/submissions/";
     private static final String EVALUATION_RESULT_URL = "/v4/partner/code-evaluation/submissions/%s/";
-    private static final String REQUEST_COMPLETED_CODE = "REQUEST_COMPLETED";
+
+    private static final int DELAY_BEFORE_REQUEST_MS = 150;
+    private static final int COMPILATION_WAIT_DELAY = 75;
+
+    private static final List<String> PREPARATORY_REQUEST_STATUSES = List.of(
+            "REQUEST_INITIATED",
+            "REQUEST_QUEUED"
+    );
+    private static final String CODE_COMPILED_STATUS = "CODE_COMPILED";
+    private static final String SUCCESS_REQUEST_STATUS = "REQUEST_COMPLETED";
 
     private final WebClient client = WebClient.builder()
             .baseUrl(API_URL)
@@ -47,24 +58,38 @@ public class HackerEarthClient implements CodeEvaluationProvider {
     public CodeEvaluationResult evaluateCode(CodeEvaluationRequest request) {
         String heId = queueRequest(request).heId();
 
-        Thread.sleep(200);
+        Thread.sleep(DELAY_BEFORE_REQUEST_MS);
         HackerEarthCodeEvaluationResult evaluationResult = getEvaluationResult(heId);
-        while (!evaluationResult.requestStatus().code().equals(REQUEST_COMPLETED_CODE)) {
-            evaluationResult = getEvaluationResult(heId);
-            Thread.sleep(100);
-        }
-        String outputURL = evaluationResult.result().runStatus().output();
+        String requestCode = evaluationResult.requestStatus().code();
 
-        String result = downloadCodeEvaluationResult(outputURL);
+        while (PREPARATORY_REQUEST_STATUSES.contains(requestCode)) {
+            evaluationResult = getEvaluationResult(heId);
+            requestCode = evaluationResult.requestStatus().code();
+            Thread.sleep(COMPILATION_WAIT_DELAY);
+        }
+
+        String error = null;
         boolean isCompleted = false;
 
-        if (result.equals("SUCCESS")) {
-            isCompleted = true;
-        } else if (result.equals("FAILURE")) {
-            isCompleted = false;
+        if(requestCode.equals(SUCCESS_REQUEST_STATUS)) {
+            String outputURL = evaluationResult.result().runStatus().output();
+            String result = downloadCodeEvaluationResult(outputURL);
+            if (result.equals("SUCCESS")) {
+                isCompleted = true;
+            } else {
+                error = "Code compiled, but task failed";
+            }
+        } else if (requestCode.equals(CODE_COMPILED_STATUS)){
+            error = evaluationResult.result().compileStatus();
+        } else {
+            throw new RuntimeException("Unknown compile status code");
         }
 
-        return new CodeEvaluationResult(isCompleted, 1L);
+        return new CodeEvaluationResult(
+                isCompleted,
+                1L,
+                Optional.ofNullable(error)
+        );
     }
 
     @SneakyThrows
@@ -73,7 +98,7 @@ public class HackerEarthClient implements CodeEvaluationProvider {
         RequestBodySpec bodySpec = uriSpec.uri(QUEUEING_URL);
 
         HackerEarthCodeEvaluationRequest codeEvaluationRequest = new HackerEarthCodeEvaluationRequest(
-                request.lang(),
+                request.lang().toUpperCase(),
                 request.code()
         );
 

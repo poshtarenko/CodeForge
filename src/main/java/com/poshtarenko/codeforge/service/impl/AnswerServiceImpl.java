@@ -1,16 +1,17 @@
 package com.poshtarenko.codeforge.service.impl;
 
-import com.poshtarenko.codeforge.dto.SaveAnswerDTO;
-import com.poshtarenko.codeforge.dto.UpdateAnswerDTO;
-import com.poshtarenko.codeforge.dto.ViewAnswerDTO;
-import com.poshtarenko.codeforge.dto.ViewProblemDTO;
+import com.poshtarenko.codeforge.dto.request.SaveAnswerDTO;
+import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
+import com.poshtarenko.codeforge.dto.request.UpdateAnswerDTO;
+import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
+import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
 import com.poshtarenko.codeforge.dto.mapper.AnswerMapper;
 import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
-import com.poshtarenko.codeforge.pojo.CodeEvaluationRequest;
-import com.poshtarenko.codeforge.pojo.CodeEvaluationResult;
+import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
+import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
 import com.poshtarenko.codeforge.service.AnswerService;
 import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -50,23 +52,20 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public ViewAnswerDTO save(SaveAnswerDTO answerDTO) {
-        Answer answer = answerMapper.toEntity(answerDTO);
+    public ViewAnswerDTO put(SaveAnswerDTO answerDTO) {
+        Optional<Answer> maybeAnswer = answerRepository
+                .findByTaskIdAndRespondentId(answerDTO.respondentId(), answerDTO.taskId());
 
-        tryAnswer(answer);
+        Answer answerToSave = answerMapper.toEntity(answerDTO);;
+        maybeAnswer.ifPresent(answer -> answerToSave.setId(answer.getId()));
+        tryAnswer(answerToSave);
 
-        return answerMapper.toDto(answerRepository.save(answer));
+        return answerMapper.toDto(answerRepository.save(answerToSave));
     }
 
     @Override
-    public ViewAnswerDTO update(UpdateAnswerDTO answerDTO) {
-        Answer answer = answerRepository.findById(answerDTO.id())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class,
-                        "Test with id %d not found".formatted(answerDTO.id())));
-        answer.setCode(answerDTO.code());
-        tryAnswer(answer);
-        return answerMapper.toDto(answerRepository.save(answer));
+    public CodeEvaluationResult tryCode(TryCodeRequest tryCodeRequest) {
+        return tryCode(tryCodeRequest.taskId(), tryCodeRequest.code());
     }
 
     @Override
@@ -85,14 +84,17 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     private void tryAnswer(Answer answer) {
-        ViewProblemDTO problem = problemService.findByTask(answer.getTask().getId());
-        String language = languageService.find(problem.languageId()).name();
-        String code = problem.testingCode().formatted(answer.getCode());
-
-        CodeEvaluationRequest codeEvaluationRequest = new CodeEvaluationRequest(language, code);
-        CodeEvaluationResult codeEvaluationResult = codeEvaluationProvider.evaluateCode(codeEvaluationRequest);
-
+        CodeEvaluationResult codeEvaluationResult = tryCode(answer.getTask().getId(), answer.getCode());
         answer.setIsCompleted(codeEvaluationResult.isCompleted());
         answer.setEvaluationTime(codeEvaluationResult.evaluationTime());
+    }
+
+    private CodeEvaluationResult tryCode(long taskId, String code) {
+        ViewProblemDTO problem = problemService.findByTask(taskId);
+        String language = languageService.find(problem.language().id()).name();
+        String codeToEvaluate = problem.testingCode().formatted(code);
+
+        CodeEvaluationRequest codeEvaluationRequest = new CodeEvaluationRequest(language, codeToEvaluate);
+        return codeEvaluationProvider.evaluateCode(codeEvaluationRequest);
     }
 }

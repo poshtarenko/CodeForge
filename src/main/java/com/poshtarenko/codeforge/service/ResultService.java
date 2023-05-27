@@ -1,9 +1,9 @@
 package com.poshtarenko.codeforge.service;
 
 
-import com.poshtarenko.codeforge.dto.SaveResultDTO;
-import com.poshtarenko.codeforge.dto.UpdateResultDTO;
-import com.poshtarenko.codeforge.dto.ViewResultDTO;
+import com.poshtarenko.codeforge.dto.request.SaveResultDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateResultDTO;
+import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
 
 public interface ResultService {
 

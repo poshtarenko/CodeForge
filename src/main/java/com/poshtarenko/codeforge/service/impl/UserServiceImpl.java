@@ -11,6 +11,7 @@ import com.poshtarenko.codeforge.repository.UserRepository;
 import com.poshtarenko.codeforge.security.pojo.SignUpRequest;
 import com.poshtarenko.codeforge.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final PasswordEncoder passwordEncoder;
     private final RespondentRepository respondentRepository;
     private final RoleRepository roleRepository;
     private final AuthorRepository authorRepository;
@@ -28,31 +30,34 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(SignUpRequest signUpRequest) {
-        if (signUpRequest.getRole().equals(ERole.RESPONDENT)) {
+
+        String encodedPassword = passwordEncoder.encode(signUpRequest.password());
+
+        if (signUpRequest.role().equals(ERole.RESPONDENT)) {
             Respondent respondent = new Respondent(
-                    signUpRequest.getEmail(),
-                    signUpRequest.getUsername(),
-                    signUpRequest.getPassword(),
+                    signUpRequest.email(),
+                    signUpRequest.username(),
+                    encodedPassword,
                     Collections.singletonList(roleRepository.findByName(ERole.RESPONDENT).orElseThrow(
                             () -> new RuntimeException("Role RESPONDENT dont found")
                     ))
             );
             respondentRepository.save(respondent);
-        } else if (signUpRequest.getRole().equals(ERole.AUTHOR)) {
+        } else if (signUpRequest.role().equals(ERole.AUTHOR)) {
             Author author = new Author(
-                    signUpRequest.getEmail(),
-                    signUpRequest.getUsername(),
-                    signUpRequest.getPassword(),
+                    signUpRequest.email(),
+                    signUpRequest.username(),
+                    encodedPassword,
                     Collections.singletonList(roleRepository.findByName(ERole.AUTHOR).orElseThrow(
                             () -> new RuntimeException("Role AUTHOR dont found")
                     ))
             );
             authorRepository.save(author);
-        } else if (signUpRequest.getRole().equals(ERole.ADMIN)) {
+        } else if (signUpRequest.role().equals(ERole.ADMIN)) {
             User user = new User(
-                    signUpRequest.getEmail(),
-                    signUpRequest.getUsername(),
-                    signUpRequest.getPassword(),
+                    signUpRequest.email(),
+                    signUpRequest.username(),
+                    encodedPassword,
                     Collections.singletonList(roleRepository.findByName(ERole.ADMIN).orElseThrow(
                             () -> new RuntimeException("Role ADMIN dont found")
                     ))

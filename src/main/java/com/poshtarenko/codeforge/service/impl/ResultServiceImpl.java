@@ -1,10 +1,10 @@
 package com.poshtarenko.codeforge.service.impl;
 
-import com.poshtarenko.codeforge.dto.SaveResultDTO;
-import com.poshtarenko.codeforge.dto.UpdateResultDTO;
-import com.poshtarenko.codeforge.dto.ViewAnswerDTO;
-import com.poshtarenko.codeforge.dto.ViewResultDTO;
-import com.poshtarenko.codeforge.dto.ViewTaskDTO;
+import com.poshtarenko.codeforge.dto.request.SaveResultDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateResultDTO;
+import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
+import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.dto.mapper.ResultMapper;
 import com.poshtarenko.codeforge.entity.Result;
 import com.poshtarenko.codeforge.entity.Test;

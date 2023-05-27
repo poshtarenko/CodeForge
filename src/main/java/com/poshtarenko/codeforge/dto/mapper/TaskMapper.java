@@ -1,8 +1,8 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.SaveTaskDTO;
-import com.poshtarenko.codeforge.dto.UpdateTaskDTO;
-import com.poshtarenko.codeforge.dto.ViewTaskDTO;
+import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -1,11 +1,12 @@
 package com.poshtarenko.codeforge.controller;
 
-import com.poshtarenko.codeforge.dto.SaveResultDTO;
-import com.poshtarenko.codeforge.dto.UpdateResultDTO;
-import com.poshtarenko.codeforge.dto.ViewResultDTO;
+import com.poshtarenko.codeforge.dto.request.SaveResultDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateResultDTO;
+import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.util.SecurityUtils;
 import com.poshtarenko.codeforge.service.ResultService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,13 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/result")
 @CrossOrigin(origins = "*", maxAge = 3600)
+@RequiredArgsConstructor
 public class ResultController {
 
     private final ResultService resultService;
-
-    public ResultController(ResultService resultService) {
-        this.resultService = resultService;
-    }
 
     @GetMapping("/{id}")
     public ViewResultDTO findResult(@PathVariable long id) {

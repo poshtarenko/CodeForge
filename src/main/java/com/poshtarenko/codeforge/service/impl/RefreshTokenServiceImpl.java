@@ -3,9 +3,12 @@ package com.poshtarenko.codeforge.service.impl;
 import com.poshtarenko.codeforge.entity.RefreshToken;
 import com.poshtarenko.codeforge.entity.User;
 import com.poshtarenko.codeforge.repository.RefreshTokenRepository;
+import com.poshtarenko.codeforge.repository.UserRepository;
 import com.poshtarenko.codeforge.security.jwt.JwtUtils;
 import com.poshtarenko.codeforge.security.pojo.JwtRefreshRequest;
 import com.poshtarenko.codeforge.security.pojo.JwtResponse;
+import com.poshtarenko.codeforge.service.RefreshTokenService;
+import com.poshtarenko.codeforge.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,14 +19,16 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class RefreshTokenServiceImpl {
+public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
     private final JwtUtils jwtUtils;
 
     @Value("${jwt.refreshToken.expiration}")
     private int expiration;
 
+    @Override
     public String createToken(long userId) {
         var refreshToken = refreshTokenRepository.save(RefreshToken.builder()
                 .token(UUID.randomUUID().toString())
@@ -33,6 +38,7 @@ public class RefreshTokenServiceImpl {
         return refreshToken.getToken();
     }
 
+    @Override
     public JwtResponse refreshToken(JwtRefreshRequest refreshRequest) {
         var refreshToken = refreshTokenRepository
                 .findRefreshTokenByToken(refreshRequest.getRefreshToken())
@@ -45,9 +51,12 @@ public class RefreshTokenServiceImpl {
                     .formatted(refreshRequest.getRefreshToken()));
         }
 
-        String jwt = jwtUtils.generateJwt(refreshToken.getUser().getEmail());
         updateToken(refreshToken);
-        return new JwtResponse(jwt, refreshToken.getToken());
+
+        String jwt = jwtUtils.generateJwt(refreshToken.getUser().getEmail());
+        String token = refreshToken.getToken();
+        String role = userRepository.findById(refreshToken.getUser().getId()).orElseThrow().getRoles().get(0).getName().name();
+        return new JwtResponse(jwt, token, role);
     }
 
     private void updateToken(RefreshToken token) {

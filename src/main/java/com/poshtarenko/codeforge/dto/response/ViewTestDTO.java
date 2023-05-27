@@ -1,10 +1,11 @@
-package com.poshtarenko.codeforge.dto;
+package com.poshtarenko.codeforge.dto.response;
 
 import java.util.List;
 
 public record ViewTestDTO(
         Long id,
         String name,
+        String code,
         Integer maxDuration,
         Long authorId,
         List<TaskDTO> tasks
@@ -21,8 +22,9 @@ public record ViewTestDTO(
             Long id,
             String name,
             String description,
-            String language,
-            String category
+            ViewLanguageDTO language,
+            ViewCategoryDTO category,
+            String testingCode
     ) {
     }
 }

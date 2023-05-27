@@ -1,9 +1,10 @@
 package com.poshtarenko.codeforge.integration;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.SaveTestDTO;
-import com.poshtarenko.codeforge.dto.UpdateTestDTO;
-import com.poshtarenko.codeforge.dto.ViewTestDTO;
+import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
 import com.poshtarenko.codeforge.integration.security.WithMockCustomUser;
@@ -22,6 +23,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -97,6 +100,21 @@ public class TestControllerTestIT {
         assertEquals(test.getId(), response.id());
         assertEquals(test.getMaxDuration(), response.maxDuration());
         assertEquals(test.getAuthor().getId(), response.authorId());
+    }
+
+    @Test
+    @SneakyThrows
+    public void getMyTests() {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/my"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        List<ViewTestDTO> response = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                new TypeReference<>() {}
+        );
+
+        assertEquals(response.size(), 1);
     }
 
     @Test

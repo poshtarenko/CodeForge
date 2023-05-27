@@ -1,8 +1,8 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.SaveAnswerDTO;
-import com.poshtarenko.codeforge.dto.UpdateAnswerDTO;
-import com.poshtarenko.codeforge.dto.ViewAnswerDTO;
+import com.poshtarenko.codeforge.dto.request.SaveAnswerDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateAnswerDTO;
+import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.entity.Answer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

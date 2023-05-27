@@ -1,8 +1,11 @@
 package com.poshtarenko.codeforge.controller;
 
-import com.poshtarenko.codeforge.dto.SaveAnswerDTO;
-import com.poshtarenko.codeforge.dto.UpdateAnswerDTO;
-import com.poshtarenko.codeforge.dto.ViewAnswerDTO;
+import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
+import com.poshtarenko.codeforge.dto.request.SaveAnswerDTO;
+import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
+import com.poshtarenko.codeforge.dto.request.UpdateAnswerDTO;
+import com.poshtarenko.codeforge.dto.response.TryCodeResponse;
+import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.util.SecurityUtils;
 import com.poshtarenko.codeforge.service.AnswerService;
@@ -20,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/answer")
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin("http://localhost:3000")
 @RequiredArgsConstructor
 public class AnswerController {
 
@@ -45,21 +48,19 @@ public class AnswerController {
                 SecurityUtils.getUserId()
         );
 
-        return answerService.save(saveAnswerDTO);
+        return answerService.put(saveAnswerDTO);
     }
 
-    @PutMapping("/{id}")
-    public ViewAnswerDTO updateAnswer(@PathVariable long id, @RequestBody UpdateAnswerDTO answerDTO) {
+    @PostMapping("/try_code")
+    public TryCodeResponse tryCode(@RequestBody TryCodeRequest request) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
-        long userId = SecurityUtils.getUserId();
-        answerService.checkAccess(id, userId);
+        CodeEvaluationResult codeEvaluationResult = answerService.tryCode(request);
 
-        UpdateAnswerDTO updateAnswerDTO = new UpdateAnswerDTO(
-                id,
-                answerDTO.code()
+        return new TryCodeResponse(
+                codeEvaluationResult.isCompleted(),
+                codeEvaluationResult.evaluationTime(),
+                codeEvaluationResult.error().orElse("")
         );
-
-        return answerService.update(updateAnswerDTO);
     }
 
     @DeleteMapping("/{id}")

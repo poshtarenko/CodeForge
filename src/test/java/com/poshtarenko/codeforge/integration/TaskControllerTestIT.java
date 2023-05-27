@@ -1,9 +1,9 @@
 package com.poshtarenko.codeforge.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.SaveTaskDTO;
-import com.poshtarenko.codeforge.dto.UpdateTaskDTO;
-import com.poshtarenko.codeforge.dto.ViewTaskDTO;
+import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;

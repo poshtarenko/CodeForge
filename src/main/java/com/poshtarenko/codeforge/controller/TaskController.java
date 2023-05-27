@@ -1,8 +1,8 @@
 package com.poshtarenko.codeforge.controller;
 
-import com.poshtarenko.codeforge.dto.SaveTaskDTO;
-import com.poshtarenko.codeforge.dto.UpdateTaskDTO;
-import com.poshtarenko.codeforge.dto.ViewTaskDTO;
+import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.util.SecurityUtils;
 import com.poshtarenko.codeforge.service.TaskService;

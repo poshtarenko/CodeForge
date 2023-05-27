@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.dto;
+package com.poshtarenko.codeforge.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.service;
 
 
-import com.poshtarenko.codeforge.dto.ViewCategoryDTO;
+import com.poshtarenko.codeforge.dto.response.ViewCategoryDTO;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.dto;
+package com.poshtarenko.codeforge.dto.response;
 
 public record ViewAnswerDTO(
         Long id,

@@ -1,15 +1,17 @@
 package com.poshtarenko.codeforge.service;
 
 
-import com.poshtarenko.codeforge.dto.SaveTestDTO;
-import com.poshtarenko.codeforge.dto.UpdateTestDTO;
-import com.poshtarenko.codeforge.dto.ViewTestDTO;
+import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 
 import java.util.List;
 
 public interface TestService {
 
     ViewTestDTO find(long id);
+
+    ViewTestDTO findByCode(String code);
 
     List<ViewTestDTO> findByAuthor(long authorId);
 

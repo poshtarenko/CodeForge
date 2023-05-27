@@ -1,8 +1,8 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.SaveTestDTO;
-import com.poshtarenko.codeforge.dto.UpdateTestDTO;
-import com.poshtarenko.codeforge.dto.ViewTestDTO;
+import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.Problem;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.entity.Test;
@@ -10,7 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = {EntityIdMapper.class})
+@Mapper(componentModel = "spring", uses = {EntityIdMapper.class, LanguageMapper.class, CategoryMapper.class})
 public interface TestMapper {
 
     TestMapper INSTANCE = Mappers.getMapper(TestMapper.class);
@@ -20,14 +20,11 @@ public interface TestMapper {
 
     ViewTestDTO.TaskDTO toDto(Task task);
 
-    @Mapping(source = "language.name", target = "language")
-    @Mapping(source = "category.name", target = "category")
     ViewTestDTO.ProblemDTO toDto(Problem problem);
 
     @Mapping(source = "authorId", target = "author")
     Test toEntity(SaveTestDTO dto);
 
-    @Mapping(source = "authorId", target = "author")
     Test toEntity(UpdateTestDTO dto);
 
 }

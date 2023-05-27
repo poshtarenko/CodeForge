@@ -1,8 +1,8 @@
 package com.poshtarenko.codeforge.service.impl;
 
-import com.poshtarenko.codeforge.dto.SaveProblemDTO;
-import com.poshtarenko.codeforge.dto.UpdateProblemDTO;
-import com.poshtarenko.codeforge.dto.ViewProblemDTO;
+import com.poshtarenko.codeforge.dto.request.SaveProblemDTO;
+import com.poshtarenko.codeforge.dto.request.UpdateProblemDTO;
+import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
 import com.poshtarenko.codeforge.dto.mapper.ProblemMapper;
 import com.poshtarenko.codeforge.entity.Problem;
 import com.poshtarenko.codeforge.entity.Test;
@@ -12,6 +12,8 @@ import com.poshtarenko.codeforge.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -28,6 +30,13 @@ public class ProblemServiceImpl implements ProblemService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         Problem.class, "Problem with id " + id + " not found")
                 );
+    }
+
+    @Override
+    public List<ViewProblemDTO> findAll() {
+        return problemRepository.findAll().stream()
+                .map(problemMapper::toDto)
+                .toList();
     }
 
     @Override
