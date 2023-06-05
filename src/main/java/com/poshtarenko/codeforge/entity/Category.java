@@ -2,6 +2,7 @@ package com.poshtarenko.codeforge.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class Category extends BaseEntity {
     @Column(name = "name")
     String name;
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     List<Problem> problems;
 
     public Category(Long id) {

@@ -13,7 +13,7 @@ public interface TestRepository extends JpaRepository<Test, Long> {
 
     List<Test> findAllByAuthorId(Long authorId);
 
-    Optional<Test> findByCode(String code);
+    Optional<Test> findByInviteCode(String inviteCode);
 
     @Query("select count(t) > 0 from Test t where t.id = :testId and t.author.id = :authorId")
     Boolean checkAccess(long testId, long authorId);

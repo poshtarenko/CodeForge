@@ -1,11 +1,12 @@
 package com.poshtarenko.codeforge.service.impl;
 
-import com.poshtarenko.codeforge.dto.request.SaveResultDTO;
+import com.poshtarenko.codeforge.dto.mapper.ResultMapper;
+import com.poshtarenko.codeforge.dto.request.FinishTestRequest;
 import com.poshtarenko.codeforge.dto.request.UpdateResultDTO;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
-import com.poshtarenko.codeforge.dto.mapper.ResultMapper;
+import com.poshtarenko.codeforge.entity.Respondent;
 import com.poshtarenko.codeforge.entity.Result;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -41,9 +43,25 @@ public class ResultServiceImpl implements ResultService {
     }
 
     @Override
-    public ViewResultDTO save(SaveResultDTO resultDTO) {
-        Result result = resultMapper.toEntity(resultDTO);
-        calculateScore(result);
+    public Optional<ViewResultDTO> findRespondentTestResult(long respondentId, long testId) {
+        return resultRepository.findByRespondentIdAndTestId(respondentId, testId)
+                .map(resultMapper::toDto);
+    }
+
+    @Override
+    public List<ViewResultDTO> findTestResults(long testId) {
+        return resultRepository.findByTestId(testId).stream()
+                .map(resultMapper::toDto)
+                .toList();
+    }
+
+    @Override
+    public ViewResultDTO save(FinishTestRequest finishTestRequest) {
+        Result result = new Result();
+        result.setRespondent(new Respondent(finishTestRequest.respondentId()));
+        result.setTest(new Test(finishTestRequest.testId()));
+        int score = calculateScore(result.getRespondent().getId(), result.getTest().getId());
+        result.setScore(score);
         return resultMapper.toDto(resultRepository.save(result));
     }
 
@@ -58,7 +76,8 @@ public class ResultServiceImpl implements ResultService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         Test.class,
                         "Test with id %d not found".formatted(resultDTO.id())));
-        calculateScore(result);
+        int score = calculateScore(result.getRespondent().getId(), result.getTest().getId());
+        result.setScore(score);
         return resultMapper.toDto(resultRepository.save(result));
     }
 
@@ -72,23 +91,21 @@ public class ResultServiceImpl implements ResultService {
         }
     }
 
-    private void calculateScore(Result result) {
-        List<ViewAnswerDTO> answers = answerService.findRespondentAnswersOnTest(
-                result.getRespondent().getId(),
-                result.getTest().getId()
-        );
-        List<ViewTaskDTO> tasks = taskService.findByTest(result.getTest().getId());
+    private int calculateScore(long respondentId, long testId) {
+        List<ViewAnswerDTO> answers = answerService.findAnswersOnTest(respondentId, testId);
+        List<ViewTaskDTO> tasks = taskService.findByTest(testId);
 
         int totalScore = 0;
 
         for (ViewTaskDTO task : tasks) {
-            List<ViewAnswerDTO> answersOnTask = answers.stream().filter(a -> Objects.equals(a.taskId(), task.id())).toList();
-            if (answersOnTask.size() != 1) {
-                throw new RuntimeException("User was not answered on all tasks");
+            Optional<ViewAnswerDTO> maybeAnswer = answers.stream()
+                    .filter(a -> Objects.equals(a.taskId(), task.id()))
+                    .findFirst();
+            if (maybeAnswer.isPresent() && maybeAnswer.get().isCompleted()) {
+                totalScore += task.maxScore();
             }
-            totalScore += task.maxScore();
         }
 
-        result.setScore(totalScore);
+        return totalScore;
     }
 }

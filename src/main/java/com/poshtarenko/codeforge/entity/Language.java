@@ -2,6 +2,7 @@ package com.poshtarenko.codeforge.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class Language extends BaseEntity {
     @Column(name = "name")
     String name;
 
-    @OneToMany(mappedBy = "language")
+    @OneToMany(mappedBy = "language", fetch = FetchType.LAZY)
     List<Problem> problems;
 
     public Language(String name) {

@@ -11,7 +11,7 @@ public interface TestService {
 
     ViewTestDTO find(long id);
 
-    ViewTestDTO findByCode(String code);
+    ViewTestDTO findByInviteCode(String inviteCode);
 
     List<ViewTestDTO> findByAuthor(long authorId);
 

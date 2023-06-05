@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.request.SaveResultDTO;
+import com.poshtarenko.codeforge.dto.request.FinishTestRequest;
 import com.poshtarenko.codeforge.dto.request.UpdateResultDTO;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
@@ -62,7 +62,7 @@ public class ResultControllerTestIT {
     @Test
     @SneakyThrows
     public void createResult() {
-        SaveResultDTO request = new SaveResultDTO(
+        FinishTestRequest request = new FinishTestRequest(
                 result.getTest().getId(),
                 null
         );

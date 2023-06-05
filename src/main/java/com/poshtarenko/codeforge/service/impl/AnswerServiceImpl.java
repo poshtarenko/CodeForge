@@ -45,7 +45,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public List<ViewAnswerDTO> findRespondentAnswersOnTest(long respondentId, long testId) {
+    public List<ViewAnswerDTO> findAnswersOnTest(long respondentId, long testId) {
         return answerRepository.findByRespondentAndTest(respondentId, testId).stream()
                 .map(answerMapper::toDto)
                 .toList();

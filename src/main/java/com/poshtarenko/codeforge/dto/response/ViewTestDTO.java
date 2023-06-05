@@ -5,7 +5,7 @@ import java.util.List;
 public record ViewTestDTO(
         Long id,
         String name,
-        String code,
+        String inviteCode,
         Integer maxDuration,
         Long authorId,
         List<TaskDTO> tasks
