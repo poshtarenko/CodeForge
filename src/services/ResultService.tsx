@@ -7,15 +7,16 @@ import {TryCodeResult} from "../models/entity/TryCodeResult";
 import {TryCodeRequest} from "../models/request/TryCodeRequest";
 import {SaveAnswerRequest} from "../models/request/SaveAnswerRequest";
 import {IAnswer} from "../models/entity/IAnswer";
+import {IResult} from "../models/entity/IResult";
 
-export default class AnswerService {
+export default class ResultService {
 
     static async tryCode(request: TryCodeRequest): Promise<AxiosResponse<TryCodeResult>> {
         return $api.post("/answer/try_code", request);
     }
 
-    static async findRespondentAnswersOnTest(testId: number): Promise<AxiosResponse<IAnswer[]>> {
-        return $api.get("/answer/by_test/" + testId);
+    static async findRespondentTestResult(testId: number): Promise<AxiosResponse<IResult>> {
+        return $api.get("/result/by_test_and_respondent/" + testId);
     }
 
     static async saveAnswer(request: SaveAnswerRequest) {

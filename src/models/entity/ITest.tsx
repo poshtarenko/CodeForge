@@ -4,7 +4,7 @@ import {ICategory} from "./ICategory";
 export interface ITest {
     id: number;
     name: string;
-    code: string;
+    inviteCode: string;
     maxDuration: number;
     authorId: number;
     tasks: ITask[];

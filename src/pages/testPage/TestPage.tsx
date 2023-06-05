@@ -11,16 +11,22 @@ import EditTaskModal from "./modals/EditTaskModal";
 import DeleteTaskModal from "./modals/DeleteTaskModal";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
 
+enum ActiveMenu {
+    TasksMenu,
+    AnswersMenu
+}
+
 const TestPage: React.FC = () => {
 
     const [test, setTest] = useState<ITest>({} as ITest);
     const [changingName, setChangingName] = useState<boolean>(false);
     const [newName, setNewName] = useState<string>("");
 
+    const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.TasksMenu);
+
     const [addTaskModal, setAddTaskModal] = useState<boolean>(false);
     const [deleteTaskModal, setDeleteTaskModal] = useState<boolean>(false);
     const [taskToDelete, setTaskToDelete] = useState<ITask>({} as ITask);
-
     const [editTaskModal, setEditTaskModal] = useState<boolean>(false);
     const [taskToEdit, setTaskToEdit] = useState<ITask>({} as ITask);
 
@@ -103,7 +109,7 @@ const TestPage: React.FC = () => {
                                                  icon={faPenToSquare}/>
                             </div>
                         }
-                        <p className={"test-lang"}>Код для входу : {test.code}</p>
+                        <p className={"test-lang"}>Код для входу : {test.inviteCode}</p>
                     </div>
                     <div>
                         <p className={"test-tasks-count"}>
@@ -114,7 +120,19 @@ const TestPage: React.FC = () => {
                         </p>
                     </div>
                 </div>
-                <div className={"tasks"}>
+                <div className="menu-selector">
+                    <div className="menu-selector-el" onClick={() => setActiveMenu(ActiveMenu.TasksMenu)}>
+                        <p className={activeMenu === ActiveMenu.TasksMenu ? "selected" : ""}>Завдання</p>
+                        <div className={activeMenu === ActiveMenu.TasksMenu ? "underline selected" : "underline"}></div>
+                    </div>
+                    <div className="menu-selector-el" onClick={() => setActiveMenu(ActiveMenu.AnswersMenu)}>
+                        <p className={activeMenu === ActiveMenu.AnswersMenu ? "selected" : ""}>Відповіді</p>
+                        <div className={activeMenu === ActiveMenu.AnswersMenu ? "underline selected" : "underline"}></div>
+                    </div>
+                </div>
+                {activeMenu === ActiveMenu.TasksMenu ?
+                <>
+                    <div className={"tasks"}>
                     {getTasksSorted(test.tasks)?.map((task, index) =>
                         <div key={Number(task.id)} className={"task-cell"}>
                             <FontAwesomeIcon className={"icon-button change-button"} icon={faPenToSquare}
@@ -146,6 +164,8 @@ const TestPage: React.FC = () => {
                         className={"add-task-button"}>
                     Додати завдання
                 </button>
+                </> : null
+                }
             </div>
         </PageTemplate>
     );

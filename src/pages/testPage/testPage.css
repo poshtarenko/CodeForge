@@ -69,7 +69,7 @@
 }
 
 .tasks {
-    margin-top: 20px;
+    margin-top: 15px;
     display: flex;
     flex-direction: column;
 }
@@ -175,4 +175,47 @@
 .add-task-button:hover {
     background-color: #277BE9;
     color: #FFFFFF;
+}
+
+.menu-selector {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+}
+
+.menu-selector .menu-selector-el {
+    cursor: pointer;
+}
+
+.menu-selector .menu-selector-el p {
+    font-size: 20px;
+    padding: 0 10px;
+    font-weight: 700;
+    transition: 100ms;
+}
+
+.menu-selector .menu-selector-el p.selected {
+    color: #1A73E8;
+}
+
+.menu-selector .menu-selector-el p:hover {
+    color: #1A73E8;
+}
+
+.menu-selector .menu-selector-el .underline {
+    margin-top: 4px;
+    height: 5px;
+    width: 100%;
+    border-radius: 4px;
+    background-color: #737373;
+    transition: 200ms;
+}
+
+.menu-selector .menu-selector-el:hover .underline {
+    background-color: #1A73E8;
+}
+
+.menu-selector .menu-selector-el .underline.selected {
+    background-color: #1A73E8;
 }

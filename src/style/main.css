@@ -39,3 +39,7 @@ body {
 .standard-button:hover {
     background-color: #1766CD;
 }
+
+.number {
+    font-family: "JetBrains Mono", serif;
+}

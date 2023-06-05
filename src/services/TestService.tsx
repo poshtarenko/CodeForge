@@ -26,6 +26,10 @@ export default class TestService {
         return $api.put(`/test/${id}`, request);
     }
 
+    static async finishTest(id: number): Promise<AxiosResponse<ITest>> {
+        return $api.post(`/test/finish/${id}`);
+    }
+
     static getLanguages(test: ITest): string {
         const languages = test!.tasks?.map(task => task!.problem!.language.name)
             .filter((value, index, array) => array.indexOf(value) === index);
