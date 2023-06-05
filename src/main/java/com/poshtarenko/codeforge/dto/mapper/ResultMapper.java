@@ -1,7 +1,10 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.request.SaveResultDTO;
+import com.poshtarenko.codeforge.dto.request.FinishTestRequest;
 import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
+import com.poshtarenko.codeforge.entity.Problem;
+import com.poshtarenko.codeforge.entity.Respondent;
 import com.poshtarenko.codeforge.entity.Result;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,11 +16,8 @@ public interface ResultMapper {
     ResultMapper INSTANCE = Mappers.getMapper(ResultMapper.class);
 
     @Mapping(source = "test", target = "testId")
-    @Mapping(source = "respondent", target = "respondentId")
     ViewResultDTO toDto(Result entity);
 
-    @Mapping(source = "testId", target = "test")
-    @Mapping(source = "respondentId", target = "respondent")
-    Result toEntity(SaveResultDTO dto);
+    ViewResultDTO.RespondentDTO toDto(Respondent respondent);
 
 }

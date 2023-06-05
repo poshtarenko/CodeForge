@@ -1,10 +1,13 @@
 package com.poshtarenko.codeforge.controller;
 
+import com.poshtarenko.codeforge.dto.request.FinishTestRequest;
 import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
+import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.util.SecurityUtils;
+import com.poshtarenko.codeforge.service.ResultService;
 import com.poshtarenko.codeforge.service.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +30,7 @@ import java.util.List;
 public class TestController {
 
     private final TestService testService;
+    private final ResultService resultService;
 
     @GetMapping("/{id}")
     public ViewTestDTO findTestByAuthor(@PathVariable long id) {
@@ -40,7 +44,7 @@ public class TestController {
     @GetMapping("/by_respondent/{code}")
     public ViewTestDTO findTestByRespondent(@PathVariable String code) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
-        return testService.findByCode(code);
+        return testService.findByInviteCode(code);
     }
 
     @GetMapping("/my")
@@ -76,6 +80,16 @@ public class TestController {
         );
 
         return testService.update(updateTestDTO);
+    }
+
+    @PostMapping("/finish/{id}")
+    public ViewResultDTO finishTest(@PathVariable long id) {
+        SecurityUtils.checkUserRole(ERole.RESPONDENT);
+        FinishTestRequest finishTestRequest = new FinishTestRequest(
+                id,
+                SecurityUtils.getUserId()
+        );
+        return resultService.save(finishTestRequest);
     }
 
     @DeleteMapping("/{id}")

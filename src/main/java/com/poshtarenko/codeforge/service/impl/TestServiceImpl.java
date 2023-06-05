@@ -39,11 +39,11 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public ViewTestDTO findByCode(String code) {
-        return testRepository.findByCode(code)
+    public ViewTestDTO findByInviteCode(String inviteCode) {
+        return testRepository.findByInviteCode(inviteCode)
                 .map(testMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class, "Test with code " + code + " not found")
+                        Test.class, "Test with code " + inviteCode + " not found")
                 );
     }
 
@@ -64,10 +64,10 @@ public class TestServiceImpl implements TestService {
 
         do {
             code = RandomStringUtils.randomAlphabetic(TEST_INVITE_CODE_LENGTH);
-            testWithCode = testRepository.findByCode(code);
+            testWithCode = testRepository.findByInviteCode(code);
         } while (testWithCode.isPresent());
 
-        test.setCode(code);
+        test.setInviteCode(code);
         Test saved = testRepository.save(test);
 
         return testMapper.toDto(saved);

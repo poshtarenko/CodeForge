@@ -4,7 +4,6 @@ package com.poshtarenko.codeforge.service;
 import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
 import com.poshtarenko.codeforge.dto.request.SaveAnswerDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
-import com.poshtarenko.codeforge.dto.request.UpdateAnswerDTO;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public interface AnswerService {
 
     ViewAnswerDTO find(long id);
 
-    List<ViewAnswerDTO> findRespondentAnswersOnTest(long respondentId, long testId);
+    List<ViewAnswerDTO> findAnswersOnTest(long respondentId, long testId);
 
     ViewAnswerDTO put(SaveAnswerDTO answerDTO);
 

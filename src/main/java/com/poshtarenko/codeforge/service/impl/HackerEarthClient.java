@@ -1,8 +1,8 @@
 package com.poshtarenko.codeforge.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
 import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
+import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
 import com.poshtarenko.codeforge.dto.request.HackerEarthCodeEvaluationRequest;
 import com.poshtarenko.codeforge.dto.response.HackerEarthCodeEvaluationResult;
 import com.poshtarenko.codeforge.dto.response.HackerEarthQueueingResponse;
@@ -37,14 +37,14 @@ public class HackerEarthClient implements CodeEvaluationProvider {
     private static final String EVALUATION_RESULT_URL = "/v4/partner/code-evaluation/submissions/%s/";
 
     private static final int DELAY_BEFORE_REQUEST_MS = 150;
-    private static final int COMPILATION_WAIT_DELAY = 75;
+    private static final int COMPILATION_WAIT_DELAY = 150;
 
     private static final List<String> PREPARATORY_REQUEST_STATUSES = List.of(
             "REQUEST_INITIATED",
             "REQUEST_QUEUED"
     );
-    private static final String CODE_COMPILED_STATUS = "CODE_COMPILED";
-    private static final String SUCCESS_REQUEST_STATUS = "REQUEST_COMPLETED";
+    private static final String CODE_SUCCESSFULLY_COMPILED_STATUS = "CODE_COMPILED";
+    private static final String CODE_PROCESSED_STATUS = "REQUEST_COMPLETED";
 
     private final WebClient client = WebClient.builder()
             .baseUrl(API_URL)
@@ -71,18 +71,27 @@ public class HackerEarthClient implements CodeEvaluationProvider {
         String error = null;
         boolean isCompleted = false;
 
-        if(requestCode.equals(SUCCESS_REQUEST_STATUS)) {
+        if (requestCode.equals(CODE_SUCCESSFULLY_COMPILED_STATUS)) {
+            String compileStatus = evaluationResult.result().compileStatus();
+            if (compileStatus.equals("OK")) {
+                while (!requestCode.equals(CODE_PROCESSED_STATUS)) {
+                    evaluationResult = getEvaluationResult(heId);
+                    requestCode = evaluationResult.requestStatus().code();
+                    Thread.sleep(COMPILATION_WAIT_DELAY);
+                }
+            } else {
+                error = "Compilation error:\n" + compileStatus;
+            }
+        }
+
+        if (requestCode.equals(CODE_PROCESSED_STATUS)) {
             String outputURL = evaluationResult.result().runStatus().output();
-            String result = downloadCodeEvaluationResult(outputURL);
-            if (result.equals("SUCCESS")) {
+            String output = downloadCodeEvaluationResult(outputURL);
+            if (output.equals("SUCCESS")) {
                 isCompleted = true;
             } else {
-                error = "Code compiled, but task failed";
+                error = "Task failed";
             }
-        } else if (requestCode.equals(CODE_COMPILED_STATUS)){
-            error = evaluationResult.result().compileStatus();
-        } else {
-            throw new RuntimeException("Unknown compile status code");
         }
 
         return new CodeEvaluationResult(

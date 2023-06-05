@@ -40,7 +40,7 @@ create table Tests
 (
     id           BIGSERIAL PRIMARY KEY,
     name         VARCHAR(256)                      NOT NULL,
-    code         VARCHAR(64)                       NOT NULL UNIQUE,
+    invite_code  VARCHAR(64)                       NOT NULL UNIQUE,
     max_duration INT                               NOT NULL,
     author_id    BIGSERIAL REFERENCES Authors (id) NOT NULL
 );

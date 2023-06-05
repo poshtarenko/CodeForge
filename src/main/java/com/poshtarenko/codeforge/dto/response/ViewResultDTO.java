@@ -4,5 +4,11 @@ public record ViewResultDTO(
         Long id,
         Integer score,
         Long testId,
-        Long respondentId) {
+        RespondentDTO respondent) {
+
+    public record RespondentDTO(
+            Long id,
+            String name
+    ) {
+    }
 }

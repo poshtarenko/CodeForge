@@ -33,4 +33,9 @@ public class Result extends BaseEntity {
     public Result(Long id) {
         super(id);
     }
+
+    public Result(Test test, Respondent respondent) {
+        this.test = test;
+        this.respondent = respondent;
+    }
 }

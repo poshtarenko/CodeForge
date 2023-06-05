@@ -28,14 +28,14 @@ public class Test extends BaseEntity {
     @Column(name = "max_duration")
     Integer maxDuration;
 
-    @Column(name = "code")
-    String code;
+    @Column(name = "invite_code")
+    String inviteCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     Author author;
 
-    @OneToMany(mappedBy = "test")
+    @OneToMany(mappedBy = "test", fetch = FetchType.LAZY)
     List<Task> tasks;
 
     public Test(Long id) {
