@@ -21,5 +21,7 @@ public interface TestService {
 
     void delete(long id);
 
+    void checkRespondentConnectedToTest(long respondentId, long testId);
+
     void checkAccess(long testId, long respondentId);
 }

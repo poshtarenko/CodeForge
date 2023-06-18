@@ -107,7 +107,7 @@ public class HackerEarthClient implements CodeEvaluationProvider {
         RequestBodySpec bodySpec = uriSpec.uri(QUEUEING_URL);
 
         HackerEarthCodeEvaluationRequest codeEvaluationRequest = new HackerEarthCodeEvaluationRequest(
-                request.lang().toUpperCase(),
+                "JAVA8",
                 request.code()
         );
 

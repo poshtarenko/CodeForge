@@ -29,8 +29,8 @@ public class TaskController {
     @GetMapping("/{id}")
     public ViewTaskDTO findTask(@PathVariable long id) {
         SecurityUtils.checkUserRole(ERole.AUTHOR);
-        long userId = SecurityUtils.getUserId();
-        taskService.checkAccess(id, userId);
+        long authorId = SecurityUtils.getUserId();
+        taskService.checkAccess(id, authorId);
 
         return taskService.find(id);
     }
@@ -52,8 +52,8 @@ public class TaskController {
     @PutMapping("/{id}")
     public ViewTaskDTO updateTask(@PathVariable long id, @RequestBody UpdateTaskDTO taskDTO) {
         SecurityUtils.checkUserRole(ERole.AUTHOR);
-        long userId = SecurityUtils.getUserId();
-        taskService.checkAccess(id, userId);
+        long authorId = SecurityUtils.getUserId();
+        taskService.checkAccess(id, authorId);
 
         UpdateTaskDTO updateTaskDTO = new UpdateTaskDTO(
                 id,
@@ -69,8 +69,8 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable long id) {
         SecurityUtils.checkUserRole(ERole.AUTHOR);
-        long userId = SecurityUtils.getUserId();
-        taskService.checkAccess(id, userId);
+        long authorId = SecurityUtils.getUserId();
+        taskService.checkAccess(id, authorId);
 
         taskService.delete(id);
         return ResponseEntity.ok().build();

@@ -1,18 +1,18 @@
 package com.poshtarenko.codeforge.integration.data;
 
 import com.poshtarenko.codeforge.entity.Answer;
+import com.poshtarenko.codeforge.entity.Solution;
 import com.poshtarenko.codeforge.entity.Category;
 import com.poshtarenko.codeforge.entity.Language;
 import com.poshtarenko.codeforge.entity.Problem;
-import com.poshtarenko.codeforge.entity.Result;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.integration.security.TestSecurityUsersInitializer;
-import com.poshtarenko.codeforge.repository.AnswerRepository;
+import com.poshtarenko.codeforge.repository.SolutionRepository;
 import com.poshtarenko.codeforge.repository.CategoryRepository;
 import com.poshtarenko.codeforge.repository.LanguageRepository;
 import com.poshtarenko.codeforge.repository.ProblemRepository;
-import com.poshtarenko.codeforge.repository.ResultRepository;
+import com.poshtarenko.codeforge.repository.AnswerRepository;
 import com.poshtarenko.codeforge.repository.TaskRepository;
 import com.poshtarenko.codeforge.repository.TestRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,16 +28,16 @@ public class TestDataInitializer {
     private final ProblemRepository problemRepository;
     private final LanguageRepository languageRepository;
     private final CategoryRepository categoryRepository;
+    private final SolutionRepository solutionRepository;
     private final AnswerRepository answerRepository;
-    private final ResultRepository resultRepository;
 
     private Test test;
     private Task task;
     private Language language;
     private Category category;
     private Problem problem;
+    private Solution solution;
     private Answer answer;
-    private Result result;
 
     public void setupData() {
         category = createCategory();
@@ -45,8 +45,8 @@ public class TestDataInitializer {
         problem = createProblem(language, category);
         test = createTest();
         task = createTask(problem, test);
-        answer = createAnswer(task);
-        result = createResult(test);
+        solution = createAnswer(task);
+        answer = createResult(test);
     }
 
     public void clearData() {
@@ -61,7 +61,8 @@ public class TestDataInitializer {
         return testRepository.save(new Test(
                 "Test name 1",
                 100,
-                usersInitializer.getAuthor()
+                usersInitializer.getAuthor(),
+                ""
         ));
     }
 
@@ -79,7 +80,8 @@ public class TestDataInitializer {
                 "Description...",
                 language,
                 category,
-                "import java.util.ArrayList; import java.util.Collections; import java.util.List; public class Main { private static final Solution solution = new Solution(); public static void main(String[] args) { List<Integer> listUnsorted = new ArrayList<>(); listUnsorted.add(3); listUnsorted.add(5); listUnsorted.add(2); List<Integer> listExpected = new ArrayList<>(); listExpected.add(2); listExpected.add(3); listExpected.add(5); List<Integer> result = solution.sort(listUnsorted); if (result.equals(listExpected)) { System.out.println(\"SUCCESS\"); } else { System.out.println(\"FAILURE\"); } } } %s"
+                "import java.util.ArrayList; import java.util.Collections; import java.util.List; public class Main { private static final Solution solution = new Solution(); public static void main(String[] args) { List<Integer> listUnsorted = new ArrayList<>(); listUnsorted.add(3); listUnsorted.add(5); listUnsorted.add(2); List<Integer> listExpected = new ArrayList<>(); listExpected.add(2); listExpected.add(3); listExpected.add(5); List<Integer> result = solution.sort(listUnsorted); if (result.equals(listExpected)) { System.out.println(\"SUCCESS\"); } else { System.out.println(\"FAILURE\"); } } } %s",
+                ""
         ));
     }
 
@@ -92,19 +94,17 @@ public class TestDataInitializer {
         ));
     }
 
-    private Answer createAnswer(Task task) {
-        return answerRepository.save(new Answer(
+    private Solution createAnswer(Task task) {
+        return solutionRepository.save(new Solution(
                 "class Solution { public List<Integer> sort(List<Integer> list){ Collections.sort(list); return list; } }",
                 task,
-                usersInitializer.getRespondent(),
                 150L,
                 true
         ));
     }
 
-    private Result createResult(Test test) {
-        return resultRepository.save(new Result(
-                30,
+    private Answer createResult(Test test) {
+        return answerRepository.save(new Answer(
                 test,
                 usersInitializer.getRespondent()
         ));
@@ -130,11 +130,11 @@ public class TestDataInitializer {
         return problem;
     }
 
-    public Answer getAnswer() {
-        return answer;
+    public Solution getSolution() {
+        return solution;
     }
 
-    public Result getResult() {
-        return result;
+    public Answer getAnswer() {
+        return answer;
     }
 }

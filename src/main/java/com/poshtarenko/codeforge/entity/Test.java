@@ -38,13 +38,17 @@ public class Test extends BaseEntity {
     @OneToMany(mappedBy = "test", fetch = FetchType.LAZY)
     List<Task> tasks;
 
+    @OneToMany(mappedBy = "test", fetch = FetchType.LAZY)
+    List<Answer> answers;
+
     public Test(Long id) {
         super(id);
     }
 
-    public Test(String name, Integer maxDuration, Author author) {
+    public Test(String name, Integer maxDuration, Author author, String inviteCode) {
         this.name = name;
         this.maxDuration = maxDuration;
         this.author = author;
+        this.inviteCode = inviteCode;
     }
 }

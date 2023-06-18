@@ -1,24 +1,25 @@
 package com.poshtarenko.codeforge.service;
 
 
-import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
-import com.poshtarenko.codeforge.dto.request.SaveAnswerDTO;
-import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AnswerService {
 
+    ViewAnswerDTO startAnswer(long respondentId, String testCode);
+
+    ViewAnswerDTO finishAnswer(long answerId);
+
     ViewAnswerDTO find(long id);
 
-    List<ViewAnswerDTO> findAnswersOnTest(long respondentId, long testId);
+    List<ViewAnswerDTO> findByTest(long testId);
 
-    ViewAnswerDTO put(SaveAnswerDTO answerDTO);
-
-    CodeEvaluationResult tryCode(TryCodeRequest tryCodeRequest);
+    Optional<ViewAnswerDTO> findRespondentCurrentAnswer(long respondentId, long testId);
 
     void delete(long id);
 
-    void checkAccess(long answerId, long respondentId);
+    void checkAccess(long resultId, long respondentId);
+
 }

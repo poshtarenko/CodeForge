@@ -6,5 +6,7 @@ public record ViewProblemDTO(
         String description,
         ViewLanguageDTO language,
         ViewCategoryDTO category,
-        String testingCode) {
+        String testingCode,
+        String templateCode
+) {
 }

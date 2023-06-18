@@ -123,8 +123,7 @@ public class TestControllerTestIT {
         UpdateTestDTO request = new UpdateTestDTO(
                 test.getId(),
                 "Updated test name",
-                999,
-                test.getAuthor().getId()
+                999
         );
 
         MvcResult result = mvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/" + test.getId())
@@ -141,7 +140,6 @@ public class TestControllerTestIT {
         assertEquals(response.id(), request.id());
         assertEquals(response.name(), request.name());
         assertEquals(response.maxDuration(), request.maxDuration());
-        assertEquals(response.authorId(), request.authorId());
     }
 
     @Test

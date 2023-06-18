@@ -1,13 +1,13 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.entity.Answer;
+import com.poshtarenko.codeforge.entity.Solution;
 import com.poshtarenko.codeforge.entity.Author;
 import com.poshtarenko.codeforge.entity.BaseEntity;
 import com.poshtarenko.codeforge.entity.Category;
 import com.poshtarenko.codeforge.entity.Language;
 import com.poshtarenko.codeforge.entity.Problem;
 import com.poshtarenko.codeforge.entity.Respondent;
-import com.poshtarenko.codeforge.entity.Result;
+import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.entity.User;
@@ -52,11 +52,11 @@ public class EntityIdMapper {
         return new Category(id);
     }
 
-    public Answer toAnswer(Long id) {
-        return new Answer(id);
+    public Solution toAnswer(Long id) {
+        return new Solution(id);
     }
 
-    public Result toResult(Long id) {
-        return new Result(id);
+    public Answer toResult(Long id) {
+        return new Answer(id);
     }
 }

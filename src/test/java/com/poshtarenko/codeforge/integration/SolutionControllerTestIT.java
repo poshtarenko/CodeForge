@@ -1,14 +1,14 @@
 package com.poshtarenko.codeforge.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.request.FinishTestRequest;
-import com.poshtarenko.codeforge.dto.request.UpdateResultDTO;
-import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
-import com.poshtarenko.codeforge.dto.response.ViewResultDTO;
+import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
+import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
+import com.poshtarenko.codeforge.entity.Solution;
 import com.poshtarenko.codeforge.entity.ERole;
-import com.poshtarenko.codeforge.entity.Result;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
 import com.poshtarenko.codeforge.integration.security.WithMockCustomUser;
+import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
+import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -25,7 +26,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -33,9 +38,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @WebAppConfiguration
 @ActiveProfiles("test")
 @WithMockCustomUser(role = ERole.RESPONDENT)
-public class ResultControllerTestIT {
+public class SolutionControllerTestIT {
 
-    private static final String BASE_URL = "/result";
+    private static final String BASE_URL = "/answer";
 
     @Autowired
     MockMvc mvc;
@@ -46,12 +51,16 @@ public class ResultControllerTestIT {
     @Autowired
     TestDataInitializer dataInitializer;
 
-    Result result;
+    @MockBean
+    CodeEvaluationProvider codeEvaluationProvider;
+
+    Solution solution;
 
     @BeforeEach
     public void setup() {
         dataInitializer.setupData();
-        result = dataInitializer.getResult();
+        solution = dataInitializer.getSolution();
+        when(codeEvaluationProvider.evaluateCode(any())).thenReturn(new CodeEvaluationResult(true, 1L, Optional.empty()));
     }
 
     @AfterEach
@@ -61,69 +70,51 @@ public class ResultControllerTestIT {
 
     @Test
     @SneakyThrows
-    public void createResult() {
-        FinishTestRequest request = new FinishTestRequest(
-                result.getTest().getId(),
+    public void putAnswer() {
+        SaveSolutionDTO request = new SaveSolutionDTO(
+                solution.getCode(),
+                solution.getTask().getId(),
                 null
         );
 
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(BASE_URL)
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.post(BASE_URL)
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        ViewResultDTO response = objectMapper.readValue(
-                mvcResult.getResponse().getContentAsString(),
-                ViewResultDTO.class
+        ViewSolutionDTO response = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                ViewSolutionDTO.class
         );
 
-        assertEquals(response.testId(), request.testId());
+        assertEquals(response.code(), request.code());
+        assertEquals(response.taskId(), request.taskId());
+        assertEquals(response.isCompleted(), true);
     }
 
     @Test
     @SneakyThrows
-    public void viewResult() {
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + result.getId()))
+    public void viewAnswer() {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + solution.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
-        ViewResultDTO response = objectMapper.readValue(
-                mvcResult.getResponse().getContentAsString(),
-                ViewResultDTO.class
+        ViewSolutionDTO response = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                ViewSolutionDTO.class
         );
 
-        assertEquals(result.getId(), response.id());
-        assertEquals(result.getScore(), response.score());
-        assertEquals(result.getRespondent().getId(), response.respondentId());
-        assertEquals(result.getTest().getId(), response.testId());
+        assertEquals(solution.getId(), response.id());
+        assertEquals(solution.getCode(), response.code());
+        assertEquals(solution.getRespondent().getId(), response.respondentId());
+        assertEquals(solution.getTask().getId(), response.taskId());
     }
 
     @Test
     @SneakyThrows
-    public void updateResult() {
-        UpdateResultDTO request = new UpdateResultDTO(
-                result.getId()
-        );
-
-        MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(BASE_URL + "/" + result.getId())
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-
-        ViewAnswerDTO response = objectMapper.readValue(
-                mvcResult.getResponse().getContentAsString(),
-                ViewAnswerDTO.class
-        );
-
-        assertEquals(response.id(), result.getId());
-    }
-
-    @Test
-    @SneakyThrows
-    public void deleteResult() {
-        mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + result.getId()))
+    public void deleteAnswer() {
+        mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + solution.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
     }

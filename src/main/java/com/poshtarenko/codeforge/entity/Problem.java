@@ -36,6 +36,9 @@ public class Problem extends BaseEntity {
     @Column(name = "testing_code")
     String testingCode;
 
+    @Column(name = "template_code")
+    String templateCode;
+
     public Problem(Long id) {
         super(id);
     }

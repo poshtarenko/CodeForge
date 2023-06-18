@@ -4,9 +4,11 @@ import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.dto.mapper.TestMapper;
+import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
+import com.poshtarenko.codeforge.repository.AnswerRepository;
 import com.poshtarenko.codeforge.repository.TestRepository;
 import com.poshtarenko.codeforge.service.TestService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ public class TestServiceImpl implements TestService {
     private static final int TEST_INVITE_CODE_LENGTH = 8;
 
     private final TestRepository testRepository;
+    private final AnswerRepository answerRepository;
     private final TestMapper testMapper;
 
     @Override
@@ -90,6 +93,14 @@ public class TestServiceImpl implements TestService {
     @Override
     public void delete(long id) {
         testRepository.deleteById(id);
+    }
+
+    @Override
+    public void checkRespondentConnectedToTest(long respondentId, long testId) {
+        List<Answer> answers = answerRepository.findByRespondentIdAndTestId(respondentId, testId);
+        if (answers.isEmpty()) {
+            throw new RuntimeException("Respondent is not connected to test");
+        }
     }
 
     @Override

@@ -1,13 +1,10 @@
 package com.poshtarenko.codeforge.controller;
 
-import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
-import com.poshtarenko.codeforge.dto.request.SaveAnswerDTO;
-import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
-import com.poshtarenko.codeforge.dto.response.TryCodeResponse;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.security.util.SecurityUtils;
 import com.poshtarenko.codeforge.service.AnswerService;
+import com.poshtarenko.codeforge.service.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,11 +12,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/answer")
@@ -28,53 +25,52 @@ import java.util.List;
 public class AnswerController {
 
     private final AnswerService answerService;
+    private final TestService testService;
 
     @GetMapping("/{id}")
     public ViewAnswerDTO findAnswer(@PathVariable long id) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
-        long userId = SecurityUtils.getUserId();
-        answerService.checkAccess(id, userId);
+        long respondentId = SecurityUtils.getUserId();
+        answerService.checkAccess(id, respondentId);
         return answerService.find(id);
     }
 
     @GetMapping("/by_test/{testId}")
-    public List<ViewAnswerDTO> findMyAnswersOnTest(@PathVariable long testId) {
-        SecurityUtils.checkUserRole(ERole.RESPONDENT);
-        long userId = SecurityUtils.getUserId();
-        return answerService.findAnswersOnTest(userId, testId);
+    public List<ViewAnswerDTO> findTestAnswers(@PathVariable long testId) {
+        SecurityUtils.checkUserRole(ERole.AUTHOR);
+        long authorId = SecurityUtils.getUserId();
+        testService.checkAccess(testId, authorId);
+        return answerService.findByTest(testId);
     }
 
-    @PostMapping
-    public ViewAnswerDTO createAnswer(@RequestBody SaveAnswerDTO answerDTO) {
+    @GetMapping("/current/{testId}")
+    public ViewAnswerDTO findRespondentCurrentAnswer(@PathVariable long testId) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
-
-        SaveAnswerDTO saveAnswerDTO = new SaveAnswerDTO(
-                answerDTO.code(),
-                answerDTO.taskId(),
-                SecurityUtils.getUserId()
-        );
-
-        return answerService.put(saveAnswerDTO);
+        long respondentId = SecurityUtils.getUserId();
+        Optional<ViewAnswerDTO> result = answerService.findRespondentCurrentAnswer(respondentId, testId);
+        return result.orElse(null);
     }
 
-    @PostMapping("/try_code")
-    public TryCodeResponse tryCode(@RequestBody TryCodeRequest request) {
+    @PostMapping("/start_test/{testCode}")
+    public ViewAnswerDTO startTest(@PathVariable String testCode) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
-        CodeEvaluationResult codeEvaluationResult = answerService.tryCode(request);
+        long respondentId = SecurityUtils.getUserId();
+        return answerService.startAnswer(respondentId, testCode);
+    }
 
-        return new TryCodeResponse(
-                codeEvaluationResult.isCompleted(),
-                codeEvaluationResult.evaluationTime(),
-                codeEvaluationResult.error().orElse("")
-        );
+    @PostMapping("/finish/{answerId}")
+    public ViewAnswerDTO finishAnswer(@PathVariable long answerId) {
+        SecurityUtils.checkUserRole(ERole.RESPONDENT);
+        long respondentId = SecurityUtils.getUserId();
+        answerService.checkAccess(answerId, respondentId);
+        return answerService.finishAnswer(answerId);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAnswer(@PathVariable long id) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
-        long userId = SecurityUtils.getUserId();
-        answerService.checkAccess(id, userId);
-
+        long respondentId = SecurityUtils.getUserId();
+        answerService.checkAccess(id, respondentId);
         answerService.delete(id);
         return ResponseEntity.ok().build();
     }

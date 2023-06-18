@@ -16,26 +16,27 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "Results")
-public class Result extends BaseEntity {
+@Table(name = "Solutions")
+public class Solution extends BaseEntity {
 
-    @Column(name = "score")
-    Integer score;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "test_id")
-    Test test;
+    @Column(name = "code")
+    String code;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "respondent_id")
-    Respondent respondent;
+    @JoinColumn(name = "task_id")
+    Task task;
 
-    public Result(Long id) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "answer_id")
+    Answer answer;
+
+    @Column(name = "evaluation_time")
+    Long evaluationTime;
+
+    @Column(name = "is_completed")
+    Boolean isCompleted;
+
+    public Solution(Long id) {
         super(id);
-    }
-
-    public Result(Test test, Respondent respondent) {
-        this.test = test;
-        this.respondent = respondent;
     }
 }

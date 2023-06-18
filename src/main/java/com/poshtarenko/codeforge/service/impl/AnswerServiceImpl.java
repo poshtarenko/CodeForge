@@ -1,27 +1,27 @@
 package com.poshtarenko.codeforge.service.impl;
 
-import com.poshtarenko.codeforge.dto.request.SaveAnswerDTO;
-import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
-import com.poshtarenko.codeforge.dto.request.UpdateAnswerDTO;
-import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
-import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
 import com.poshtarenko.codeforge.dto.mapper.AnswerMapper;
+import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
+import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
+import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.Answer;
+import com.poshtarenko.codeforge.entity.Respondent;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
-import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
-import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
+import com.poshtarenko.codeforge.repository.RespondentRepository;
+import com.poshtarenko.codeforge.repository.TestRepository;
 import com.poshtarenko.codeforge.service.AnswerService;
-import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
-import com.poshtarenko.codeforge.service.LanguageService;
-import com.poshtarenko.codeforge.service.ProblemService;
+import com.poshtarenko.codeforge.service.SolutionService;
+import com.poshtarenko.codeforge.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -30,42 +30,63 @@ import java.util.Optional;
 public class AnswerServiceImpl implements AnswerService {
 
     private final AnswerRepository answerRepository;
+    private final TestRepository testRepository;
+    private final RespondentRepository respondentRepository;
     private final AnswerMapper answerMapper;
-    private final CodeEvaluationProvider codeEvaluationProvider;
-    private final ProblemService problemService;
-    private final LanguageService languageService;
+    private final SolutionService solutionService;
+    private final TaskService taskService;
 
     @Override
     public ViewAnswerDTO find(long id) {
-        return answerRepository.findById(id)
-                .map(answerMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Answer.class, "Answer with id " + id + " not found")
-                );
+        return answerMapper.toDto(findById(id));
     }
 
     @Override
-    public List<ViewAnswerDTO> findAnswersOnTest(long respondentId, long testId) {
-        return answerRepository.findByRespondentAndTest(respondentId, testId).stream()
+    public List<ViewAnswerDTO> findByTest(long testId) {
+        return answerRepository.findByTestId(testId).stream()
                 .map(answerMapper::toDto)
                 .toList();
     }
 
     @Override
-    public ViewAnswerDTO put(SaveAnswerDTO answerDTO) {
-        Optional<Answer> maybeAnswer = answerRepository
-                .findByTaskIdAndRespondentId(answerDTO.respondentId(), answerDTO.taskId());
-
-        Answer answerToSave = answerMapper.toEntity(answerDTO);;
-        maybeAnswer.ifPresent(answer -> answerToSave.setId(answer.getId()));
-        tryAnswer(answerToSave);
-
-        return answerMapper.toDto(answerRepository.save(answerToSave));
+    public Optional<ViewAnswerDTO> findRespondentCurrentAnswer(long respondentId, long testId) {
+        List<Answer> answers = answerRepository.findByRespondentIdAndTestIdOrderByCreatedAtDesc(respondentId, testId);
+        if (answers.size() == 0) {
+            return Optional.empty();
+        }
+        ViewAnswerDTO answer = answerMapper.toDto(answers.get(0));
+        return Optional.of(answer);
     }
 
     @Override
-    public CodeEvaluationResult tryCode(TryCodeRequest tryCodeRequest) {
-        return tryCode(tryCodeRequest.taskId(), tryCodeRequest.code());
+    public ViewAnswerDTO startAnswer(long respondentId, String testCode) {
+        Answer answer = new Answer();
+        answer.setTest(testRepository.findByInviteCode(testCode)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Test.class, "Test with code " + testCode + " not found;")
+                ));
+        answer.setRespondent(respondentRepository.findById(respondentId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Respondent.class, "Respondent with id " + respondentId + " not found;")
+                ));
+        answer.setIsFinished(false);
+        answer.setCreatedAt(LocalDateTime.now());
+        return answerMapper.toDto(answerRepository.save(answer));
+    }
+
+    @Override
+    public ViewAnswerDTO finishAnswer(long answerId) {
+        Answer answer = findById(answerId);
+
+        if (answer.getIsFinished().equals(true)) {
+            throw new RuntimeException("Answer with id " + answerId + " already finished");
+        }
+        int score = calculateScore(answer.getRespondent().getId(), answer.getTest().getId());
+        answer.setScore(score);
+        answer.setIsFinished(true);
+
+        Answer saved = answerRepository.save(answer);
+        return answerMapper.toDto(saved);
     }
 
     @Override
@@ -74,27 +95,37 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void checkAccess(long answerId, long authorId) {
-        if (answerRepository.findById(answerId).isEmpty()) {
-            throw new EntityNotFoundException(Answer.class, "Answer with id %d not found".formatted(answerId));
+    public void checkAccess(long resultId, long authorId) {
+        if (answerRepository.findById(resultId).isEmpty()) {
+            throw new EntityNotFoundException(Answer.class, "Result with id %d not found".formatted(resultId));
         }
-        if (!answerRepository.checkAccess(answerId, authorId)) {
-            throw new EntityAccessDeniedException(Answer.class, answerId, authorId);
+        if (!answerRepository.checkAccess(resultId, authorId)) {
+            throw new EntityAccessDeniedException(Answer.class, resultId, authorId);
         }
     }
 
-    private void tryAnswer(Answer answer) {
-        CodeEvaluationResult codeEvaluationResult = tryCode(answer.getTask().getId(), answer.getCode());
-        answer.setIsCompleted(codeEvaluationResult.isCompleted());
-        answer.setEvaluationTime(codeEvaluationResult.evaluationTime());
+    private int calculateScore(long respondentId, long testId) {
+        List<ViewSolutionDTO> solutions = solutionService.findAnswersOnTest(respondentId, testId);
+        List<ViewTaskDTO> tasks = taskService.findByTest(testId);
+
+        int totalScore = 0;
+
+        for (ViewTaskDTO task : tasks) {
+            Optional<ViewSolutionDTO> maybeAnswer = solutions.stream()
+                    .filter(a -> Objects.equals(a.taskId(), task.id()))
+                    .findFirst();
+            if (maybeAnswer.isPresent() && maybeAnswer.get().isCompleted()) {
+                totalScore += task.maxScore();
+            }
+        }
+
+        return totalScore;
     }
 
-    private CodeEvaluationResult tryCode(long taskId, String code) {
-        ViewProblemDTO problem = problemService.findByTask(taskId);
-        String language = languageService.find(problem.language().id()).name();
-        String codeToEvaluate = problem.testingCode().formatted(code);
-
-        CodeEvaluationRequest codeEvaluationRequest = new CodeEvaluationRequest(language, codeToEvaluate);
-        return codeEvaluationProvider.evaluateCode(codeEvaluationRequest);
+    private Answer findById(long answerId) {
+        return answerRepository.findById(answerId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Answer.class, "Result with id " + answerId + " not found")
+                );
     }
 }
