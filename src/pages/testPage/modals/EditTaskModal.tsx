@@ -1,13 +1,12 @@
 import React, {useEffect, useRef, useState} from "react";
 import {ILanguage} from "../../../models/entity/ILanguage";
 import {ICategory} from "../../../models/entity/ICategory";
-import {IProblem} from "../../../models/entity/IProblem";
 import LanguageService from "../../../services/LanguageService";
 import CategoryService from "../../../services/CategoryService";
 import ProblemService from "../../../services/ProblemService";
 import "./addTaskModal.css";
 import TaskService from "../../../services/TaskService";
-import {ITask} from "../../../models/entity/ITest";
+import {IProblem, ITask} from "../../../models/entity/ITest";
 
 
 interface IProps {

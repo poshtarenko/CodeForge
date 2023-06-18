@@ -7,7 +7,7 @@
 }
 
 .respondent-session-page .respondent-session-sidebar {
-    max-width: 550px;
+    min-width: 550px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,11 +20,14 @@
     font-size: 22px;
     font-weight: 700;
     margin-top: 15px;
+    margin-bottom: 20px;
 }
 
 .respondent-session-sidebar .tasks {
+    max-width: 550px;
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .respondent-session-sidebar .task {
@@ -33,6 +36,7 @@
     border-right: none;
     padding: 0 14px;
     transition: 100ms;
+    width: 100%;
 }
 
 .respondent-session-sidebar .task:hover {
@@ -117,6 +121,7 @@
     font-size: 18px;
     border: 1px solid #DADCE0;
     margin: 10px 0;
+    overflow-y: scroll;
 }
 
 .answer-evaluation-block .standard-button {

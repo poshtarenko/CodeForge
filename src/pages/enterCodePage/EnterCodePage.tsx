@@ -3,6 +3,7 @@ import "./enterCodePage.css"
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
 import {useNavigate} from "react-router-dom";
 import TestService from "../../services/TestService";
+import AnswerService from "../../services/AnswerService";
 
 function EnterCodePage() {
 
@@ -13,9 +14,10 @@ function EnterCodePage() {
 
     async function navigateToSession() {
         try {
-            const response = await TestService.getTestByCode(code);
+            const startTestResponse = await AnswerService.startTest(code);
+            const response = await TestService.getTestAsRespondent(startTestResponse.data.testId);
             if (response.data.id) {
-                navigate("/session/" + code)
+                navigate("/session/" + response.data.id)
             }
         } catch (e) {
             setCodeIsWrong(true);

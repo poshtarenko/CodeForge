@@ -1,10 +1,10 @@
 import {AxiosResponse} from "axios";
 import $api from "../http/api";
-import {IProblem} from "../models/entity/IProblem";
+import {Problem} from "../models/entity/Problem";
 
 export default class ProblemService {
 
-    static async getAllProblems(): Promise<AxiosResponse<IProblem[]>> {
+    static async getAllProblems(): Promise<AxiosResponse<Problem[]>> {
         return $api.get('/problem/all');
     }
 

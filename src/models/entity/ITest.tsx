@@ -23,4 +23,5 @@ export interface IProblem {
     description: string;
     language: ILanguage;
     category: ICategory;
+    templateCode: string;
 }

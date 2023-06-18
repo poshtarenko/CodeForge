@@ -1,8 +1,4 @@
-import React, {useContext} from "react";
-import {Context} from "../../../index";
-import {Link} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faPersonChalkboard, faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
+import React from "react";
 import {observer} from "mobx-react-lite";
 
 interface IProps {

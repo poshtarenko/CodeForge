@@ -1,25 +1,27 @@
 import {AxiosResponse} from "axios";
 import $api from "../http/api";
-import {IProblem} from "../models/entity/IProblem";
-import {CreateTestRequest} from "../models/request/CreateTestRequest";
-import {ITest} from "../models/entity/ITest";
-import {TryCodeResult} from "../models/entity/TryCodeResult";
-import {TryCodeRequest} from "../models/request/TryCodeRequest";
-import {SaveAnswerRequest} from "../models/request/SaveAnswerRequest";
 import {IAnswer} from "../models/entity/IAnswer";
 
 export default class AnswerService {
 
-    static async tryCode(request: TryCodeRequest): Promise<AxiosResponse<TryCodeResult>> {
-        return $api.post("/answer/try_code", request);
+    static async findRespondentCurrentAnswer(testId: number): Promise<AxiosResponse<IAnswer>> {
+        return $api.get("/answer/current/" + testId);
+    }
+
+    static async startTest(testCode: string): Promise<AxiosResponse<IAnswer>> {
+        return $api.post("/answer/start_test/" + testCode);
+    }
+
+    static async finishAnswer(answerId: number): Promise<AxiosResponse<IAnswer>> {
+        return $api.post("/answer/finish/" + answerId);
     }
 
     static async findRespondentAnswersOnTest(testId: number): Promise<AxiosResponse<IAnswer[]>> {
-        return $api.get("/answer/by_test/" + testId);
+        return $api.get("/answer/by_test_and_respondent/" + testId);
     }
 
-    static async saveAnswer(request: SaveAnswerRequest) {
-        return $api.post("/answer", request);
+    static async findTestAnswers(testId: number): Promise<AxiosResponse<IAnswer[]>> {
+        return $api.get("/answer/by_test/" + testId);
     }
 
 }

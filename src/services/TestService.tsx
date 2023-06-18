@@ -6,12 +6,12 @@ import {UpdateTestRequest} from "../models/request/UpdateTestRequest";
 
 export default class TestService {
 
-    static async getTest(id: number): Promise<AxiosResponse<ITest>> {
-        return $api.get('/test/' + id);
+    static async getTestAsAuthor(id: number): Promise<AxiosResponse<ITest>> {
+        return $api.get('/test/as_author/' + id);
     }
 
-    static async getTestByCode(code: string): Promise<AxiosResponse<ITest>> {
-        return $api.get('/test/by_respondent/' + code);
+    static async getTestAsRespondent(id: number): Promise<AxiosResponse<ITest>> {
+        return $api.get('/test/as_respondent/' + id);
     }
 
     static async getMyTests(): Promise<AxiosResponse<ITest[]>> {
@@ -26,21 +26,17 @@ export default class TestService {
         return $api.put(`/test/${id}`, request);
     }
 
-    static async finishTest(id: number): Promise<AxiosResponse<ITest>> {
-        return $api.post(`/test/finish/${id}`);
-    }
-
-    static getLanguages(test: ITest): string {
+    static extractTestLanguages(test: ITest): string {
         const languages = test!.tasks?.map(task => task!.problem!.language.name)
             .filter((value, index, array) => array.indexOf(value) === index);
         return languages?.join(', ');
     }
 
-    static getTasksCount(test: ITest): number {
+    static countTestTasks(test: ITest): number {
         return test!.tasks?.length;
     }
 
-    static getMaxScore(test: ITest): number {
+    static calcMaxScore(test: ITest): number {
         const scores = test!.tasks?.map(task => task!.maxScore);
         return scores?.reduce((sum, score) => {
             return sum + score

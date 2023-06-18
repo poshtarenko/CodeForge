@@ -1,36 +1,30 @@
 import React, {useEffect, useState} from 'react';
 import TestService from "../../services/TestService";
-import {ITask, ITest} from "../../models/entity/ITest";
+import {ITest} from "../../models/entity/ITest";
 import "./testPage.css"
 import {useParams} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheck, faPenToSquare, faTrash} from "@fortawesome/free-solid-svg-icons";
-import Modal from "../../component/UI/modal/Modal";
-import AddTaskModal from "./modals/AddTaskModal";
-import EditTaskModal from "./modals/EditTaskModal";
-import DeleteTaskModal from "./modals/DeleteTaskModal";
+import {faCheck, faPenToSquare} from "@fortawesome/free-solid-svg-icons";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
+import TasksMenu from "./tasksMenu/TasksMenu";
+import AnswersMenu from "./resultsMenu/AnswersMenu";
+import AnswerService from "../../services/AnswerService";
+import {IAnswer} from "../../models/entity/IAnswer";
 
 enum ActiveMenu {
     TasksMenu,
-    AnswersMenu
+    ResultsMenu
 }
 
 const TestPage: React.FC = () => {
 
+    const {id} = useParams<string>();
+
     const [test, setTest] = useState<ITest>({} as ITest);
     const [changingName, setChangingName] = useState<boolean>(false);
     const [newName, setNewName] = useState<string>("");
-
     const [activeMenu, setActiveMenu] = useState<ActiveMenu>(ActiveMenu.TasksMenu);
-
-    const [addTaskModal, setAddTaskModal] = useState<boolean>(false);
-    const [deleteTaskModal, setDeleteTaskModal] = useState<boolean>(false);
-    const [taskToDelete, setTaskToDelete] = useState<ITask>({} as ITask);
-    const [editTaskModal, setEditTaskModal] = useState<boolean>(false);
-    const [taskToEdit, setTaskToEdit] = useState<ITask>({} as ITask);
-
-    const {id} = useParams<string>();
+    const [answers, setAnswers] = useState<IAnswer[]>([]);
 
     useEffect(() => {
         loadTest();
@@ -38,9 +32,11 @@ const TestPage: React.FC = () => {
 
     async function loadTest() {
         try {
-            const response = await TestService.getTest(Number(id));
-            setTest(response.data);
-            setNewName(response.data.name);
+            const responseTest = await TestService.getTestAsAuthor(Number(id));
+            setTest(responseTest.data);
+            setNewName(responseTest.data.name);
+            const responseAnswers = await AnswerService.findTestAnswers(Number(responseTest.data.id));
+            setAnswers(responseAnswers.data);
         } catch (e) {
             console.log(e);
         }
@@ -56,39 +52,8 @@ const TestPage: React.FC = () => {
         }
     }
 
-    function getTasksSorted(tasks: ITask[]) {
-        return tasks?.sort((a, b) => a.id > b.id ? 1 : -1);
-    }
-
-    function onAddTask() {
-        setAddTaskModal(false);
-        loadTest();
-    }
-
-    function onEditTask() {
-        setEditTaskModal(false);
-        setTaskToEdit({} as ITask);
-        loadTest();
-    }
-
-    function onDeleteTask() {
-        setDeleteTaskModal(false);
-        loadTest();
-    }
-
-    console.log(taskToEdit);
-
     return (
         <PageTemplate>
-            <Modal active={addTaskModal} setActive={setAddTaskModal}>
-                <AddTaskModal onSubmit={onAddTask} testId={test.id}/>
-            </Modal>
-            <Modal active={editTaskModal} setActive={setEditTaskModal}>
-                {editTaskModal ? <EditTaskModal onSubmit={onEditTask} testId={test.id} task={taskToEdit}/> : null}
-            </Modal>
-            <Modal active={deleteTaskModal} setActive={setDeleteTaskModal}>
-                {deleteTaskModal ? <DeleteTaskModal onSubmit={onDeleteTask} taskId={taskToDelete.id}/> : null}
-            </Modal>
             <div className={"test-page"}>
                 <div className={"test-title-block"}>
                     <div>
@@ -113,10 +78,10 @@ const TestPage: React.FC = () => {
                     </div>
                     <div>
                         <p className={"test-tasks-count"}>
-                            <span className={"number"}>{TestService.getTasksCount(test)}</span> завдань
+                            <span className={"number"}>{TestService.countTestTasks(test)}</span> завдань
                         </p>
                         <p className={"test-max-score"}>
-                            <span className={"number"}>{TestService.getMaxScore(test)}</span> балів
+                            <span className={"number"}>{TestService.calcMaxScore(test)}</span> балів
                         </p>
                     </div>
                 </div>
@@ -125,47 +90,14 @@ const TestPage: React.FC = () => {
                         <p className={activeMenu === ActiveMenu.TasksMenu ? "selected" : ""}>Завдання</p>
                         <div className={activeMenu === ActiveMenu.TasksMenu ? "underline selected" : "underline"}></div>
                     </div>
-                    <div className="menu-selector-el" onClick={() => setActiveMenu(ActiveMenu.AnswersMenu)}>
-                        <p className={activeMenu === ActiveMenu.AnswersMenu ? "selected" : ""}>Відповіді</p>
-                        <div className={activeMenu === ActiveMenu.AnswersMenu ? "underline selected" : "underline"}></div>
+                    <div className="menu-selector-el" onClick={() => setActiveMenu(ActiveMenu.ResultsMenu)}>
+                        <p className={activeMenu === ActiveMenu.ResultsMenu ? "selected" : ""}>Відповіді</p>
+                        <div
+                            className={activeMenu === ActiveMenu.ResultsMenu ? "underline selected" : "underline"}></div>
                     </div>
                 </div>
-                {activeMenu === ActiveMenu.TasksMenu ?
-                <>
-                    <div className={"tasks"}>
-                    {getTasksSorted(test.tasks)?.map((task, index) =>
-                        <div key={Number(task.id)} className={"task-cell"}>
-                            <FontAwesomeIcon className={"icon-button change-button"} icon={faPenToSquare}
-                                             onClick={() => {
-                                                 setTaskToEdit(task);
-                                                 setEditTaskModal(true)
-                                             }}/>
-                            <FontAwesomeIcon className={"icon-button delete-button"} icon={faTrash}
-                                             onClick={() => {
-                                                 setTaskToDelete(task);
-                                                 setDeleteTaskModal(true)
-                                             }}/>
-                            <div className={"task-main"}>
-                                <div className={"task-meta"}>
-                                    <p className={"task-name"}><span
-                                        className={"number"}>{(index + 1) + ". "}</span> {task.problem.name}</p>
-                                    <p className={"task-lang"}>{task.problem.language.name}</p>
-                                </div>
-                                <p className={"task-score"}>
-                                    <span className={"number"}>{task.maxScore}</span> балів
-                                </p>
-                            </div>
-                            <p className={"task-desc"}>{task.problem.description}</p>
-                            {task.note ? <p className={"task-note"}>Примітка : {task.note}</p> : null}
-                        </div>
-                    )}
-                </div>
-                <button onClick={() => setAddTaskModal(true)}
-                        className={"add-task-button"}>
-                    Додати завдання
-                </button>
-                </> : null
-                }
+                <TasksMenu isActive={activeMenu === ActiveMenu.TasksMenu} test={test} reloadFunc={loadTest}/>
+                <AnswersMenu isActive={activeMenu === ActiveMenu.ResultsMenu} answers={answers}/>
             </div>
         </PageTemplate>
     );

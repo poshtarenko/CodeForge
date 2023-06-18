@@ -1,13 +1,12 @@
 import React, {useEffect, useRef, useState} from "react";
 import {ILanguage} from "../../../models/entity/ILanguage";
 import {ICategory} from "../../../models/entity/ICategory";
-import {IProblem} from "../../../models/entity/IProblem";
+import {Problem} from "../../../models/entity/Problem";
 import LanguageService from "../../../services/LanguageService";
 import CategoryService from "../../../services/CategoryService";
 import ProblemService from "../../../services/ProblemService";
 import "./addTaskModal.css";
 import TaskService from "../../../services/TaskService";
-import {Simulate} from "react-dom/test-utils";
 
 
 interface IProps {
@@ -19,12 +18,12 @@ const AddTaskModal: React.FC<IProps> = ({testId, onSubmit}) => {
 
     const [languages, setLanguages] = useState<ILanguage[]>([]);
     const [categories, setCategories] = useState<ICategory[]>([]);
-    const [problems, setProblems] = useState<IProblem[]>([]);
+    const [problems, setProblems] = useState<Problem[]>([]);
 
     const [language, setLanguage] = useState<ILanguage>({} as ILanguage);
     const [category, setCategory] = useState<ICategory>({} as ICategory);
 
-    const [problem, setProblem] = useState<IProblem>({} as IProblem);
+    const [problem, setProblem] = useState<Problem>({} as Problem);
     const [note, setNote] = useState<string>("");
     const [score, setScore] = useState<number>(0);
 
@@ -69,7 +68,7 @@ const AddTaskModal: React.FC<IProps> = ({testId, onSubmit}) => {
         await onSubmit();
     }
 
-    function getProblemsFiltered(problems: IProblem[], category: string, language: string): IProblem[] {
+    function getProblemsFiltered(problems: Problem[], category: string, language: string): Problem[] {
         return problems.filter(p => p.category.name === category && p.language.name === language);
     }
 

@@ -5,10 +5,9 @@ import "./respondentSessionPage.css"
 import {useParams} from "react-router-dom";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
 import {TryCodeResult} from "../../models/entity/TryCodeResult";
+import SolutionService from "../../services/SolutionService";
+import {IAnswer, ISolution} from "../../models/entity/IAnswer";
 import AnswerService from "../../services/AnswerService";
-import {IAnswer} from "../../models/entity/IAnswer";
-import ResultService from "../../services/ResultService";
-import {IResult} from "../../models/entity/IResult";
 
 interface AnswerDetails {
     code: string,
@@ -19,17 +18,17 @@ const RespondentSessionPage: React.FC = () => {
 
     const [test, setTest] = useState<ITest>({} as ITest);
     const [selectedTaskId, setSelectedTaskId] = useState<number>(0);
-    const [answers, setAnswers] = useState(new Map<number, AnswerDetails>());
+    const [solutions, setSolutions] = useState(new Map<number, AnswerDetails>());
 
     const [testFinished, setTestFinished] = useState<boolean>(false);
-    const [result, setResult] = useState<IResult>({} as IResult);
+    const [answer, setAnswer] = useState<IAnswer>({} as IAnswer);
 
     const [checkingCode, setCheckingCode] = useState<boolean>(false);
-    const [savingAnswer, setSavingAnswer] = useState<boolean>(false);
+    const [savingSolution, setSavingSolution] = useState<boolean>(false);
 
-    const answerTextarea = useRef<HTMLTextAreaElement>(null);
+    const solutionTextarea = useRef<HTMLTextAreaElement>(null);
 
-    const {code} = useParams<string>();
+    const {testId} = useParams<string>();
 
 
     useEffect(() => {
@@ -38,49 +37,48 @@ const RespondentSessionPage: React.FC = () => {
 
     async function loadTest() {
         try {
-            const responseTest = await TestService.getTestByCode(code!);
-            const responseResult = await ResultService.findRespondentTestResult(responseTest.data.id);
+            const responseTest = await TestService.getTestAsRespondent(Number(testId));
+            const responseAnswer = await AnswerService.findRespondentCurrentAnswer(responseTest.data.id);
 
-            if (responseResult.data) {
+            if (responseAnswer.data.isFinished) {
                 setTestFinished(true);
-                setResult(responseResult.data)
             }
-
-            const responseAnswers = await AnswerService.findRespondentAnswersOnTest(responseTest.data.id);
+            setAnswer(responseAnswer.data);
             setTest(responseTest.data);
             setSelectedTaskId(getTasksSorted(responseTest.data.tasks)[0].id);
-            initAnswersMap(responseTest.data.tasks, responseAnswers.data);
+            initAnswersMap(responseTest.data.tasks, responseAnswer.data.solutions);
         } catch (e) {
             console.log(e);
         }
     }
 
-    function initAnswersMap(tasks: ITask[], answersList: IAnswer[]) {
-        tasks.forEach((task) => setAnswers(
-            new Map(answers.set(
+    function initAnswersMap(tasks: ITask[], solutionsList: ISolution[]) {
+        tasks.forEach((task) => setSolutions(
+            new Map(solutions.set(
                 task.id,
-                {code: findAnswerOnTask(task.id, answersList), tryCodeResult: {} as TryCodeResult})
+                {code: findTaskSolution(task, solutionsList), tryCodeResult: {} as TryCodeResult})
             ))
         );
     }
 
-    function findAnswerOnTask(taskId: number, answersList: IAnswer[]) : string {
-        const answer = answersList.find((a) => a.taskId === taskId);
-        if (answer) return answer.code;
-        return "";
+    function findTaskSolution(task: ITask, solutionsList: ISolution[]): string {
+        const solution: ISolution = solutionsList.find((s) => s.task.id === task.id)!;
+        if (solution)
+            return solution.code;
+        return task.problem.templateCode;
     }
 
     function getTasksSorted(tasks: ITask[]) {
         return tasks?.sort((a, b) => a.id > b.id ? 1 : -1);
     }
 
-    function currentAnswer() {
-        return answers.get(selectedTaskId);
+    function currentSolution() {
+        return solutions.get(selectedTaskId);
     }
 
-    function changeAnswerCode(code: string) {
-        const tryCodeResult = answers.get(selectedTaskId)?.tryCodeResult!;
-        setAnswers(new Map(answers.set(
+    function changeSolutionCode(code: string) {
+        const tryCodeResult = solutions.get(selectedTaskId)?.tryCodeResult!;
+        setSolutions(new Map(solutions.set(
             selectedTaskId,
             {code: code, tryCodeResult: tryCodeResult})
         ));
@@ -88,14 +86,14 @@ const RespondentSessionPage: React.FC = () => {
 
     async function tryCode() {
         await setCheckingCode(true);
-        const code = answerTextarea.current?.value!;
+        const code = solutionTextarea.current?.value!;
 
-        const result = await AnswerService.tryCode({code: code, taskId: selectedTaskId});
+        const result = await SolutionService.tryCode({code: code, taskId: selectedTaskId});
 
-        const answerCode = answers.get(selectedTaskId)?.code!;
-        setAnswers(new Map(answers.set(
+        const solutionCode = solutions.get(selectedTaskId)?.code!;
+        setSolutions(new Map(solutions.set(
             selectedTaskId,
-            {code: answerCode, tryCodeResult: result.data})
+            {code: solutionCode, tryCodeResult: result.data})
         ));
 
         await setCheckingCode(false);
@@ -103,46 +101,51 @@ const RespondentSessionPage: React.FC = () => {
 
     function getCodeEvaluationDesc(): string {
         if (checkingCode)
-            return "Loading...";
+            return "Компіляція...";
 
-        if (currentAnswer()?.tryCodeResult === undefined)
+        if (currentSolution()?.tryCodeResult === undefined)
             return "";
 
-        if (Object.keys(currentAnswer()?.tryCodeResult!).length === 0)
+        if (Object.keys(currentSolution()?.tryCodeResult!).length === 0)
             return "";
 
-        const result = currentAnswer()?.tryCodeResult!;
+        const result = currentSolution()?.tryCodeResult!;
 
         if (result.isCompleted) {
             return "Завдання виконане"
         } else if (result.error) {
+            if (result.error === "Task failed") return "Завдання не виконане";
             return result.error;
         }
         return "";
     }
 
-    async function saveAnswer() {
-        await setSavingAnswer(true);
-        const answer = answers.get(selectedTaskId);
-        await AnswerService.saveAnswer({code: answer?.code!, taskId: selectedTaskId});
-        await setSavingAnswer(false);
+    async function saveSolution() {
+        await setSavingSolution(true);
+        const solution = solutions.get(selectedTaskId);
+        console.log(answer.id);
+        await SolutionService.putSolution({code: solution?.code!, taskId: selectedTaskId, answerId: answer.id});
+        await setSavingSolution(false);
     }
 
     async function finishTest() {
-        await TestService.finishTest(test.id);
+        await AnswerService.finishAnswer(answer.id);
         await loadTest();
     }
 
     if (testFinished) {
         return (
-          <PageTemplate>
-              <div className={"result-page"}>
-                  <div className={"result-block"}>
-                      <p>Ви пройшли тестування</p>
-                      <p>Ваш результат : <span className={"number"}>{result.score}</span> балів</p>
-                  </div>
-              </div>
-          </PageTemplate>
+            <PageTemplate>
+                <div className={"result-page"}>
+                    <div className={"result-block"}>
+                        <p>Ви пройшли тестування</p>
+                        <p>
+                            Ваш результат <span className={"number"}>: {answer.score}</span>/<span
+                            className={"number"}>{TestService.calcMaxScore(test)} балів</span>
+                        </p>
+                    </div>
+                </div>
+            </PageTemplate>
         );
     }
 
@@ -160,7 +163,7 @@ const RespondentSessionPage: React.FC = () => {
                                 <div className={"task-info"}>
                                     <div className={"task-language"}>Мова : {task.problem.language.name}</div>
                                     <div className={"task-desc"}>{task.problem.description}</div>
-                                    <div className={"task-note"}>Примітка : {task.note}</div>
+                                    {task.note ? <div className={"task-note"}>Примітка : {task.note}</div> : null}
                                     <div className={"task-score"}>{task.maxScore} балів</div>
                                 </div>
                             </div>
@@ -172,9 +175,9 @@ const RespondentSessionPage: React.FC = () => {
                     </button>
                 </div>
                 <div className={"answer-block"}>
-                    <textarea onChange={(e) => changeAnswerCode(e.target.value)}
-                              ref={answerTextarea} className={"answer-input"}
-                              value={currentAnswer()?.code}>
+                    <textarea onChange={(e) => changeSolutionCode(e.target.value)}
+                              ref={solutionTextarea} className={"answer-input"}
+                              value={currentSolution()?.code}>
                     </textarea>
                     <div className={"answer-evaluation-block"}>
                         <button onClick={() => tryCode()}
@@ -182,9 +185,9 @@ const RespondentSessionPage: React.FC = () => {
                             Запустити код
                         </button>
                         <p className={"evaluation-result"}>{getCodeEvaluationDesc()}</p>
-                        <button onClick={() => saveAnswer()}
+                        <button onClick={() => saveSolution()}
                                 className={"standard-button save-answer-button"}>
-                            {savingAnswer ? "Зберігаємо..." : "Зберегти відповідь"}
+                            {savingSolution ? "Зберігаємо..." : "Зберегти відповідь"}
                         </button>
                     </div>
                 </div>

@@ -19,7 +19,7 @@ export const authorRoutes: IRoute[] = [
 
 export const respondentRoutes: IRoute[] = [
     {path: '/start', component: EnterCodePage},
-    {path: '/session/:code', component: RespondentSessionPage},
+    {path: '/session/:testId', component: RespondentSessionPage},
 ]
 
 export const publicRoutes: IRoute[] = [

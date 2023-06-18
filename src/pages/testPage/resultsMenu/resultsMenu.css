@@ -1,0 +1,46 @@
+.no-answers-msg {
+    font-size: 22px;
+    font-weight: 600;
+    color: #5b5b5b;
+}
+
+.results-menu {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    transition: 140ms;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    width: 800px;
+}
+
+.results-menu.selected {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.results-menu .result-el {
+    width: 800px;
+    min-height: 70px;
+    padding: 0 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border: #DADCE0 1px solid;
+    border-radius: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 100ms;
+}
+
+.results-menu .result-el:hover {
+    border: #277BE9 2px solid;
+}
+
+.results-menu .result-el .score {
+    font-family: "JetBrains Mono", serif;
+}
