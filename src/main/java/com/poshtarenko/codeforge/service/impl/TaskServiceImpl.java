@@ -34,13 +34,6 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<ViewTaskDTO> findByTest(long testId) {
-        return taskRepository.findByTestId(testId).stream()
-                .map(taskMapper::toDto)
-                .toList();
-    }
-
-    @Override
     public ViewTaskDTO save(SaveTaskDTO taskDTO) {
         Task task = taskRepository.save(taskMapper.toEntity(taskDTO));
         return taskMapper.toDto(task);

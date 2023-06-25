@@ -20,6 +20,6 @@ public interface AnswerService {
 
     void delete(long id);
 
-    void checkAccess(long resultId, long respondentId);
+    void checkAccess(long answerId, long respondentId);
 
 }

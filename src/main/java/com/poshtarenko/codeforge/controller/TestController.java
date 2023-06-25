@@ -29,7 +29,7 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping("/as_author/{id}")
-    public ViewTestDTO findTest(@PathVariable long id) {
+    public ViewTestDTO findTestAsAuthor(@PathVariable long id) {
         SecurityUtils.checkUserRole(ERole.AUTHOR);
         long userId = SecurityUtils.getUserId();
         testService.checkAccess(id, userId);

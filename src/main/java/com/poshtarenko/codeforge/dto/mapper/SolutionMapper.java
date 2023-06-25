@@ -13,9 +13,11 @@ public interface SolutionMapper {
     SolutionMapper INSTANCE = Mappers.getMapper(SolutionMapper.class);
 
     @Mapping(source = "task", target = "taskId")
+    @Mapping(source = "answer", target = "answerId")
     ViewSolutionDTO toDto(Solution entity);
 
     @Mapping(source = "taskId", target = "task")
+    @Mapping(source = "answerId", target = "answer")
     Solution toEntity(SaveSolutionDTO dto);
 
 }

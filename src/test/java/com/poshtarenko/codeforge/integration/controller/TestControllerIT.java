@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.integration;
+package com.poshtarenko.codeforge.integration.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,19 +6,15 @@ import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.ERole;
-import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
-import com.poshtarenko.codeforge.integration.security.WithMockCustomUser;
+import com.poshtarenko.codeforge.integration.annotation.MvcTest;
+import com.poshtarenko.codeforge.integration.controller.data.TestDataInitializer;
+import com.poshtarenko.codeforge.integration.controller.security.WithMockCustomUser;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -27,25 +23,18 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@WebAppConfiguration
-@ActiveProfiles("test")
+@MvcTest
 @WithMockCustomUser(role = ERole.AUTHOR)
-public class TestControllerTestIT {
+@RequiredArgsConstructor
+public class TestControllerIT {
 
     private static final String BASE_URL = "/test";
 
-    @Autowired
-    MockMvc mvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
-    TestDataInitializer dataInitializer;
+    private final MockMvc mvc;
+    private final ObjectMapper objectMapper;
+    private final TestDataInitializer dataInitializer;
 
     com.poshtarenko.codeforge.entity.Test test;
 
@@ -58,6 +47,54 @@ public class TestControllerTestIT {
     @AfterEach
     public void shutdown() {
         dataInitializer.clearData();
+    }
+
+    @Test
+    @SneakyThrows
+    @WithMockCustomUser(role = ERole.AUTHOR)
+    public void findTestAsAuthor() {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/as_author/" + test.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        ViewTestDTO response = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                ViewTestDTO.class
+        );
+
+        assertTestsEquals(response);
+    }
+
+    @Test
+    @SneakyThrows
+    @WithMockCustomUser(role = ERole.RESPONDENT)
+    public void findTestAsRespondent() {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/as_respondent/" + test.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        ViewTestDTO response = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                ViewTestDTO.class
+        );
+
+        assertTestsEquals(response);
+    }
+
+    @Test
+    @SneakyThrows
+    public void findMyTests() {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/my"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        List<ViewTestDTO> response = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                new TypeReference<>() {}
+        );
+
+        assertEquals(response.size(), 1);
+        assertTestsEquals(response.get(0));
     }
 
     @Test
@@ -83,38 +120,7 @@ public class TestControllerTestIT {
         assertEquals(response.name(), request.name());
         assertEquals(response.maxDuration(), request.maxDuration());
         assertEquals(response.authorId(), request.authorId());
-    }
-
-    @Test
-    @SneakyThrows
-    public void viewTest() {
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + test.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-
-        ViewTestDTO response = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ViewTestDTO.class
-        );
-
-        assertEquals(test.getId(), response.id());
-        assertEquals(test.getMaxDuration(), response.maxDuration());
-        assertEquals(test.getAuthor().getId(), response.authorId());
-    }
-
-    @Test
-    @SneakyThrows
-    public void getMyTests() {
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/my"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-
-        List<ViewTestDTO> response = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                new TypeReference<>() {}
-        );
-
-        assertEquals(response.size(), 1);
+        assertNotNull(response.inviteCode());
     }
 
     @Test
@@ -140,6 +146,7 @@ public class TestControllerTestIT {
         assertEquals(response.id(), request.id());
         assertEquals(response.name(), request.name());
         assertEquals(response.maxDuration(), request.maxDuration());
+        assertNotNull(response.inviteCode());
     }
 
     @Test
@@ -150,5 +157,11 @@ public class TestControllerTestIT {
                 .andReturn();
     }
 
+    private void assertTestsEquals(ViewTestDTO response) {
+        assertEquals(test.getId(), response.id());
+        assertEquals(test.getMaxDuration(), response.maxDuration());
+        assertEquals(test.getAuthor().getId(), response.authorId());
+        assertEquals(test.getInviteCode(), response.inviteCode());
+    }
 
 }

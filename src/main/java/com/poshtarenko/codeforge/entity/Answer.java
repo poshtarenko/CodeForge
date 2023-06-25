@@ -47,8 +47,10 @@ public class Answer extends BaseEntity {
         super(id);
     }
 
-    public Answer(Test test, Respondent respondent) {
+    public Answer(Boolean isFinished, Test test, Respondent respondent, LocalDateTime createdAt) {
+        this.isFinished = isFinished;
         this.test = test;
         this.respondent = respondent;
+        this.createdAt = createdAt;
     }
 }

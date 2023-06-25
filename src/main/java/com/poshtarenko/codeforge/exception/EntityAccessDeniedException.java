@@ -1,8 +1,12 @@
 package com.poshtarenko.codeforge.exception;
 
 import com.poshtarenko.codeforge.entity.BaseEntity;
+import org.springframework.http.HttpStatus;
 
-public class EntityAccessDeniedException extends RuntimeException {
+public class EntityAccessDeniedException extends APIException {
+
+    public static final String EXCEPTION_CODE = "002";
+    public static final HttpStatus HTTP_STATUS = HttpStatus.UNAUTHORIZED;
 
     private final Class<? extends BaseEntity> entityClass;
     private final long entityId;
@@ -14,7 +18,7 @@ public class EntityAccessDeniedException extends RuntimeException {
                                        long entityId,
                                        long userId,
                                        String message) {
-        super(message);
+        super(message, EXCEPTION_CODE, HTTP_STATUS);
         this.entityClass = entityClass;
         this.entityId = entityId;
         this.userId = userId;

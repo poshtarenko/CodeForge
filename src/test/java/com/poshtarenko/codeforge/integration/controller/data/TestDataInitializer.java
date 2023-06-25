@@ -1,13 +1,7 @@
-package com.poshtarenko.codeforge.integration.data;
+package com.poshtarenko.codeforge.integration.controller.data;
 
-import com.poshtarenko.codeforge.entity.Answer;
-import com.poshtarenko.codeforge.entity.Solution;
-import com.poshtarenko.codeforge.entity.Category;
-import com.poshtarenko.codeforge.entity.Language;
-import com.poshtarenko.codeforge.entity.Problem;
-import com.poshtarenko.codeforge.entity.Task;
-import com.poshtarenko.codeforge.entity.Test;
-import com.poshtarenko.codeforge.integration.security.TestSecurityUsersInitializer;
+import com.poshtarenko.codeforge.entity.*;
+import com.poshtarenko.codeforge.integration.controller.security.TestSecurityUsersInitializer;
 import com.poshtarenko.codeforge.repository.SolutionRepository;
 import com.poshtarenko.codeforge.repository.CategoryRepository;
 import com.poshtarenko.codeforge.repository.LanguageRepository;
@@ -16,10 +10,14 @@ import com.poshtarenko.codeforge.repository.AnswerRepository;
 import com.poshtarenko.codeforge.repository.TaskRepository;
 import com.poshtarenko.codeforge.repository.TestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
+@Profile("integration")
 public class TestDataInitializer {
 
     private final TestSecurityUsersInitializer usersInitializer;
@@ -45,11 +43,13 @@ public class TestDataInitializer {
         problem = createProblem(language, category);
         test = createTest();
         task = createTask(problem, test);
-        solution = createAnswer(task);
-        answer = createResult(test);
+        answer = createAnswer(test);
+        solution = createSolution(task, answer);
     }
 
     public void clearData() {
+        solutionRepository.deleteAll();
+        answerRepository.deleteAll();
         taskRepository.deleteAll();
         testRepository.deleteAll();
         problemRepository.deleteAll();
@@ -62,7 +62,7 @@ public class TestDataInitializer {
                 "Test name 1",
                 100,
                 usersInitializer.getAuthor(),
-                ""
+                "iQnfwEqDQ"
         ));
     }
 
@@ -94,19 +94,22 @@ public class TestDataInitializer {
         ));
     }
 
-    private Solution createAnswer(Task task) {
+    private Solution createSolution(Task task, Answer answer) {
         return solutionRepository.save(new Solution(
                 "class Solution { public List<Integer> sort(List<Integer> list){ Collections.sort(list); return list; } }",
                 task,
+                answer,
                 150L,
                 true
         ));
     }
 
-    private Answer createResult(Test test) {
+    private Answer createAnswer(Test test) {
         return answerRepository.save(new Answer(
+                false,
                 test,
-                usersInitializer.getRespondent()
+                usersInitializer.getRespondent(),
+                LocalDateTime.now()
         ));
     }
 
@@ -137,4 +140,11 @@ public class TestDataInitializer {
     public Answer getAnswer() {
         return answer;
     }
+
+    public Author getAuthor() {
+        return usersInitializer.getAuthor();
+    }
+
+    public Respondent getRespondent() {
+        return usersInitializer.getRespondent();}
 }

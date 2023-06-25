@@ -12,7 +12,7 @@ public interface SolutionService {
 
     ViewSolutionDTO find(long id);
 
-    List<ViewSolutionDTO> findAnswersOnTest(long respondentId, long testId);
+    List<ViewSolutionDTO> findRespondentAnswersOnTest(long respondentId, long testId);
 
     ViewSolutionDTO put(SaveSolutionDTO answerDTO);
 

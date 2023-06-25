@@ -4,6 +4,7 @@ public record ViewSolutionDTO(
         Long id,
         String code,
         Boolean isCompleted,
-        Long taskId
+        Long taskId,
+        Long answerId
 ) {
 }

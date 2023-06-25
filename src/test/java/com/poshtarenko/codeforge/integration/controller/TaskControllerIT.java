@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.integration;
+package com.poshtarenko.codeforge.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
@@ -6,19 +6,15 @@ import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.entity.Task;
-import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
-import com.poshtarenko.codeforge.integration.security.WithMockCustomUser;
+import com.poshtarenko.codeforge.integration.annotation.MvcTest;
+import com.poshtarenko.codeforge.integration.controller.data.TestDataInitializer;
+import com.poshtarenko.codeforge.integration.controller.security.WithMockCustomUser;
+import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -26,24 +22,16 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@WebAppConfiguration
-@ActiveProfiles("test")
+@MvcTest
 @WithMockCustomUser(role = ERole.AUTHOR)
-public class TaskControllerTestIT {
+@RequiredArgsConstructor
+public class TaskControllerIT {
 
     private static final String BASE_URL = "/task";
 
-    @Autowired
-    MockMvc mvc;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
-    TestDataInitializer dataInitializer;
+    private final MockMvc mvc;
+    private final ObjectMapper objectMapper;
+    private final TestDataInitializer dataInitializer;
 
     Task task;
 
@@ -56,6 +44,24 @@ public class TaskControllerTestIT {
     @AfterEach
     public void shutdown() {
         dataInitializer.clearData();
+    }
+
+    @Test
+    @SneakyThrows
+    public void findTask() {
+        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + task.getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        ViewTaskDTO response = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                ViewTaskDTO.class
+        );
+
+        assertEquals(task.getId(), response.id());
+        assertEquals(task.getMaxScore(), response.maxScore());
+        assertEquals(task.getProblem().getId(), response.problemId());
+        assertEquals(task.getTest().getId(), response.testId());
     }
 
     @Test
@@ -83,24 +89,6 @@ public class TaskControllerTestIT {
         assertEquals(response.maxScore(), request.maxScore());
         assertEquals(response.problemId(), request.problemId());
         assertEquals(response.testId(), request.testId());
-    }
-
-    @Test
-    @SneakyThrows
-    public void viewTask() {
-        MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + task.getId()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andReturn();
-
-        ViewTaskDTO response = objectMapper.readValue(
-                result.getResponse().getContentAsString(),
-                ViewTaskDTO.class
-        );
-
-        assertEquals(task.getId(), response.id());
-        assertEquals(task.getMaxScore(), response.maxScore());
-        assertEquals(task.getProblem().getId(), response.problemId());
-        assertEquals(task.getTest().getId(), response.testId());
     }
 
     @Test

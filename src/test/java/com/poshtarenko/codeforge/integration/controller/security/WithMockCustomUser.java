@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.integration.security;
+package com.poshtarenko.codeforge.integration.controller.security;
 
 import com.poshtarenko.codeforge.entity.ERole;
 import org.springframework.security.test.context.support.WithSecurityContext;

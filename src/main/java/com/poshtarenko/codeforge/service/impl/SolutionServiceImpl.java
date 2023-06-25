@@ -46,7 +46,7 @@ public class SolutionServiceImpl implements SolutionService {
     }
 
     @Override
-    public List<ViewSolutionDTO> findAnswersOnTest(long respondentId, long testId) {
+    public List<ViewSolutionDTO> findRespondentAnswersOnTest(long respondentId, long testId) {
         return solutionRepository.findByRespondentAndTest(respondentId, testId).stream()
                 .map(solutionMapper::toDto)
                 .toList();

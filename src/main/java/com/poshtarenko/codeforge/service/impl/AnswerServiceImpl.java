@@ -2,19 +2,11 @@ package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.AnswerMapper;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
-import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
-import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
-import com.poshtarenko.codeforge.entity.Answer;
-import com.poshtarenko.codeforge.entity.Respondent;
-import com.poshtarenko.codeforge.entity.Test;
+import com.poshtarenko.codeforge.entity.*;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
-import com.poshtarenko.codeforge.repository.AnswerRepository;
-import com.poshtarenko.codeforge.repository.RespondentRepository;
-import com.poshtarenko.codeforge.repository.TestRepository;
+import com.poshtarenko.codeforge.repository.*;
 import com.poshtarenko.codeforge.service.AnswerService;
-import com.poshtarenko.codeforge.service.SolutionService;
-import com.poshtarenko.codeforge.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,9 +24,9 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final TestRepository testRepository;
     private final RespondentRepository respondentRepository;
+    private final SolutionRepository solutionRepository;
+    private final TaskRepository taskRepository;
     private final AnswerMapper answerMapper;
-    private final SolutionService solutionService;
-    private final TaskService taskService;
 
     @Override
     public ViewAnswerDTO find(long id) {
@@ -63,11 +55,11 @@ public class AnswerServiceImpl implements AnswerService {
         Answer answer = new Answer();
         answer.setTest(testRepository.findByInviteCode(testCode)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class, "Test with code " + testCode + " not found;")
+                        Test.class, "Test with code " + testCode + " not found")
                 ));
         answer.setRespondent(respondentRepository.findById(respondentId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Respondent.class, "Respondent with id " + respondentId + " not found;")
+                        Respondent.class, "Respondent with id " + respondentId + " not found")
                 ));
         answer.setIsFinished(false);
         answer.setCreatedAt(LocalDateTime.now());
@@ -104,18 +96,18 @@ public class AnswerServiceImpl implements AnswerService {
         }
     }
 
-    private int calculateScore(long respondentId, long testId) {
-        List<ViewSolutionDTO> solutions = solutionService.findAnswersOnTest(respondentId, testId);
-        List<ViewTaskDTO> tasks = taskService.findByTest(testId);
+    private int calculateScore(long answerId, long testId) {
+        List<Solution> solutions = solutionRepository.findByRespondentAndTest(answerId, testId);
+        List<Task> tasks = taskRepository.findByTestId(testId);
 
         int totalScore = 0;
 
-        for (ViewTaskDTO task : tasks) {
-            Optional<ViewSolutionDTO> maybeAnswer = solutions.stream()
-                    .filter(a -> Objects.equals(a.taskId(), task.id()))
+        for (Task task : tasks) {
+            Optional<Solution> maybeAnswer = solutions.stream()
+                    .filter(s -> Objects.equals(task.getId(), s.getTask().getId()))
                     .findFirst();
-            if (maybeAnswer.isPresent() && maybeAnswer.get().isCompleted()) {
-                totalScore += task.maxScore();
+            if (maybeAnswer.isPresent() && maybeAnswer.get().getIsCompleted()) {
+                totalScore += task.getMaxScore();
             }
         }
 
@@ -125,7 +117,7 @@ public class AnswerServiceImpl implements AnswerService {
     private Answer findById(long answerId) {
         return answerRepository.findById(answerId)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        Answer.class, "Result with id " + answerId + " not found")
+                        Answer.class, "Answer with id " + answerId + " not found")
                 );
     }
 }

@@ -30,7 +30,7 @@ public class SolutionController {
     private final SolutionService solutionService;
 
     @GetMapping("/{id}")
-    public ViewSolutionDTO find(@PathVariable long id) {
+    public ViewSolutionDTO findSolution(@PathVariable long id) {
         SecurityUtils.checkUserRole(ERole.RESPONDENT);
         long respondentId = SecurityUtils.getUserId();
         solutionService.checkAccess(id, respondentId);

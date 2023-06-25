@@ -23,7 +23,7 @@ public class SecurityUtils {
                 .filter(a -> a.getAuthority().equals(requiredRole.name()))
                 .findFirst()
                 .orElseThrow(() -> new NotEnoughRightsException(
-                        "You do not have permission on this action",
+                        "You do not have permission on this action. Required role : " + requiredRole.name(),
                         requiredRole)
                 );
     }

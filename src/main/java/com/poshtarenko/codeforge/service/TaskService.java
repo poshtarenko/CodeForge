@@ -11,8 +11,6 @@ public interface TaskService {
 
     ViewTaskDTO find(long id);
 
-    List<ViewTaskDTO> findByTest(long testId);
-
     ViewTaskDTO save(SaveTaskDTO taskDTO);
 
     ViewTaskDTO update(UpdateTaskDTO taskDTO);

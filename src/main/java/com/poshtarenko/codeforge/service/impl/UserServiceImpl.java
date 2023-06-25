@@ -29,40 +29,42 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public void register(SignUpRequest signUpRequest) {
+    public User register(SignUpRequest signUpRequest) {
 
         String encodedPassword = passwordEncoder.encode(signUpRequest.password());
 
+        User user = null;
         if (signUpRequest.role().equals(ERole.RESPONDENT)) {
-            Respondent respondent = new Respondent(
+            user = respondentRepository.save(new Respondent(
                     signUpRequest.email(),
                     signUpRequest.username(),
                     encodedPassword,
                     Collections.singletonList(roleRepository.findByName(ERole.RESPONDENT).orElseThrow(
                             () -> new RuntimeException("Role RESPONDENT dont found")
                     ))
-            );
-            respondentRepository.save(respondent);
+            ));
         } else if (signUpRequest.role().equals(ERole.AUTHOR)) {
-            Author author = new Author(
+            user = authorRepository.save(new Author(
                     signUpRequest.email(),
                     signUpRequest.username(),
                     encodedPassword,
                     Collections.singletonList(roleRepository.findByName(ERole.AUTHOR).orElseThrow(
                             () -> new RuntimeException("Role AUTHOR dont found")
                     ))
-            );
-            authorRepository.save(author);
+            ));
         } else if (signUpRequest.role().equals(ERole.ADMIN)) {
-            User user = new User(
+            user = userRepository.save(new User(
                     signUpRequest.email(),
                     signUpRequest.username(),
                     encodedPassword,
                     Collections.singletonList(roleRepository.findByName(ERole.ADMIN).orElseThrow(
                             () -> new RuntimeException("Role ADMIN dont found")
                     ))
-            );
-            userRepository.save(user);
+            ));
+        } else {
+            throw new RuntimeException("User not created : unknown role");
         }
+
+        return user;
     }
 }

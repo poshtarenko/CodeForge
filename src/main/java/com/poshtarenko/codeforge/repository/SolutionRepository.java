@@ -16,7 +16,5 @@ public interface SolutionRepository extends JpaRepository<Solution, Long> {
     @Query("select s from Solution s where s.answer.respondent.id = :respondentId and s.task.test.id = :testId")
     List<Solution> findByRespondentAndTest(long respondentId, long testId);
 
-    List<Solution> findSolutionsByTaskTestId(long testId);
-
     Optional<Solution> findByTaskIdAndAnswerId(long respondentId, long answerId);
 }
