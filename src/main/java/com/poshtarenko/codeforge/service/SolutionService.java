@@ -12,13 +12,11 @@ public interface SolutionService {
 
     ViewSolutionDTO find(long id);
 
-    List<ViewSolutionDTO> findRespondentAnswersOnTest(long respondentId, long testId);
-
     ViewSolutionDTO put(SaveSolutionDTO answerDTO);
 
     CodeEvaluationResult tryCode(TryCodeRequest tryCodeRequest);
 
     void delete(long id);
 
-    void checkAccess(long answerId, long respondentId);
+    void checkAccess(long solutionId, long respondentId);
 }

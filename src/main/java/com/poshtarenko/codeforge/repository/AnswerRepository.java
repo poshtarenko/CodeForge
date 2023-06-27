@@ -1,20 +1,28 @@
 package com.poshtarenko.codeforge.repository;
 
 import com.poshtarenko.codeforge.entity.Answer;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    @Query("select count(a) > 0 from Answer a where a.id = :resultId and a.respondent.id = :respondentId")
-    Boolean checkAccess(long resultId, long respondentId);
 
-    List<Answer> findByRespondentIdAndTestIdOrderByCreatedAtDesc(long respondentId, long testId);
+    @EntityGraph(attributePaths = {"respondent", "solutions", "solutions.task", "solutions.task.problem"})
+    Optional<Answer> findById(long id);
 
-    List<Answer> findByRespondentIdAndTestId(long respondentId, long testId);
+    @EntityGraph(attributePaths = {"respondent", "solutions", "solutions.task", "solutions.task.problem"})
+    List<Answer> findAllByRespondentIdAndTestIdOrderByCreatedAtDesc(long respondentId, long testId);
 
-    List<Answer> findByTestId(long testId);
+    @EntityGraph(attributePaths = {"respondent", "solutions", "solutions.task", "solutions.task.problem"})
+    List<Answer> findAllByRespondentIdAndTestId(long respondentId, long testId);
+
+    boolean existsByRespondentIdAndTestId(long respondentId, long testId);
+
+    @EntityGraph(attributePaths = {"respondent", "solutions", "solutions.task", "solutions.task.problem"})
+    List<Answer> findAllByTestId(long testId);
+
 }

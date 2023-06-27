@@ -22,6 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMapper categoryMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public ViewCategoryDTO find(long id) {
         return categoryRepository.findById(id)
                 .map(categoryMapper::toDto)
@@ -31,6 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewCategoryDTO> findAll() {
         return categoryRepository.findAll().stream()
                 .map(categoryMapper::toDto)

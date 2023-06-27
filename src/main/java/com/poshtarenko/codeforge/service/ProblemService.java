@@ -4,6 +4,7 @@ package com.poshtarenko.codeforge.service;
 import com.poshtarenko.codeforge.dto.request.SaveProblemDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateProblemDTO;
 import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
+import com.poshtarenko.codeforge.entity.Problem;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ProblemService {
 
     List<ViewProblemDTO> findAll();
 
-    ViewProblemDTO findByTask(long taskId);
+    Problem findByTask(long taskId);
 
     ViewProblemDTO save(SaveProblemDTO problemDTO);
 

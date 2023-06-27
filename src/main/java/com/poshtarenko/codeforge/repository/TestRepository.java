@@ -1,6 +1,7 @@
 package com.poshtarenko.codeforge.repository;
 
 import com.poshtarenko.codeforge.entity.Test;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -11,11 +12,14 @@ import java.util.Optional;
 @Repository
 public interface TestRepository extends JpaRepository<Test, Long> {
 
+    @EntityGraph(attributePaths = {"tasks", "tasks.problem", "tasks.problem.language", "tasks.problem.category"})
+    Optional<Test> findById(long id);
+
+    @EntityGraph(attributePaths = {"tasks", "tasks.problem", "tasks.problem.language", "tasks.problem.category"})
     List<Test> findAllByAuthorId(Long authorId);
 
     Optional<Test> findByInviteCode(String inviteCode);
 
-    @Query("select count(t) > 0 from Test t where t.id = :testId and t.author.id = :authorId")
-    Boolean checkAccess(long testId, long authorId);
+    boolean existsTestByIdAndAuthorId(long testId, long authorId);
 
 }

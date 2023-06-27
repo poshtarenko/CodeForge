@@ -6,14 +6,13 @@ import com.poshtarenko.codeforge.entity.Respondent;
 import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.Solution;
 import com.poshtarenko.codeforge.entity.Task;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = {EntityIdMapper.class})
+@Mapper(componentModel = "spring", uses = {EntityIdMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface AnswerMapper {
-
-    AnswerMapper INSTANCE = Mappers.getMapper(AnswerMapper.class);
 
     @Mapping(source = "test", target = "testId")
     ViewAnswerDTO toDto(Answer entity);

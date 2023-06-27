@@ -17,6 +17,5 @@ public interface TaskService {
 
     void delete(long id);
 
-
     void checkAccess(long taskId, long respondentId);
 }

@@ -13,7 +13,7 @@ public record ViewAnswerDTO(
 
     public record RespondentDTO(
             Long id,
-            String name
+            String username
     ) {
     }
 

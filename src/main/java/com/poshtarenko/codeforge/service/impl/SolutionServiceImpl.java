@@ -5,17 +5,16 @@ import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
 import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
 import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
-import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
 import com.poshtarenko.codeforge.entity.Answer;
+import com.poshtarenko.codeforge.entity.Problem;
 import com.poshtarenko.codeforge.entity.Solution;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
+import com.poshtarenko.codeforge.repository.ProblemRepository;
 import com.poshtarenko.codeforge.repository.SolutionRepository;
 import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
-import com.poshtarenko.codeforge.service.LanguageService;
-import com.poshtarenko.codeforge.service.ProblemService;
 import com.poshtarenko.codeforge.service.SolutionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,14 +28,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SolutionServiceImpl implements SolutionService {
 
-    private final SolutionRepository solutionRepository;
-    private final SolutionMapper solutionMapper;
     private final CodeEvaluationProvider codeEvaluationProvider;
-    private final ProblemService problemService;
+    private final SolutionRepository solutionRepository;
+    private final ProblemRepository problemRepository;
     private final AnswerRepository answerRepository;
-    private final LanguageService languageService;
+    private final SolutionMapper solutionMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public ViewSolutionDTO find(long id) {
         return solutionRepository.findById(id)
                 .map(solutionMapper::toDto)
@@ -46,16 +45,9 @@ public class SolutionServiceImpl implements SolutionService {
     }
 
     @Override
-    public List<ViewSolutionDTO> findRespondentAnswersOnTest(long respondentId, long testId) {
-        return solutionRepository.findByRespondentAndTest(respondentId, testId).stream()
-                .map(solutionMapper::toDto)
-                .toList();
-    }
-
-    @Override
     public ViewSolutionDTO put(SaveSolutionDTO solution) {
         Optional<Solution> maybeSolution = solutionRepository
-                .findByTaskIdAndAnswerId(solution.respondentId(), solution.answerId());
+                .findByTaskIdAndAnswerId(solution.taskId(), solution.answerId());
         Answer answer = answerRepository.findById(solution.answerId()).orElseThrow(
                 () -> new EntityNotFoundException(Answer.class, "Answer with id " + solution.answerId() + " not found.")
         );
@@ -64,8 +56,8 @@ public class SolutionServiceImpl implements SolutionService {
         }
 
         Solution solutionToSave = solutionMapper.toEntity(solution);
-        solutionToSave.setAnswer(answer);
         maybeSolution.ifPresent(s -> solutionToSave.setId(s.getId()));
+        solutionToSave.setAnswer(answer);
         tryAnswer(solutionToSave);
         return solutionMapper.toDto(solutionRepository.save(solutionToSave));
     }
@@ -81,12 +73,13 @@ public class SolutionServiceImpl implements SolutionService {
     }
 
     @Override
-    public void checkAccess(long answerId, long authorId) {
-        if (solutionRepository.findById(answerId).isEmpty()) {
-            throw new EntityNotFoundException(Solution.class, "Answer with id %d not found".formatted(answerId));
+    @Transactional(readOnly = true)
+    public void checkAccess(long solutionId, long authorId) {
+        if (solutionRepository.findById(solutionId).isEmpty()) {
+            throw new EntityNotFoundException(Solution.class, "Answer with id %d not found".formatted(solutionId));
         }
-        if (!solutionRepository.checkAccess(answerId, authorId)) {
-            throw new EntityAccessDeniedException(Solution.class, answerId, authorId);
+        if (!solutionRepository.existsByIdAndAnswerRespondentId(solutionId, authorId)) {
+            throw new EntityAccessDeniedException(Solution.class, solutionId, authorId);
         }
     }
 
@@ -97,9 +90,12 @@ public class SolutionServiceImpl implements SolutionService {
     }
 
     private CodeEvaluationResult tryCode(long taskId, String code) {
-        ViewProblemDTO problem = problemService.findByTask(taskId);
-        String language = languageService.find(problem.language().id()).name();
-        String codeToEvaluate = problem.testingCode().formatted(code);
+        Problem problem = problemRepository.findByTask(taskId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Problem.class, "Problem by task id " + taskId + " not found")
+                );
+        String language = problem.getLanguage().getName();
+        String codeToEvaluate = problem.getTestingCode().formatted(code);
 
         CodeEvaluationRequest codeEvaluationRequest = new CodeEvaluationRequest(language, codeToEvaluate);
         return codeEvaluationProvider.evaluateCode(codeEvaluationRequest);

@@ -31,7 +31,6 @@ public class TaskController {
         SecurityUtils.checkUserRole(ERole.AUTHOR);
         long authorId = SecurityUtils.getUserId();
         taskService.checkAccess(id, authorId);
-
         return taskService.find(id);
     }
 

@@ -33,15 +33,13 @@ public class TestServiceImpl implements TestService {
     private final TestMapper testMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public ViewTestDTO find(long id) {
-        return testRepository.findById(id)
-                .map(testMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class, "Test with id " + id + " not found")
-                );
+        return testMapper.toDto(findById(id));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ViewTestDTO findByInviteCode(String inviteCode) {
         return testRepository.findByInviteCode(inviteCode)
                 .map(testMapper::toDto)
@@ -51,6 +49,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewTestDTO> findByAuthor(long authorId) {
         return testRepository.findAllByAuthorId(authorId)
                 .stream()
@@ -97,19 +96,23 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public void checkRespondentConnectedToTest(long respondentId, long testId) {
-        List<Answer> answers = answerRepository.findByRespondentIdAndTestId(respondentId, testId);
-        if (answers.isEmpty()) {
+        if (!answerRepository.existsByRespondentIdAndTestId(respondentId, testId)) {
             throw new RuntimeException("Respondent is not connected to test");
         }
     }
 
     @Override
     public void checkAccess(long testId, long authorId) {
-        if (testRepository.findById(testId).isEmpty()) {
-            throw new EntityNotFoundException(Test.class, "Test with id %d not found".formatted(testId));
-        }
-        if (!testRepository.checkAccess(testId, authorId)) {
+        Test test = findById(testId);
+        if (!test.getAuthor().getId().equals(authorId)) {
             throw new EntityAccessDeniedException(Test.class, testId, authorId);
         }
+    }
+
+    private Test findById(long testId){
+        return testRepository.findById(testId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        Test.class, "Test with id " + testId + " not found")
+                );
     }
 }

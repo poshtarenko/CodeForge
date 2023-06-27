@@ -11,6 +11,7 @@ import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.entity.User;
+import org.mapstruct.Mapper;
 import org.springframework.stereotype.Component;
 
 @Component

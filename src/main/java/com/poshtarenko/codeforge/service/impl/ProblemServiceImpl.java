@@ -24,6 +24,7 @@ public class ProblemServiceImpl implements ProblemService {
     private final ProblemMapper problemMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public ViewProblemDTO find(long id) {
         return problemRepository.findById(id)
                 .map(problemMapper::toDto)
@@ -33,6 +34,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<ViewProblemDTO> findAll() {
         return problemRepository.findAll().stream()
                 .map(problemMapper::toDto)
@@ -40,9 +42,9 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public ViewProblemDTO findByTask(long taskId) {
+    @Transactional(readOnly = true)
+    public Problem findByTask(long taskId) {
         return problemRepository.findByTask(taskId)
-                .map(problemMapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(
                         Problem.class, "Problem by task_id " + taskId + " not found")
                 );

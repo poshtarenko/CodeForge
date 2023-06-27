@@ -7,7 +7,8 @@ import com.poshtarenko.codeforge.dto.response.TryCodeResponse;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
 import com.poshtarenko.codeforge.entity.Solution;
 import com.poshtarenko.codeforge.entity.ERole;
-import com.poshtarenko.codeforge.integration.annotation.MvcTest;
+import com.poshtarenko.codeforge.integration.IntegrationTestBase;
+import com.poshtarenko.codeforge.integration.annotation.IT;
 import com.poshtarenko.codeforge.integration.controller.data.TestDataInitializer;
 import com.poshtarenko.codeforge.integration.controller.security.WithMockCustomUser;
 import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
@@ -17,7 +18,6 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -30,10 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@MvcTest
 @WithMockCustomUser(role = ERole.RESPONDENT)
 @RequiredArgsConstructor
-public class SolutionControllerIT {
+public class SolutionControllerIT extends IntegrationTestBase {
 
     private static final String BASE_URL = "/solution";
 

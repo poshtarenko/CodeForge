@@ -38,6 +38,7 @@ public class TestDataInitializer {
     private Answer answer;
 
     public void setupData() {
+        usersInitializer.setup();
         category = createCategory();
         language = createLanguage();
         problem = createProblem(language, category);
@@ -108,8 +109,7 @@ public class TestDataInitializer {
         return answerRepository.save(new Answer(
                 false,
                 test,
-                usersInitializer.getRespondent(),
-                LocalDateTime.now()
+                usersInitializer.getRespondent()
         ));
     }
 

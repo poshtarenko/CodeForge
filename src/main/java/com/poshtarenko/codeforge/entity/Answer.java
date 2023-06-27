@@ -1,18 +1,14 @@
 package com.poshtarenko.codeforge.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @NoArgsConstructor
@@ -21,6 +17,7 @@ import java.util.List;
 @Setter
 @Entity
 @Table(name = "Answers")
+@EntityListeners(AuditingEntityListener.class)
 public class Answer extends BaseEntity {
 
     @Column(name = "is_finished")
@@ -40,17 +37,16 @@ public class Answer extends BaseEntity {
     @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
     List<Solution> solutions;
 
-    @Column(name = "created_at")
-    LocalDateTime createdAt;
+    @CreatedDate
+    Instant createdAt;
 
     public Answer(Long id) {
         super(id);
     }
 
-    public Answer(Boolean isFinished, Test test, Respondent respondent, LocalDateTime createdAt) {
+    public Answer(Boolean isFinished, Test test, Respondent respondent) {
         this.isFinished = isFinished;
         this.test = test;
         this.respondent = respondent;
-        this.createdAt = createdAt;
     }
 }

@@ -35,10 +35,6 @@ public class TestSecurityUsersInitializer {
     private Map<ERole, UserDetailsImpl> userDetailsMap;
 
     public void setup() {
-//        authorRepository.deleteAll();
-//        respondentRepository.deleteAll();
-//        userRepository.deleteAll();
-
         if (userDetailsMap != null && userDetailsMap.size() > 0) {
             return;
         }
@@ -47,12 +43,6 @@ public class TestSecurityUsersInitializer {
         for (ERole role : ERole.values()) {
             userDetailsMap.put(role, registerUser(role));
         }
-    }
-
-    public void clear() {
-        authorRepository.deleteAll();
-        respondentRepository.deleteAll();
-        userRepository.deleteAll();
     }
 
     private UserDetailsImpl registerUser(ERole role) {

@@ -24,25 +24,25 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final TestRepository testRepository;
     private final RespondentRepository respondentRepository;
-    private final SolutionRepository solutionRepository;
-    private final TaskRepository taskRepository;
     private final AnswerMapper answerMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public ViewAnswerDTO find(long id) {
         return answerMapper.toDto(findById(id));
     }
 
     @Override
     public List<ViewAnswerDTO> findByTest(long testId) {
-        return answerRepository.findByTestId(testId).stream()
+        return answerRepository.findAllByTestId(testId).stream()
                 .map(answerMapper::toDto)
                 .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<ViewAnswerDTO> findRespondentCurrentAnswer(long respondentId, long testId) {
-        List<Answer> answers = answerRepository.findByRespondentIdAndTestIdOrderByCreatedAtDesc(respondentId, testId);
+        List<Answer> answers = answerRepository.findAllByRespondentIdAndTestIdOrderByCreatedAtDesc(respondentId, testId);
         if (answers.size() == 0) {
             return Optional.empty();
         }
@@ -62,7 +62,6 @@ public class AnswerServiceImpl implements AnswerService {
                         Respondent.class, "Respondent with id " + respondentId + " not found")
                 ));
         answer.setIsFinished(false);
-        answer.setCreatedAt(LocalDateTime.now());
         return answerMapper.toDto(answerRepository.save(answer));
     }
 
@@ -73,7 +72,11 @@ public class AnswerServiceImpl implements AnswerService {
         if (answer.getIsFinished().equals(true)) {
             throw new RuntimeException("Answer with id " + answerId + " already finished");
         }
-        int score = calculateScore(answer.getRespondent().getId(), answer.getTest().getId());
+        int score = answer.getSolutions().stream()
+                .filter(Solution::getIsCompleted)
+                .map(Solution::getTask)
+                .mapToInt(Task::getMaxScore)
+                .sum();
         answer.setScore(score);
         answer.setIsFinished(true);
 
@@ -87,31 +90,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public void checkAccess(long resultId, long authorId) {
-        if (answerRepository.findById(resultId).isEmpty()) {
-            throw new EntityNotFoundException(Answer.class, "Result with id %d not found".formatted(resultId));
+    public void checkAccess(long answerId, long respondentId) {
+        Answer answer = findById(answerId);
+        if (!answer.getRespondent().getId().equals(respondentId)) {
+            throw new EntityAccessDeniedException(Answer.class, answerId, respondentId);
         }
-        if (!answerRepository.checkAccess(resultId, authorId)) {
-            throw new EntityAccessDeniedException(Answer.class, resultId, authorId);
-        }
-    }
-
-    private int calculateScore(long answerId, long testId) {
-        List<Solution> solutions = solutionRepository.findByRespondentAndTest(answerId, testId);
-        List<Task> tasks = taskRepository.findByTestId(testId);
-
-        int totalScore = 0;
-
-        for (Task task : tasks) {
-            Optional<Solution> maybeAnswer = solutions.stream()
-                    .filter(s -> Objects.equals(task.getId(), s.getTask().getId()))
-                    .findFirst();
-            if (maybeAnswer.isPresent() && maybeAnswer.get().getIsCompleted()) {
-                totalScore += task.getMaxScore();
-            }
-        }
-
-        return totalScore;
     }
 
     private Answer findById(long answerId) {
