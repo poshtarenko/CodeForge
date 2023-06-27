@@ -1,10 +1,9 @@
 package com.poshtarenko.codeforge.service.impl;
 
+import com.poshtarenko.codeforge.dto.mapper.TestMapper;
 import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
-import com.poshtarenko.codeforge.dto.mapper.TestMapper;
-import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
@@ -109,7 +108,7 @@ public class TestServiceImpl implements TestService {
         }
     }
 
-    private Test findById(long testId){
+    private Test findById(long testId) {
         return testRepository.findById(testId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         Test.class, "Test with id " + testId + " not found")

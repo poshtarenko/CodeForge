@@ -7,7 +7,7 @@ public class Task2 {
         System.out.println(check(new Solution()));
     }
 
-    public static String check(Solution solution){
+    public static String check(Solution solution) {
         int[] array1 = {1, 3, 2};
         int[] arrayExpected1 = {1, 2, 3};
         solution.sort(array1);
@@ -32,11 +32,11 @@ class Solution {
     public void sort(int[] array) {
         int n = array.length;
         int temp;
-        for(int i=0; i < n; i++){
-            for(int j=1; j < (n-i); j++){
-                if(array[j-1] > array[j]){
-                    temp = array[j-1];
-                    array[j-1] = array[j];
+        for (int i = 0; i < n; i++) {
+            for (int j = 1; j < (n - i); j++) {
+                if (array[j - 1] > array[j]) {
+                    temp = array[j - 1];
+                    array[j - 1] = array[j];
                     array[j] = temp;
                 }
 

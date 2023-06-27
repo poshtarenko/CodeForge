@@ -5,15 +5,15 @@ import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.entity.*;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
-import com.poshtarenko.codeforge.repository.*;
+import com.poshtarenko.codeforge.repository.AnswerRepository;
+import com.poshtarenko.codeforge.repository.RespondentRepository;
+import com.poshtarenko.codeforge.repository.TestRepository;
 import com.poshtarenko.codeforge.service.AnswerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

@@ -1,9 +1,9 @@
 package com.poshtarenko.codeforge.service.impl;
 
+import com.poshtarenko.codeforge.dto.mapper.TaskMapper;
 import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
-import com.poshtarenko.codeforge.dto.mapper.TaskMapper;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
@@ -61,7 +61,7 @@ public class TaskServiceImpl implements TaskService {
         }
     }
 
-    private Task findById(long taskId){
+    private Task findById(long taskId) {
         return taskRepository.findById(taskId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         Task.class, "Task with id " + taskId + " not found")

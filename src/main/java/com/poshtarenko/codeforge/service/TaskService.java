@@ -5,8 +5,6 @@ import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 
-import java.util.List;
-
 public interface TaskService {
 
     ViewTaskDTO find(long id);

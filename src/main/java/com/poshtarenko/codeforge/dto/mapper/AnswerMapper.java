@@ -1,15 +1,10 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
-import com.poshtarenko.codeforge.entity.Problem;
-import com.poshtarenko.codeforge.entity.Respondent;
-import com.poshtarenko.codeforge.entity.Answer;
-import com.poshtarenko.codeforge.entity.Solution;
-import com.poshtarenko.codeforge.entity.Task;
+import com.poshtarenko.codeforge.entity.*;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring", uses = {EntityIdMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface AnswerMapper {

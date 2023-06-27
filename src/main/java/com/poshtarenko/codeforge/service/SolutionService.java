@@ -6,8 +6,6 @@ import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
 
-import java.util.List;
-
 public interface SolutionService {
 
     ViewSolutionDTO find(long id);

@@ -9,7 +9,7 @@ public record ViewAnswerDTO(
         Long testId,
         RespondentDTO respondent,
         List<SolutionDTO> solutions
-        ) {
+) {
 
     public record RespondentDTO(
             Long id,

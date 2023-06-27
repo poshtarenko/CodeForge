@@ -1,9 +1,9 @@
 package com.poshtarenko.codeforge.service.impl;
 
+import com.poshtarenko.codeforge.dto.mapper.ProblemMapper;
 import com.poshtarenko.codeforge.dto.request.SaveProblemDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateProblemDTO;
 import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
-import com.poshtarenko.codeforge.dto.mapper.ProblemMapper;
 import com.poshtarenko.codeforge.entity.Problem;
 import com.poshtarenko.codeforge.entity.Test;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
