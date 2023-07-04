@@ -26,14 +26,16 @@ public class UserServiceImpl implements UserService {
     private final RespondentRepository respondentRepository;
     private final RoleRepository roleRepository;
     private final AuthorRepository authorRepository;
-    private final UserRepository userRepository;
 
     @Override
     public User register(SignUpRequest signUpRequest) {
+        if (signUpRequest.role().equals(ERole.ADMIN)) {
+            throw new RuntimeException("Can not be registered as admin");
+        }
 
         String encodedPassword = passwordEncoder.encode(signUpRequest.password());
 
-        User user = null;
+        User user;
         if (signUpRequest.role().equals(ERole.RESPONDENT)) {
             user = respondentRepository.save(new Respondent(
                     signUpRequest.email(),
@@ -52,16 +54,7 @@ public class UserServiceImpl implements UserService {
                             () -> new RuntimeException("Role AUTHOR dont found")
                     ))
             ));
-        } else if (signUpRequest.role().equals(ERole.ADMIN)) {
-            user = userRepository.save(new User(
-                    signUpRequest.email(),
-                    signUpRequest.username(),
-                    encodedPassword,
-                    Collections.singletonList(roleRepository.findByName(ERole.ADMIN).orElseThrow(
-                            () -> new RuntimeException("Role ADMIN dont found")
-                    ))
-            ));
-        } else {
+        }  else {
             throw new RuntimeException("User not created : unknown role");
         }
 

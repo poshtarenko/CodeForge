@@ -12,6 +12,7 @@ import com.poshtarenko.codeforge.repository.TestRepository;
 import com.poshtarenko.codeforge.service.TestService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +22,9 @@ import java.util.Optional;
 import static java.util.stream.Collectors.toList;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('AUTHOR')")
 public class TestServiceImpl implements TestService {
 
     private static final int TEST_INVITE_CODE_LENGTH = 8;
@@ -32,12 +34,17 @@ public class TestServiceImpl implements TestService {
     private final TestMapper testMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public ViewTestDTO find(long id) {
         return testMapper.toDto(findById(id));
     }
 
     @Override
+    @PreAuthorize("hasAuthority('RESPONDENT')")
+    public ViewTestDTO findAsRespondent(long testId) {
+        return testMapper.toDto(findById(testId));
+    }
+
+    /*@Override
     @Transactional(readOnly = true)
     public ViewTestDTO findByInviteCode(String inviteCode) {
         return testRepository.findByInviteCode(inviteCode)
@@ -45,10 +52,9 @@ public class TestServiceImpl implements TestService {
                 .orElseThrow(() -> new EntityNotFoundException(
                         Test.class, "Test with code " + inviteCode + " not found")
                 );
-    }
+    }*/
 
     @Override
-    @Transactional(readOnly = true)
     public List<ViewTestDTO> findByAuthor(long authorId) {
         return testRepository.findAllByAuthorId(authorId)
                 .stream()
@@ -57,6 +63,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional
     public ViewTestDTO save(SaveTestDTO testDTO) {
         Test test = testMapper.toEntity(testDTO);
 
@@ -75,6 +82,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional
     public ViewTestDTO update(UpdateTestDTO testDTO) {
         Test test = testRepository.findById(testDTO.id())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -89,11 +97,13 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         testRepository.deleteById(id);
     }
 
     @Override
+    @PreAuthorize("hasAuthority('RESPONDENT')")
     public void checkRespondentConnectedToTest(long respondentId, long testId) {
         if (!answerRepository.existsByRespondentIdAndTestId(respondentId, testId)) {
             throw new RuntimeException("Respondent is not connected to test");

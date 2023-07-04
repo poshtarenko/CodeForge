@@ -1,6 +1,8 @@
 package com.poshtarenko.codeforge.service.impl;
 
+import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.entity.RefreshToken;
+import com.poshtarenko.codeforge.entity.Role;
 import com.poshtarenko.codeforge.entity.User;
 import com.poshtarenko.codeforge.repository.RefreshTokenRepository;
 import com.poshtarenko.codeforge.security.jwt.JwtUtils;
@@ -10,13 +12,16 @@ import com.poshtarenko.codeforge.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
@@ -52,8 +57,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         String jwt = jwtUtils.generateJwt(refreshToken.getUser().getEmail());
         String token = refreshToken.getToken();
-        String role = refreshToken.getUser().getRoles().get(0).getName().name();
-        return new JwtResponse(jwt, token, role);
+        List<String> roles = refreshToken.getUser().getRoles().stream()
+                .map(Role::getName)
+                .map(ERole::getAuthority)
+                .toList();
+        return new JwtResponse(jwt, token, roles);
     }
 
     private void updateToken(RefreshToken token) {

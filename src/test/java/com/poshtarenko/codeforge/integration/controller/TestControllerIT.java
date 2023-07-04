@@ -7,11 +7,9 @@ import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.integration.IntegrationTestBase;
-import com.poshtarenko.codeforge.integration.annotation.IT;
 import com.poshtarenko.codeforge.integration.controller.data.TestDataInitializer;
-import com.poshtarenko.codeforge.integration.controller.security.WithMockCustomUser;
+import com.poshtarenko.codeforge.integration.controller.security.MockUser;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +23,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@WithMockCustomUser(role = ERole.AUTHOR)
+@MockUser(role = ERole.AUTHOR)
 @RequiredArgsConstructor
 public class TestControllerIT extends IntegrationTestBase {
 
-    private static final String BASE_URL = "/test";
+    private static final String BASE_URL = "/tests";
 
     private final MockMvc mvc;
     private final ObjectMapper objectMapper;
@@ -49,9 +47,8 @@ public class TestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    @WithMockCustomUser(role = ERole.AUTHOR)
-    public void findTestAsAuthor() {
+    @MockUser(role = ERole.AUTHOR)
+    public void findTestAsAuthor() throws Exception {
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/as_author/" + test.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -65,9 +62,8 @@ public class TestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    @WithMockCustomUser(role = ERole.RESPONDENT)
-    public void findTestAsRespondent() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void findTestAsRespondent() throws Exception {
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/as_respondent/" + test.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -81,15 +77,16 @@ public class TestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void findMyTests() {
+    @MockUser(role = ERole.AUTHOR)
+    public void findMyTests() throws Exception {
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/my"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
         List<ViewTestDTO> response = objectMapper.readValue(
                 result.getResponse().getContentAsString(),
-                new TypeReference<>() {}
+                new TypeReference<>() {
+                }
         );
 
         assertEquals(response.size(), 1);
@@ -97,8 +94,8 @@ public class TestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void createTest() {
+    @MockUser(role = ERole.AUTHOR)
+    public void createTest() throws Exception {
         SaveTestDTO request = new SaveTestDTO(
                 "New test",
                 100,
@@ -123,8 +120,8 @@ public class TestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void updateTest() {
+    @MockUser(role = ERole.AUTHOR)
+    public void updateTest() throws Exception {
         UpdateTestDTO request = new UpdateTestDTO(
                 test.getId(),
                 "Updated test name",
@@ -149,8 +146,8 @@ public class TestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void deleteTest() {
+    @MockUser(role = ERole.AUTHOR)
+    public void deleteTest() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + test.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();

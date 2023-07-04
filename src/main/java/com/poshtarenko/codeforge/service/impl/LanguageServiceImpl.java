@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class LanguageServiceImpl implements LanguageService {
 
@@ -22,7 +22,6 @@ public class LanguageServiceImpl implements LanguageService {
     private final LanguageMapper categoryRepository;
 
     @Override
-    @Transactional(readOnly = true)
     public ViewLanguageDTO find(long id) {
         return languageRepository.findById(id)
                 .map(categoryRepository::toDto)
@@ -32,12 +31,10 @@ public class LanguageServiceImpl implements LanguageService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ViewLanguageDTO> findAll() {
         return languageRepository.findAll().stream()
                 .map(categoryRepository::toDto)
                 .collect(Collectors.toList());
     }
-
 
 }

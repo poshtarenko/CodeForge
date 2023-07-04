@@ -141,30 +141,30 @@ class AnswerServiceTest {
         Task task2 = new Task(2L);
         task2.setMaxScore(3);
         Solution wrongSolution = new Solution(2L);
-        wrongSolution.setIsCompleted(true);
+        wrongSolution.setIsCompleted(false);
         wrongSolution.setTask(task2);
 
-        Answer answerOnFind = new Answer(ANSWER_ID);
-        answerOnFind.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
-        answerOnFind.setRespondent(new Respondent(RESPONDENT_ID));
-        answerOnFind.setSolutions(List.of(rightSolution, wrongSolution));
-        answerOnFind.setIsFinished(false);
+        Answer initialAnswer = new Answer(ANSWER_ID);
+        initialAnswer.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        initialAnswer.setRespondent(new Respondent(RESPONDENT_ID));
+        initialAnswer.setSolutions(List.of(rightSolution, wrongSolution));
+        initialAnswer.setIsFinished(false);
 
-        Answer answerAfterSave = new Answer(ANSWER_ID);
-        answerAfterSave.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
-        answerAfterSave.setRespondent(new Respondent(RESPONDENT_ID));
-        answerAfterSave.setSolutions(List.of(rightSolution, wrongSolution));
-        answerAfterSave.setIsFinished(true);
-        answerAfterSave.setScore(5);
+        Answer savedAnswer = new Answer(ANSWER_ID);
+        savedAnswer.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        savedAnswer.setRespondent(new Respondent(RESPONDENT_ID));
+        savedAnswer.setSolutions(List.of(rightSolution, wrongSolution));
+        savedAnswer.setIsFinished(true);
+        savedAnswer.setScore(5);
 
-        doReturn(Optional.of(answerOnFind))
+        doReturn(Optional.of(initialAnswer))
                 .when(answerRepository).findById(ANSWER_ID);
-        doReturn(answerAfterSave)
-                .when(answerRepository).save(any());
+        doReturn(savedAnswer)
+                .when(answerRepository).save(initialAnswer);
 
         ViewAnswerDTO actualResult = answerService.finishAnswer(ANSWER_ID);
 
-        assertAnswer(answerAfterSave, actualResult);
+        assertAnswer(savedAnswer, actualResult);
     }
 
     @Test

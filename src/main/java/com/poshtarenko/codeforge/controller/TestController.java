@@ -3,17 +3,19 @@ package com.poshtarenko.codeforge.controller;
 import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
-import com.poshtarenko.codeforge.entity.ERole;
-import com.poshtarenko.codeforge.security.util.SecurityUtils;
+import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import com.poshtarenko.codeforge.service.TestService;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/tests")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequiredArgsConstructor
 public class TestController {
@@ -21,46 +23,41 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping("/as_author/{id}")
-    public ViewTestDTO findTestAsAuthor(@PathVariable long id) {
-        SecurityUtils.checkUserRole(ERole.AUTHOR);
-        long userId = SecurityUtils.getUserId();
-        testService.checkAccess(id, userId);
+    public ViewTestDTO findTestAsAuthor(@PathVariable @Positive long id,
+                                        @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        testService.checkAccess(id, currentUser.getId());
         return testService.find(id);
     }
 
     @GetMapping("/as_respondent/{testId}")
-    public ViewTestDTO findTestAsRespondent(@PathVariable long testId) {
-        SecurityUtils.checkUserRole(ERole.RESPONDENT);
-        long respondentId = SecurityUtils.getUserId();
-        testService.checkRespondentConnectedToTest(respondentId, testId);
-        return testService.find(testId);
+    public ViewTestDTO findTestAsRespondent(@PathVariable @Positive long testId,
+                                            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        testService.checkRespondentConnectedToTest(currentUser.getId(), testId);
+        return testService.findAsRespondent(testId);
     }
 
     @GetMapping("/my")
-    public List<ViewTestDTO> myTests() {
-        SecurityUtils.checkUserRole(ERole.AUTHOR);
-        long authorId = SecurityUtils.getUserId();
-        return testService.findByAuthor(authorId);
+    public List<ViewTestDTO> myTests(@AuthenticationPrincipal UserDetailsImpl currentUser) {
+        return testService.findByAuthor(currentUser.getId());
     }
 
     @PostMapping
-    public ViewTestDTO createTest(@RequestBody SaveTestDTO testDTO) {
-        SecurityUtils.checkUserRole(ERole.AUTHOR);
-
+    public ViewTestDTO createTest(@RequestBody @Validated SaveTestDTO testDTO,
+                                  @AuthenticationPrincipal UserDetailsImpl currentUser) {
         SaveTestDTO saveTestDTO = new SaveTestDTO(
                 testDTO.name(),
                 testDTO.maxDuration(),
-                SecurityUtils.getUserId()
+                currentUser.getId()
         );
 
         return testService.save(saveTestDTO);
     }
 
     @PutMapping("/{id}")
-    public ViewTestDTO updateTest(@PathVariable long id, @RequestBody UpdateTestDTO testDTO) {
-        SecurityUtils.checkUserRole(ERole.AUTHOR);
-        long authorId = SecurityUtils.getUserId();
-        testService.checkAccess(id, authorId);
+    public ViewTestDTO updateTest(@PathVariable @Positive long id,
+                                  @RequestBody @Validated UpdateTestDTO testDTO,
+                                  @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        testService.checkAccess(id, currentUser.getId());
 
         UpdateTestDTO updateTestDTO = new UpdateTestDTO(
                 id,
@@ -72,10 +69,9 @@ public class TestController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTest(@PathVariable long id) {
-        SecurityUtils.checkUserRole(ERole.AUTHOR);
-        long userId = SecurityUtils.getUserId();
-        testService.checkAccess(id, userId);
+    public ResponseEntity<?> deleteTest(@PathVariable @Positive long id,
+                                        @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        testService.checkAccess(id, currentUser.getId());
         testService.delete(id);
         return ResponseEntity.ok().build();
     }

@@ -1,9 +1,11 @@
 package com.poshtarenko.codeforge.dto.request;
 
+import jakarta.validation.constraints.Positive;
+
 public record SaveTaskDTO(
         String note,
-        Integer maxScore,
-        Long problemId,
-        Long testId
+        @Positive Integer maxScore,
+        @Positive Long problemId,
+        @Positive Long testId
 ) {
 }

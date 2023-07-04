@@ -5,13 +5,15 @@ import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class TestConsoleLoggingExtension implements BeforeTestExecutionCallback, AfterTestExecutionCallback {
+
     @Override
-    public void beforeTestExecution(ExtensionContext extensionContext) throws Exception {
-        System.out.println("TEST STARTED");
+    public void beforeTestExecution(ExtensionContext extensionContext) {
+        System.out.println("--< TEST \"" + extensionContext.getTestMethod().get().getName() + "\" STARTED >--");
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext extensionContext) throws Exception {
-        System.out.println("TEST FINISHED");
+    public void afterTestExecution(ExtensionContext extensionContext) {
+        System.out.println("--< TEST \"" + extensionContext.getTestMethod().get().getName() + "\" FINISHED >--");
     }
+
 }

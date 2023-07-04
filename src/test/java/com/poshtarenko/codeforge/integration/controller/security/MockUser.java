@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 @WithSecurityContext(factory = TestSecurityContextFactory.class)
-public @interface WithMockCustomUser {
+public @interface MockUser {
 
     ERole role() default ERole.RESPONDENT;
 

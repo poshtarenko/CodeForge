@@ -10,6 +10,7 @@ import com.poshtarenko.codeforge.repository.RespondentRepository;
 import com.poshtarenko.codeforge.repository.TestRepository;
 import com.poshtarenko.codeforge.service.AnswerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +18,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('RESPONDENT')")
 public class AnswerServiceImpl implements AnswerService {
 
     private final AnswerRepository answerRepository;
@@ -27,12 +29,12 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerMapper answerMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public ViewAnswerDTO find(long id) {
         return answerMapper.toDto(findById(id));
     }
 
     @Override
+    @PreAuthorize("hasAuthority('AUTHOR')")
     public List<ViewAnswerDTO> findByTest(long testId) {
         return answerRepository.findAllByTestId(testId).stream()
                 .map(answerMapper::toDto)
@@ -40,7 +42,6 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<ViewAnswerDTO> findRespondentCurrentAnswer(long respondentId, long testId) {
         List<Answer> answers = answerRepository.findAllByRespondentIdAndTestIdOrderByCreatedAtDesc(respondentId, testId);
         if (answers.size() == 0) {
@@ -51,6 +52,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    @Transactional
     public ViewAnswerDTO startAnswer(long respondentId, String testCode) {
         Answer answer = new Answer();
         answer.setTest(testRepository.findByInviteCode(testCode)
@@ -66,6 +68,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    @Transactional
     public ViewAnswerDTO finishAnswer(long answerId) {
         Answer answer = findById(answerId);
 
@@ -85,6 +88,7 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         answerRepository.deleteById(id);
     }

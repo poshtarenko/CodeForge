@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Profile("integration")
-public class TestSecurityContextFactory implements WithSecurityContextFactory<WithMockCustomUser> {
+public class TestSecurityContextFactory implements WithSecurityContextFactory<MockUser> {
 
 
     private final TestSecurityUsersInitializer usersInitializer;
 
     @Override
-    public SecurityContext createSecurityContext(WithMockCustomUser customUser) {
+    public SecurityContext createSecurityContext(MockUser customUser) {
         usersInitializer.setup();
         UserDetailsImpl userDetails = usersInitializer.getUserDetails(customUser.role());
 

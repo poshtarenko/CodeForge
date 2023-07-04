@@ -11,8 +11,6 @@ import com.poshtarenko.codeforge.security.pojo.SignUpRequest;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsServiceImpl;
 import com.poshtarenko.codeforge.service.UserService;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -46,11 +44,11 @@ public class TestSecurityUsersInitializer {
     }
 
     private UserDetailsImpl registerUser(ERole role) {
-        String roleString = role.toString();
+        String roleName = role.name();
 
-        String email = roleString + getRandomNumber() + "@gmail.com";
+        String email = roleName + getRandomNumber() + "@gmail.com";
         String password = "password";
-        String name = "Some " + roleString + " name";
+        String name = "Some " + roleName + " name";
 
         SignUpRequest authorSignUpRequest = new SignUpRequest(
                 email,

@@ -7,11 +7,9 @@ import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.entity.Task;
 import com.poshtarenko.codeforge.integration.IntegrationTestBase;
-import com.poshtarenko.codeforge.integration.annotation.IT;
 import com.poshtarenko.codeforge.integration.controller.data.TestDataInitializer;
-import com.poshtarenko.codeforge.integration.controller.security.WithMockCustomUser;
+import com.poshtarenko.codeforge.integration.controller.security.MockUser;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,11 +20,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@WithMockCustomUser(role = ERole.AUTHOR)
 @RequiredArgsConstructor
 public class TaskControllerIT extends IntegrationTestBase {
 
-    private static final String BASE_URL = "/task";
+    private static final String BASE_URL = "/tasks";
 
     private final MockMvc mvc;
     private final ObjectMapper objectMapper;
@@ -46,8 +43,8 @@ public class TaskControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void findTask() {
+    @MockUser(role = ERole.AUTHOR)
+    public void findTask() throws Exception {
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + task.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -64,8 +61,8 @@ public class TaskControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void createTask() {
+    @MockUser(role = ERole.AUTHOR)
+    public void createTask() throws Exception {
         SaveTaskDTO request = new SaveTaskDTO(
                 "New note...",
                 3,
@@ -91,8 +88,8 @@ public class TaskControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void updateTask() {
+    @MockUser(role = ERole.AUTHOR)
+    public void updateTask() throws Exception {
         UpdateTaskDTO request = new UpdateTaskDTO(
                 task.getId(),
                 task.getNote() + "updated",
@@ -120,8 +117,8 @@ public class TaskControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void deleteTask() {
+    @MockUser(role = ERole.AUTHOR)
+    public void deleteTask() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + task.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();

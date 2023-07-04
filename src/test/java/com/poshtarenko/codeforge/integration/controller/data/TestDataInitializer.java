@@ -2,18 +2,10 @@ package com.poshtarenko.codeforge.integration.controller.data;
 
 import com.poshtarenko.codeforge.entity.*;
 import com.poshtarenko.codeforge.integration.controller.security.TestSecurityUsersInitializer;
-import com.poshtarenko.codeforge.repository.SolutionRepository;
-import com.poshtarenko.codeforge.repository.CategoryRepository;
-import com.poshtarenko.codeforge.repository.LanguageRepository;
-import com.poshtarenko.codeforge.repository.ProblemRepository;
-import com.poshtarenko.codeforge.repository.AnswerRepository;
-import com.poshtarenko.codeforge.repository.TaskRepository;
-import com.poshtarenko.codeforge.repository.TestRepository;
+import com.poshtarenko.codeforge.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -146,5 +138,6 @@ public class TestDataInitializer {
     }
 
     public Respondent getRespondent() {
-        return usersInitializer.getRespondent();}
+        return usersInitializer.getRespondent();
+    }
 }

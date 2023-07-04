@@ -1,20 +1,18 @@
 package com.poshtarenko.codeforge.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
 import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.TryCodeResponse;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
-import com.poshtarenko.codeforge.entity.Solution;
 import com.poshtarenko.codeforge.entity.ERole;
+import com.poshtarenko.codeforge.entity.Solution;
 import com.poshtarenko.codeforge.integration.IntegrationTestBase;
-import com.poshtarenko.codeforge.integration.annotation.IT;
 import com.poshtarenko.codeforge.integration.controller.data.TestDataInitializer;
-import com.poshtarenko.codeforge.integration.controller.security.WithMockCustomUser;
-import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
+import com.poshtarenko.codeforge.integration.controller.security.MockUser;
 import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,15 +24,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@WithMockCustomUser(role = ERole.RESPONDENT)
 @RequiredArgsConstructor
 public class SolutionControllerIT extends IntegrationTestBase {
 
-    private static final String BASE_URL = "/solution";
+    private static final String BASE_URL = "/solutions";
 
     private final MockMvc mvc;
     private final ObjectMapper objectMapper;
@@ -58,8 +56,8 @@ public class SolutionControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void findSolution() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void findSolution() throws Exception {
         MvcResult result = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + solution.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -76,8 +74,8 @@ public class SolutionControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void putSolution() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void putSolution() throws Exception {
         SaveSolutionDTO request = new SaveSolutionDTO(
                 solution.getCode(),
                 solution.getTask().getId(),
@@ -102,8 +100,8 @@ public class SolutionControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void tryCode() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void tryCode() throws Exception {
         TryCodeRequest request = new TryCodeRequest(
                 solution.getCode(),
                 solution.getTask().getId()
@@ -126,8 +124,8 @@ public class SolutionControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void deleteAnswer() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void deleteAnswer() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + solution.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();

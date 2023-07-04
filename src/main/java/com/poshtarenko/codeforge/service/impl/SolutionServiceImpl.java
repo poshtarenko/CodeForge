@@ -17,14 +17,16 @@ import com.poshtarenko.codeforge.repository.SolutionRepository;
 import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
 import com.poshtarenko.codeforge.service.SolutionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('RESPONDENT')")
 public class SolutionServiceImpl implements SolutionService {
 
     private final CodeEvaluationProvider codeEvaluationProvider;
@@ -34,7 +36,6 @@ public class SolutionServiceImpl implements SolutionService {
     private final SolutionMapper solutionMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public ViewSolutionDTO find(long id) {
         return solutionRepository.findById(id)
                 .map(solutionMapper::toDto)
@@ -44,6 +45,7 @@ public class SolutionServiceImpl implements SolutionService {
     }
 
     @Override
+    @Transactional
     public ViewSolutionDTO put(SaveSolutionDTO solution) {
         Optional<Solution> maybeSolution = solutionRepository
                 .findByTaskIdAndAnswerId(solution.taskId(), solution.answerId());
@@ -62,17 +64,18 @@ public class SolutionServiceImpl implements SolutionService {
     }
 
     @Override
+    @Transactional
     public CodeEvaluationResult tryCode(TryCodeRequest tryCodeRequest) {
         return tryCode(tryCodeRequest.taskId(), tryCodeRequest.code());
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         solutionRepository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void checkAccess(long solutionId, long authorId) {
         if (solutionRepository.findById(solutionId).isEmpty()) {
             throw new EntityNotFoundException(Solution.class, "Answer with id %d not found".formatted(solutionId));

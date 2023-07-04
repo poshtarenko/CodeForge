@@ -6,11 +6,9 @@ import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.entity.Answer;
 import com.poshtarenko.codeforge.entity.ERole;
 import com.poshtarenko.codeforge.integration.IntegrationTestBase;
-import com.poshtarenko.codeforge.integration.annotation.IT;
 import com.poshtarenko.codeforge.integration.controller.data.TestDataInitializer;
-import com.poshtarenko.codeforge.integration.controller.security.WithMockCustomUser;
+import com.poshtarenko.codeforge.integration.controller.security.MockUser;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,11 +21,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@WithMockCustomUser(role = ERole.RESPONDENT)
 @RequiredArgsConstructor
 public class AnswerControllerIT extends IntegrationTestBase {
 
-    private static final String BASE_URL = "/answer";
+    private static final String BASE_URL = "/answers";
 
     private final MockMvc mvc;
     private final ObjectMapper objectMapper;
@@ -49,8 +46,8 @@ public class AnswerControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void findAnswer() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void findAnswer() throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/" + answer.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -64,24 +61,24 @@ public class AnswerControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    @WithMockCustomUser(role = ERole.AUTHOR)
-    public void findTestAnswers() {
+    @MockUser(role = ERole.AUTHOR)
+    public void findTestAnswers() throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/by_test/" + test.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
         List<ViewAnswerDTO> response = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                new TypeReference<List<ViewAnswerDTO>>(){}
+                new TypeReference<List<ViewAnswerDTO>>() {
+                }
         );
 
         response.forEach(this::assertAnswersEquals);
     }
 
     @Test
-    @SneakyThrows
-    public void findRespondentCurrentAnswer() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void findRespondentCurrentAnswer() throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.get(BASE_URL + "/current/" + test.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -95,8 +92,8 @@ public class AnswerControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void startTest() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void startTest() throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/start_test/" + test.getInviteCode()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -111,8 +108,8 @@ public class AnswerControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void finishAnswer() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void finishAnswer() throws Exception {
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(BASE_URL + "/start_test/" + test.getInviteCode()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
@@ -139,8 +136,8 @@ public class AnswerControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    @SneakyThrows
-    public void deleteResult() {
+    @MockUser(role = ERole.RESPONDENT)
+    public void deleteResult() throws Exception {
         mvc.perform(MockMvcRequestBuilders.delete(BASE_URL + "/" + answer.getId()))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();

@@ -11,30 +11,33 @@ import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.TaskRepository;
 import com.poshtarenko.codeforge.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('AUTHOR')")
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public ViewTaskDTO find(long id) {
         return taskMapper.toDto(findById(id));
     }
 
     @Override
+    @Transactional
     public ViewTaskDTO save(SaveTaskDTO taskDTO) {
         Task task = taskRepository.save(taskMapper.toEntity(taskDTO));
         return taskMapper.toDto(task);
     }
 
     @Override
+    @Transactional
     public ViewTaskDTO update(UpdateTaskDTO taskDTO) {
         taskRepository.findById(taskDTO.id())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -46,12 +49,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         taskRepository.deleteById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public void checkAccess(long taskId, long authorId) {
         if (taskRepository.findById(taskId).isEmpty()) {
             throw new EntityNotFoundException(Task.class, "Task with id %d not found".formatted(taskId));

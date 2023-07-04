@@ -1,3 +1,6 @@
+--liquibase formatted sql
+
+--changeset poshtarenko:1
 INSERT INTO Roles (name)
 VALUES ('AUTHOR');
 INSERT INTO Roles (name)

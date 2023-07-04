@@ -1,6 +1,9 @@
 package com.poshtarenko.codeforge.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+
 public record TryCodeRequest(
-        String code,
-        Long taskId) {
+        @NotBlank String code,
+        @Positive Long taskId) {
 }

@@ -11,7 +11,7 @@ public interface TestService {
 
     ViewTestDTO find(long id);
 
-    ViewTestDTO findByInviteCode(String inviteCode);
+    ViewTestDTO findAsRespondent(long testId);
 
     List<ViewTestDTO> findByAuthor(long authorId);
 
@@ -24,4 +24,5 @@ public interface TestService {
     void checkRespondentConnectedToTest(long respondentId, long testId);
 
     void checkAccess(long testId, long respondentId);
+
 }

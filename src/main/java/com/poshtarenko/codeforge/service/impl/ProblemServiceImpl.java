@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProblemServiceImpl implements ProblemService {
 
@@ -24,7 +24,6 @@ public class ProblemServiceImpl implements ProblemService {
     private final ProblemMapper problemMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public ViewProblemDTO find(long id) {
         return problemRepository.findById(id)
                 .map(problemMapper::toDto)
@@ -34,7 +33,6 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ViewProblemDTO> findAll() {
         return problemRepository.findAll().stream()
                 .map(problemMapper::toDto)
@@ -42,7 +40,6 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Problem findByTask(long taskId) {
         return problemRepository.findByTask(taskId)
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -51,12 +48,14 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    @Transactional
     public ViewProblemDTO save(SaveProblemDTO problemDTO) {
         Problem problem = problemRepository.save(problemMapper.toEntity(problemDTO));
         return problemMapper.toDto(problem);
     }
 
     @Override
+    @Transactional
     public ViewProblemDTO update(UpdateProblemDTO problemDTO) {
         problemRepository.findById(problemDTO.id())
                 .orElseThrow(() -> new EntityNotFoundException(
@@ -68,6 +67,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         problemRepository.deleteById(id);
     }
