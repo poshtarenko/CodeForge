@@ -1,0 +1,125 @@
+.tasks-menu {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: 140ms;
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none;
+    left: -100px;
+}
+
+.tasks-menu.selected {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.tasks {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-cell {
+    width: 800px;
+    border: #DADCE0 1px solid;
+    border-radius: 10px;
+    padding: 20px 30px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.task-cell .icon-button {
+    position: absolute;
+    font-size: 30px;
+    color: #7b7b7b;
+    cursor: pointer;
+    transition: 200ms;
+}
+
+.task-cell .icon-button:hover {
+    color: #494949;
+}
+
+.task-cell .change-button {
+    right: 70px;
+}
+
+.task-cell .delete-button {
+    right: 30px;
+}
+
+.task-cell .task-main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 650px;
+}
+
+.task-cell .task-meta {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.task-main .task-name {
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.task-cell .task-lang {
+    color: #7b7b7b;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.task-cell .task-score {
+    font-size: 18px;
+    font-weight: 700;
+    color: #5b5b5b;
+    min-width: fit-content;
+    margin-left: 20px;
+}
+
+.task-cell .number {
+    font-family: 'JetBrains Mono', serif;
+    font-weight: 900;
+}
+
+.task-cell .task-params {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.task-cell .task-desc {
+    margin-top: 20px;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.task-cell .task-note {
+    margin-top: 18px;
+    font-size: 18px;
+}
+
+.add-task-button {
+    cursor: pointer;
+    width: fit-content;
+    padding: 5px 30px;
+    border: #277BE9 solid 2px;
+    border-radius: 10px;
+    color: #277BE9;
+    background-color: #FFFFFF;
+    font-size: 16px;
+    font-weight: 700;
+    transition: 70ms;
+    margin-bottom: 100px;
+}
+
+.add-task-button:hover {
+    background-color: #277BE9;
+    color: #FFFFFF;
+}

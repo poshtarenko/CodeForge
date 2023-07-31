@@ -1,0 +1,65 @@
+.add-test-inactive {
+    display: flex;
+    flex-direction: column;
+    border: #DADCE0 1px solid;
+    background-color: #F9F9F9;
+    border-radius: 10px;
+    width: 250px;
+    height: 200px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.add-test-inactive:hover {
+    background-color: #F3F3F3;
+}
+
+.add-icon {
+    font-size: 80px;
+    color: #808080;
+}
+
+.add-test-active {
+    border: #DADCE0 1px solid;
+    background-color: #FCFCFC;
+    border-radius: 10px;
+    width: 250px;
+    height: 200px;
+}
+
+.add-test-active .inner {
+    height: 100%;
+    padding: 20px;
+    gap: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: space-between;
+    box-sizing: border-box;
+}
+
+.add-test-active .add-test-title {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.add-test-active .test-name-input {
+    width: 100%;
+    height: 35px;
+    padding: 0 10px;
+    font-size: 16px;
+}
+
+.add-test-active .buttons {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.add-test-active .buttons button {
+    width: 50%;
+    font-weight: 600;
+    font-size: 15px;
+    height: 30px;
+}

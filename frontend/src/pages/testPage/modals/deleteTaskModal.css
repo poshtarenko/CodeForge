@@ -1,0 +1,15 @@
+.delete-task-modal {
+    width: 300px;
+}
+
+.delete-task-modal p {
+    font-size: 22px;
+}
+
+.delete-task-modal .delete-button {
+    margin-top: 20px;
+    width: 300px;
+    font-size: 21px;
+    font-weight: 700;
+    padding: 10px 0;
+}

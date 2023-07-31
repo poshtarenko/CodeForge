@@ -1,0 +1,35 @@
+.test-cell {
+    border: #DADCE0 1px solid;
+    border-radius: 10px;
+    width: 250px;
+    height: 200px;
+    font-size: 18px;
+}
+
+.test-cell .test-inner {
+    padding: 20px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.test-cell .number {
+    font-family: 'JetBrains Mono', serif;
+}
+
+.test-cell .test-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A73E8;
+}
+
+.test-cell .test-lang {
+    margin-top: 15px;
+}
+
+.test-cell .test-tasks-count {
+    margin-top: 15px;
+}
+
+.test-cell .test-max-score {
+    margin-top: 15px;
+}
