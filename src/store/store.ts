@@ -59,7 +59,7 @@ export default class Store {
             const response = await AuthService.refresh(localStorage.getItem('refreshToken')!);
             localStorage.setItem('token', response.data.token);
             this.setAuth(true);
-            this.setRole(response.data.role);
+            this.setRole(response.data.roles[0]);
         } catch (e) {
             // @ts-ignore
             console.log(e.response?.data?.message);

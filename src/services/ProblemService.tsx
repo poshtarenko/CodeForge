@@ -5,7 +5,7 @@ import {Problem} from "../models/entity/Problem";
 export default class ProblemService {
 
     static async getAllProblems(): Promise<AxiosResponse<Problem[]>> {
-        return $api.get('/problem/all');
+        return $api.get('/problems/all');
     }
 
 }

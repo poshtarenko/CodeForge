@@ -11,11 +11,11 @@ import {IAnswer} from "../models/entity/IAnswer";
 export default class SolutionService {
 
     static async tryCode(request: TryCodeRequest): Promise<AxiosResponse<TryCodeResult>> {
-        return $api.post("/solution/try_code", request);
+        return $api.post("/solutions/try_code", request);
     }
 
     static async putSolution(request: SaveSolutionRequest) {
-        return $api.post("/solution", request);
+        return $api.post("/solutions", request);
     }
 
 }

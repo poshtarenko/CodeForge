@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import "./resultModal.css";
+import "./answerModal.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {IAnswer} from "../../../../models/entity/IAnswer";
@@ -9,7 +9,7 @@ interface IProps {
     answer: IAnswer
 }
 
-const ResultModal: React.FC<IProps> = ({answer}) => {
+const AnswerModal: React.FC<IProps> = ({answer}) => {
 
     const [selectedAnswerId, setSelectedAnswerId] = useState<number>(0);
 
@@ -22,9 +22,9 @@ const ResultModal: React.FC<IProps> = ({answer}) => {
 
     return (
         <div className={"result-modal"}>
-            <p className={"modal-title"}>Відповідь {answer?.respondent?.name}</p>
+            <p className={"modal-title"}>Відповідь {answer?.respondent?.username}</p>
             {answer?.solutions?.map(solution =>
-                <div onClick={() => selectAnswer(solution.id)} className={"answer"}>
+                <div key={solution.id} onClick={() => selectAnswer(solution.id)} className={"answer"}>
                     <div className={"answer-header"}>
                         {solution.isCompleted
                             ?
@@ -45,4 +45,4 @@ const ResultModal: React.FC<IProps> = ({answer}) => {
 
 }
 
-export default ResultModal;
+export default AnswerModal;

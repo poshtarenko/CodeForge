@@ -9,7 +9,7 @@ export interface IAnswer {
 
 export interface IRespondent {
     id: number,
-    name: string
+    username: string
 }
 
 export interface ISolution {

@@ -1,8 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {ILanguage} from "../../../models/entity/ILanguage";
 import {ICategory} from "../../../models/entity/ICategory";
-import LanguageService from "../../../services/LanguageService";
-import CategoryService from "../../../services/CategoryService";
 import ProblemService from "../../../services/ProblemService";
 import "./addTaskModal.css";
 import TaskService from "../../../services/TaskService";
@@ -12,14 +10,13 @@ import {IProblem, ITask} from "../../../models/entity/ITest";
 interface IProps {
     testId: number,
     onSubmit: Function,
-    task: ITask
+    task: ITask,
+    problems: IProblem[],
+    categories: ICategory[],
+    languages: ILanguage[]
 }
 
-const AddTaskModal: React.FC<IProps> = ({testId, onSubmit, task}) => {
-
-    const [languages, setLanguages] = useState<ILanguage[]>([]);
-    const [categories, setCategories] = useState<ICategory[]>([]);
-    const [problems, setProblems] = useState<IProblem[]>([]);
+const AddTaskModal: React.FC<IProps> = ({testId, onSubmit, task, problems, categories, languages}) => {
 
     const [language, setLanguage] = useState<ILanguage>({} as ILanguage);
     const [category, setCategory] = useState<ICategory>({} as ICategory);
@@ -33,42 +30,12 @@ const AddTaskModal: React.FC<IProps> = ({testId, onSubmit, task}) => {
     const problemSelect = useRef<HTMLSelectElement>(null);
 
     useEffect(() => {
-        loadLanguages();
-        loadCategories();
-        loadProblems();
         setNote(task.note);
         setScore(task.maxScore);
         setCategory(task.problem.category);
         setLanguage(task.problem.language);
         setProblem(task.problem);
     }, []);
-
-    async function loadLanguages() {
-        try {
-            const response = await LanguageService.getAllLanguages();
-            setLanguages(response.data);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    async function loadCategories() {
-        try {
-            const response = await CategoryService.getAllCategories();
-            setCategories(response.data);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    async function loadProblems() {
-        try {
-            const response = await ProblemService.getAllProblems();
-            await setProblems(response.data);
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     async function updateTask() {
         await TaskService.updateTask({id: task.id, note: note, maxScore: score, problemId: problem.id, testId: testId});

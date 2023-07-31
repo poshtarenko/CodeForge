@@ -5,15 +5,15 @@ import {UpdateTaskRequest} from "../models/request/UpdateTaskRequest";
 export default class TaskService {
 
     static async createTask(request: CreateTaskRequest) {
-        return $api.post("/task", request);
+        return $api.post("/tasks", request);
     }
 
     static async updateTask(request: UpdateTaskRequest) {
-        return $api.put("/task/" + request.id, request);
+        return $api.put("/tasks/" + request.id, request);
     }
 
     static async deleteTask(id: number) {
-        return $api.delete(`/task/${id}`);
+        return $api.delete(`/tasks/${id}`);
     }
 
 }

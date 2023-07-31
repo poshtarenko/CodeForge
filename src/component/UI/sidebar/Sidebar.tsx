@@ -17,8 +17,6 @@ const Sidebar: React.FC<IProps> = ({isActive, setActive}) => {
 
     const {store} = useContext(Context);
 
-    console.log(store.role)
-
     return (
         <div className={isActive ? "sidebar active" : "sidebar"}>
             <p className={"sidebar-app-name"}>Codeforge</p>

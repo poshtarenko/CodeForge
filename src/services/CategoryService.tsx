@@ -5,7 +5,7 @@ import {ICategory} from "../models/entity/ICategory";
 export default class CategoryService {
 
     static async getAllCategories(): Promise<AxiosResponse<ICategory[]>> {
-        return $api.get('/category/all');
+        return $api.get('/categories/all');
     }
 
 }

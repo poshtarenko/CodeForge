@@ -27,15 +27,27 @@ const TestPage: React.FC = () => {
     const [answers, setAnswers] = useState<IAnswer[]>([]);
 
     useEffect(() => {
-        loadTest();
+        loadAll();
     }, []);
+
+    async function loadAll() {
+        loadTest();
+        loadAnswers();
+    }
 
     async function loadTest() {
         try {
             const responseTest = await TestService.getTestAsAuthor(Number(id));
             setTest(responseTest.data);
             setNewName(responseTest.data.name);
-            const responseAnswers = await AnswerService.findTestAnswers(Number(responseTest.data.id));
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function loadAnswers() {
+        try {
+            const responseAnswers = await AnswerService.findTestAnswers(Number(id));
             setAnswers(responseAnswers.data);
         } catch (e) {
             console.log(e);

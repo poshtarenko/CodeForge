@@ -7,23 +7,23 @@ import {UpdateTestRequest} from "../models/request/UpdateTestRequest";
 export default class TestService {
 
     static async getTestAsAuthor(id: number): Promise<AxiosResponse<ITest>> {
-        return $api.get('/test/as_author/' + id);
+        return $api.get('/tests/as_author/' + id);
     }
 
     static async getTestAsRespondent(id: number): Promise<AxiosResponse<ITest>> {
-        return $api.get('/test/as_respondent/' + id);
+        return $api.get('/tests/as_respondent/' + id);
     }
 
     static async getMyTests(): Promise<AxiosResponse<ITest[]>> {
-        return $api.get('/test/my');
+        return $api.get('/tests/my');
     }
 
     static async createTest(request: CreateTestRequest): Promise<AxiosResponse<ITest>> {
-        return $api.post("/test", request);
+        return $api.post("/tests", request);
     }
 
     static async updateTest(id: number, request: UpdateTestRequest): Promise<AxiosResponse<ITest>> {
-        return $api.put(`/test/${id}`, request);
+        return $api.put(`/tests/${id}`, request);
     }
 
     static extractTestLanguages(test: ITest): string {

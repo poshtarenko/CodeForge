@@ -7,18 +7,18 @@ import CategoryService from "../../../services/CategoryService";
 import ProblemService from "../../../services/ProblemService";
 import "./addTaskModal.css";
 import TaskService from "../../../services/TaskService";
+import {IProblem} from "../../../models/entity/ITest";
 
 
 interface IProps {
     testId: number,
     onSubmit: Function,
+    problems: IProblem[],
+    categories: ICategory[],
+    languages: ILanguage[]
 }
 
-const AddTaskModal: React.FC<IProps> = ({testId, onSubmit}) => {
-
-    const [languages, setLanguages] = useState<ILanguage[]>([]);
-    const [categories, setCategories] = useState<ICategory[]>([]);
-    const [problems, setProblems] = useState<Problem[]>([]);
+const AddTaskModal: React.FC<IProps> = ({testId, onSubmit, problems, categories, languages}) => {
 
     const [language, setLanguage] = useState<ILanguage>({} as ILanguage);
     const [category, setCategory] = useState<ICategory>({} as ICategory);
@@ -28,40 +28,6 @@ const AddTaskModal: React.FC<IProps> = ({testId, onSubmit}) => {
     const [score, setScore] = useState<number>(0);
 
     const problemSelect = useRef<HTMLSelectElement>(null);
-
-    useEffect(() => {
-        loadLanguages();
-        loadCategories();
-        loadProblems();
-    }, []);
-
-    async function loadLanguages() {
-        try {
-            const response = await LanguageService.getAllLanguages();
-            setLanguages(response.data);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    async function loadCategories() {
-        try {
-            const response = await CategoryService.getAllCategories();
-            setCategories(response.data);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    async function loadProblems() {
-        try {
-            const response = await ProblemService.getAllProblems();
-            await setProblems(response.data);
-            await console.log(problems);
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     async function addTask() {
         await TaskService.createTask({note: note, maxScore: score, problemId: problem.id, testId: testId});

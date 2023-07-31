@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
-import "./resultsMenu.css"
+import "./answersMenu.css"
 import Modal from "../../../component/UI/modal/Modal";
-import ResultModal from "./resultModal/ResultModal";
+import AnswerModal from "./answerModal/answerModal";
 import {IAnswer} from "../../../models/entity/IAnswer";
 
 interface IProps {
@@ -14,7 +14,7 @@ const AnswersMenu: React.FC<IProps> = ({answers, isActive}) => {
     const [answerModal, setAnswerModal] = useState<boolean>(false);
     const [selectedAnswer, setSelectedAnswer] = useState<IAnswer>({} as IAnswer);
 
-    function selectResult(result: IAnswer){
+    function selectResult(result: IAnswer) {
         setSelectedAnswer(result);
         setAnswerModal(true);
     }
@@ -22,7 +22,7 @@ const AnswersMenu: React.FC<IProps> = ({answers, isActive}) => {
     return (
         <>
             <Modal active={answerModal} setActive={setAnswerModal}>
-                <ResultModal answer={selectedAnswer}/>
+                <AnswerModal answer={selectedAnswer}/>
             </Modal>
             <div className={isActive ? "results-menu selected" : "results-menu"}>
                 {
@@ -30,9 +30,9 @@ const AnswersMenu: React.FC<IProps> = ({answers, isActive}) => {
                         <p className={"no-answers-msg"}>Поки ніхто не пройшов тестування</p>
                         : null
                 }
-                {answers.map(answer =>
-                    <div onClick={() => selectResult(answer)} className="result-el">
-                        <p className="resp-name">{answer.respondent.name}</p>
+                {answers.filter(a => a.isFinished).map(answer =>
+                    <div key={answer.id} onClick={() => selectResult(answer)} className="result-el">
+                        <p className="resp-name">{answer.respondent.username}</p>
                         <p className="score">{answer.score} балів</p>
                     </div>
                 )}
