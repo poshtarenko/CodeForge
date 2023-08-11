@@ -1,6 +1,8 @@
+import {IEvaluationResult} from "./IEvaluationResult";
+
 export interface ISolution {
     id: number;
     code: string;
-    isCompleted: boolean
+    evaluationResult: IEvaluationResult;
     taskId: number;
 }

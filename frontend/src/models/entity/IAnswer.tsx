@@ -1,3 +1,5 @@
+import {IEvaluationResult} from "./IEvaluationResult";
+
 export interface IAnswer {
     id: number,
     score: number,
@@ -15,7 +17,7 @@ export interface IRespondent {
 export interface ISolution {
     id: number,
     code: string,
-    isCompleted: boolean,
+    evaluationResult: IEvaluationResult,
     task: ITask
 }
 

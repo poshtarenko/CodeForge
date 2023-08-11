@@ -18,7 +18,7 @@ const TestCell: React.FC<IProps> = ({test}) => {
                 <p className={"test-lang"}>{TestService.extractTestLanguages(test)}</p>
                 <p className={"test-tasks-count"}><span
                     className={"number"}>{TestService.countTestTasks(test)}</span> завдань</p>
-                <p className={"test-max-score"}><span className={"number"}>{TestService.calcMaxScore(test)}</span> балів
+                <p className={"test-max-score"}><span className={"number"}>{TestService.calcTotalMaxScore(test)}</span> балів
                 </p>
             </div>
         </div>

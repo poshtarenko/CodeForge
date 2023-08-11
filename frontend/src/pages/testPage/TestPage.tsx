@@ -93,7 +93,7 @@ const TestPage: React.FC = () => {
                             <span className={"number"}>{TestService.countTestTasks(test)}</span> завдань
                         </p>
                         <p className={"test-max-score"}>
-                            <span className={"number"}>{TestService.calcMaxScore(test)}</span> балів
+                            <span className={"number"}>{TestService.calcTotalMaxScore(test)}</span> балів
                         </p>
                     </div>
                 </div>

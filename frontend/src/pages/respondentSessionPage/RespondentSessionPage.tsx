@@ -4,14 +4,14 @@ import {ITask, ITest} from "../../models/entity/ITest";
 import "./respondentSessionPage.css"
 import {useParams} from "react-router-dom";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
-import {TryCodeResult} from "../../models/entity/TryCodeResult";
+import {IEvaluationResult} from "../../models/entity/IEvaluationResult";
 import SolutionService from "../../services/SolutionService";
 import {IAnswer, ISolution} from "../../models/entity/IAnswer";
 import AnswerService from "../../services/AnswerService";
 
 interface AnswerDetails {
     code: string,
-    tryCodeResult: TryCodeResult,
+    tryCodeResult: IEvaluationResult,
 }
 
 const RespondentSessionPage: React.FC = () => {
@@ -56,7 +56,7 @@ const RespondentSessionPage: React.FC = () => {
         tasks.forEach((task) => setSolutions(
             new Map(solutions.set(
                 task.id,
-                {code: findTaskSolution(task, solutionsList), tryCodeResult: {} as TryCodeResult})
+                {code: findTaskSolution(task, solutionsList), tryCodeResult: {} as IEvaluationResult})
             ))
         );
     }
@@ -141,7 +141,7 @@ const RespondentSessionPage: React.FC = () => {
                         <p>Ви пройшли тестування</p>
                         <p>
                             Ваш результат <span className={"number"}>: {answer.score}</span>/<span
-                            className={"number"}>{TestService.calcMaxScore(test)} балів</span>
+                            className={"number"}>{TestService.calcTotalMaxScore(test)} балів</span>
                         </p>
                     </div>
                 </div>

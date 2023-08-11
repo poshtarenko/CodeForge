@@ -14,8 +14,8 @@ export default class TestService {
         return $api.get('/tests/as_respondent/' + id);
     }
 
-    static async getMyTests(): Promise<AxiosResponse<ITest[]>> {
-        return $api.get('/tests/my');
+    static async getAuthorTests(): Promise<AxiosResponse<ITest[]>> {
+        return $api.get('/tests/as_author/my');
     }
 
     static async createTest(request: CreateTestRequest): Promise<AxiosResponse<ITest>> {
@@ -36,7 +36,7 @@ export default class TestService {
         return test!.tasks?.length;
     }
 
-    static calcMaxScore(test: ITest): number {
+    static calcTotalMaxScore(test: ITest): number {
         const scores = test!.tasks?.map(task => task!.maxScore);
         return scores?.reduce((sum, score) => {
             return sum + score

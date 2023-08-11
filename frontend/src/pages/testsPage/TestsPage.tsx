@@ -16,7 +16,7 @@ function TestsPage() {
 
     async function getTests() {
         try {
-            const response = await TestService.getMyTests();
+            const response = await TestService.getAuthorTests();
             setTests(response.data);
             console.log(response.data);
         } catch (e) {
