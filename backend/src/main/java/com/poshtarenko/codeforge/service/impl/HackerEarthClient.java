@@ -1,12 +1,11 @@
 package com.poshtarenko.codeforge.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
-import com.poshtarenko.codeforge.dto.request.HackerEarthCodeEvaluationRequest;
 import com.poshtarenko.codeforge.dto.hackerearth.HackerEarthCodeEvaluationResult;
 import com.poshtarenko.codeforge.dto.hackerearth.HackerEarthQueueingResponse;
+import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
+import com.poshtarenko.codeforge.dto.request.HackerEarthCodeEvaluationRequest;
 import com.poshtarenko.codeforge.entity.code.EvaluationResult;
-import com.poshtarenko.codeforge.entity.test.SolutionResult;
 import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

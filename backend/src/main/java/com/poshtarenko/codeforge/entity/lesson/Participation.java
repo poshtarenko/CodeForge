@@ -2,7 +2,6 @@ package com.poshtarenko.codeforge.entity.lesson;
 
 import com.poshtarenko.codeforge.entity.BaseEntity;
 import com.poshtarenko.codeforge.entity.code.EvaluationResult;
-import com.poshtarenko.codeforge.entity.test.SolutionResult;
 import com.poshtarenko.codeforge.entity.user.Respondent;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

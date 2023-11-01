@@ -2,14 +2,8 @@ package com.poshtarenko.codeforge.dto.mapper;
 
 import com.poshtarenko.codeforge.dto.request.SaveLessonDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateLessonDTO;
-import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.dto.response.ViewLessonDTO;
 import com.poshtarenko.codeforge.entity.lesson.Lesson;
-import com.poshtarenko.codeforge.entity.test.Answer;
-import com.poshtarenko.codeforge.entity.test.Problem;
-import com.poshtarenko.codeforge.entity.test.Solution;
-import com.poshtarenko.codeforge.entity.test.Task;
-import com.poshtarenko.codeforge.entity.user.Respondent;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

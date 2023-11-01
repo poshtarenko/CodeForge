@@ -15,10 +15,8 @@ import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import com.poshtarenko.codeforge.service.RefreshTokenService;
 import com.poshtarenko.codeforge.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,7 +63,7 @@ public class UserServiceImpl implements UserService {
                             () -> new RuntimeException("Role AUTHOR dont found")
                     ))
             ));
-        }  else {
+        } else {
             throw new RuntimeException("User not created : unknown role");
         }
 

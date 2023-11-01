@@ -1,6 +1,5 @@
 package com.poshtarenko.codeforge.repository;
 
-import com.poshtarenko.codeforge.entity.lesson.Lesson;
 import com.poshtarenko.codeforge.entity.lesson.Participation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
