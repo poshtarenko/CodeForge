@@ -2,7 +2,7 @@ package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.CategoryMapper;
 import com.poshtarenko.codeforge.dto.response.ViewCategoryDTO;
-import com.poshtarenko.codeforge.entity.Category;
+import com.poshtarenko.codeforge.entity.test.Category;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.CategoryRepository;
 import com.poshtarenko.codeforge.service.CategoryService;

@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.exception;
 
-import com.poshtarenko.codeforge.entity.ERole;
+import com.poshtarenko.codeforge.entity.user.ERole;
 import org.springframework.http.HttpStatus;
 
 public class NotEnoughRightsException extends APIException {

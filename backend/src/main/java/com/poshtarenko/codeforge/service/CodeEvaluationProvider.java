@@ -1,8 +1,10 @@
 package com.poshtarenko.codeforge.service;
 
-import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
 import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
+import com.poshtarenko.codeforge.entity.code.EvaluationResult;
+import com.poshtarenko.codeforge.entity.test.SolutionResult;
 
 public interface CodeEvaluationProvider {
-    CodeEvaluationResult evaluateCode(CodeEvaluationRequest request);
+    EvaluationResult evaluateCode(CodeEvaluationRequest request);
+
 }

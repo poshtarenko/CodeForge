@@ -4,7 +4,7 @@ package com.poshtarenko.codeforge.service;
 import com.poshtarenko.codeforge.dto.request.SaveProblemDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateProblemDTO;
 import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
-import com.poshtarenko.codeforge.entity.Problem;
+import com.poshtarenko.codeforge.entity.test.Problem;
 
 import java.util.List;
 

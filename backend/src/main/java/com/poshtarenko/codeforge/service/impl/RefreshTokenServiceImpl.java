@@ -1,9 +1,9 @@
 package com.poshtarenko.codeforge.service.impl;
 
-import com.poshtarenko.codeforge.entity.ERole;
-import com.poshtarenko.codeforge.entity.RefreshToken;
-import com.poshtarenko.codeforge.entity.Role;
-import com.poshtarenko.codeforge.entity.User;
+import com.poshtarenko.codeforge.entity.user.ERole;
+import com.poshtarenko.codeforge.entity.user.RefreshToken;
+import com.poshtarenko.codeforge.entity.user.Role;
+import com.poshtarenko.codeforge.entity.user.User;
 import com.poshtarenko.codeforge.repository.RefreshTokenRepository;
 import com.poshtarenko.codeforge.security.jwt.JwtUtils;
 import com.poshtarenko.codeforge.security.pojo.JwtRefreshRequest;

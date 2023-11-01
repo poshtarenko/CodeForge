@@ -13,9 +13,9 @@ CREATE TABLE Users
 CREATE TABLE RefreshToken
 (
     id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT REFERENCES Users (id) NOT NULL,
     token      VARCHAR(128)                    NOT NULL,
-    expiration TIMESTAMP                       NOT NULL,
-    user_id    BIGSERIAL REFERENCES Users (id) NOT NULL
+    expiration TIMESTAMP                       NOT NULL
 );
 
 --changeset poshtarenko:3
@@ -40,8 +40,8 @@ CREATE table Roles
 --changeset poshtarenko:6
 create table user_role
 (
-    user_id BIGSERIAL REFERENCES Users (id) NOT NULL,
-    role_id BIGSERIAL REFERENCES Roles (id) NOT NULL
+    user_id BIGINT REFERENCES Users (id) NOT NULL,
+    role_id BIGINT REFERENCES Roles (id) NOT NULL
 );
 
 
@@ -49,10 +49,10 @@ create table user_role
 create table Tests
 (
     id           BIGSERIAL PRIMARY KEY,
+    author_id    BIGINT REFERENCES Authors (id) NOT NULL,
     name         VARCHAR(256)                      NOT NULL,
     invite_code  VARCHAR(64)                       NOT NULL UNIQUE,
-    max_duration INT                               NOT NULL,
-    author_id    BIGSERIAL REFERENCES Authors (id) NOT NULL
+    max_duration INT                               NOT NULL
 );
 
 
@@ -76,10 +76,10 @@ create table Categories
 create table Problems
 (
     id            BIGSERIAL PRIMARY KEY,
+    language_id   BIGINT REFERENCES Languages (id)  NOT NULL,
+    category_id   BIGINT REFERENCES Categories (id) NOT NULL,
     name          VARCHAR(256)                         NOT NULL,
     description   TEXT                                 NOT NULL,
-    language_id   BIGSERIAL REFERENCES Languages (id)  NOT NULL,
-    category_id   BIGSERIAL REFERENCES Categories (id) NOT NULL,
     testing_code  TEXT                                 NOT NULL,
     template_code TEXT                                 NOT NULL
 );
@@ -88,30 +88,53 @@ create table Problems
 create table Tasks
 (
     id         BIGSERIAL PRIMARY KEY,
+    test_id    BIGINT REFERENCES Tests (id) ON DELETE CASCADE    NOT NULL,
+    problem_id BIGINT REFERENCES Problems (id) ON DELETE CASCADE NOT NULL,
     note       TEXT                                                 NOT NULL,
-    max_score  INT                                                  NOT NULL,
-    problem_id BIGSERIAL REFERENCES Problems (id) ON DELETE CASCADE NOT NULL,
-    test_id    BIGSERIAL REFERENCES Tests (id) ON DELETE CASCADE    NOT NULL
+    max_score  INT                                                  NOT NULL
 );
 
 --changeset poshtarenko:12
 create table Answers
 (
     id            BIGSERIAL PRIMARY KEY,
+    respondent_id BIGINT REFERENCES Respondents (id) ON DELETE CASCADE NOT NULL,
+    test_id       BIGINT REFERENCES Tests (id) ON DELETE CASCADE       NOT NULL,
     score         INT,
     is_finished   BOOLEAN                                                 NOT NULL,
-    respondent_id BIGSERIAL REFERENCES Respondents (id) ON DELETE CASCADE NOT NULL,
-    test_id       BIGSERIAL REFERENCES Tests (id) ON DELETE CASCADE       NOT NULL,
     created_at    TIMESTAMP                                               NOT NULL
 );
 
 --changeset poshtarenko:13
 create table Solutions
 (
-    id              BIGSERIAL PRIMARY KEY,
-    code            TEXT                                                NOT NULL,
-    is_completed    BOOLEAN                                             NOT NULL,
-    evaluation_time BIGINT                                              NOT NULL,
-    answer_id       BIGSERIAL REFERENCES Answers (id) ON DELETE CASCADE NOT NULL,
-    task_id         BIGSERIAL REFERENCES Tasks (id) ON DELETE CASCADE   NOT NULL
+    id           BIGSERIAL PRIMARY KEY,
+    answer_id    BIGINT REFERENCES Answers (id) ON DELETE CASCADE NOT NULL,
+    task_id      BIGINT REFERENCES Tasks (id) ON DELETE CASCADE   NOT NULL,
+    code         TEXT                                                NOT NULL,
+    is_completed BOOLEAN                                             NOT NULL,
+    error        TEXT
+
+);
+
+--changeset poshtarenko:14
+create table Lessons
+(
+    id          BIGSERIAL PRIMARY KEY,
+    author_id   BIGINT REFERENCES Authors (id) ON DELETE CASCADE NOT NULL,
+    language_id BIGINT REFERENCES Languages (id) ON DELETE CASCADE,
+    name        VARCHAR(128)                                        NOT NULL,
+    invite_code VARCHAR(64)                                         NOT NULL UNIQUE,
+    description TEXT
+);
+
+--changeset poshtarenko:15
+create table Participations
+(
+    id            BIGSERIAL PRIMARY KEY,
+    respondent_id BIGINT REFERENCES Respondents (id) ON DELETE CASCADE NOT NULL,
+    lesson_id     BIGINT REFERENCES Lessons (id) ON DELETE CASCADE     NOT NULL,
+    code          TEXT,
+    output        TEXT,
+    error         TEXT
 );

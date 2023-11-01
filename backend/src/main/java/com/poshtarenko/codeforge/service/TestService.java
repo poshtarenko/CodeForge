@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface TestService {
 
-    ViewTestDTO find(long id);
+    ViewTestDTO findAsAuthor(long id);
 
     ViewTestDTO findAsRespondent(long testId);
 
-    List<ViewTestDTO> findByAuthor(long authorId);
+    List<ViewTestDTO> findAuthorTests(long authorId);
 
     ViewTestDTO save(SaveTestDTO testDTO);
 

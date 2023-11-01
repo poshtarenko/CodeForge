@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.repository;
 
-import com.poshtarenko.codeforge.entity.Test;
+import com.poshtarenko.codeforge.entity.test.Test;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -18,7 +18,5 @@ public interface TestRepository extends JpaRepository<Test, Long> {
     List<Test> findAllByAuthorId(Long authorId);
 
     Optional<Test> findByInviteCode(String inviteCode);
-
-    boolean existsTestByIdAndAuthorId(long testId, long authorId);
 
 }
