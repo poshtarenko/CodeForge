@@ -9,7 +9,8 @@ import PageTemplate from "../../component/UI/page-template/PageTemplate";
 import TasksMenu from "./tasksMenu/TasksMenu";
 import AnswersMenu from "./resultsMenu/AnswersMenu";
 import AnswerService from "../../services/AnswerService";
-import {IAnswer} from "../../models/entity/IAnswer";
+import {IAnswer, ISolution} from "../../models/entity/IAnswer";
+import {ISolutionResult} from "../../models/entity/ISolutionResult";
 
 enum ActiveMenu {
     TasksMenu,
@@ -64,6 +65,20 @@ const TestPage: React.FC = () => {
         }
     }
 
+    function fillSolutionsWithNotPassed(answers: IAnswer[]): IAnswer[] {
+        let result: IAnswer[] = answers;
+        result.forEach(answer => {
+            test.tasks.forEach(task => {
+                if (!answer.solutions.find(s => s.task.id === task.id)) {
+                    const solutionResult: ISolutionResult = {isCompleted: false, error: "Нема відповіді"}
+                    const solution: ISolution = {id: 0, code: "", solutionResult: solutionResult, task: task}
+                    answer.solutions.push(solution)
+                }
+            })
+        })
+        return result
+    }
+
     return (
         <PageTemplate>
             <div className={"test-page"}>
@@ -109,7 +124,8 @@ const TestPage: React.FC = () => {
                     </div>
                 </div>
                 <TasksMenu isActive={activeMenu === ActiveMenu.TasksMenu} test={test} reloadFunc={loadTest}/>
-                <AnswersMenu isActive={activeMenu === ActiveMenu.ResultsMenu} answers={answers}/>
+                <AnswersMenu isActive={activeMenu === ActiveMenu.ResultsMenu}
+                             answers={fillSolutionsWithNotPassed(answers)}/>
             </div>
         </PageTemplate>
     );

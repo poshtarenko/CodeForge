@@ -5,6 +5,8 @@ import "./testsPage.css"
 import Test from "../../component/testCell/TestCell";
 import AddTest from "../../component/addTest/AddTest";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
+import {faPersonChalkboard} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 function TestsPage() {
 
@@ -27,7 +29,10 @@ function TestsPage() {
     return (
         <PageTemplate>
             <div className={"app-section"}>
-                <p className={"section-name"}>Мої тести</p>
+                <div className={"section-title"}>
+                    <FontAwesomeIcon className={"section-icon"} icon={faPersonChalkboard} />
+                    <p className={"section-name"}>Мої тести</p>
+                </div>
                 <div className={"tests"}>
                     {tests.map(test =>
                         <Test test={test} key={Number(test.id)}/>

@@ -1,8 +1,8 @@
-import {IEvaluationResult} from "./IEvaluationResult";
+import {ISolutionResult} from "./ISolutionResult";
 
 export interface ISolution {
     id: number;
     code: string;
-    evaluationResult: IEvaluationResult;
+    solutionResult: ISolutionResult;
     taskId: number;
 }

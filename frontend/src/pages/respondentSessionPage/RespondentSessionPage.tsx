@@ -4,14 +4,14 @@ import {ITask, ITest} from "../../models/entity/ITest";
 import "./respondentSessionPage.css"
 import {useParams} from "react-router-dom";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
-import {IEvaluationResult} from "../../models/entity/IEvaluationResult";
+import {ISolutionResult} from "../../models/entity/ISolutionResult";
 import SolutionService from "../../services/SolutionService";
 import {IAnswer, ISolution} from "../../models/entity/IAnswer";
 import AnswerService from "../../services/AnswerService";
 
 interface AnswerDetails {
     code: string,
-    tryCodeResult: IEvaluationResult,
+    tryCodeResult: ISolutionResult,
 }
 
 const RespondentSessionPage: React.FC = () => {
@@ -56,7 +56,7 @@ const RespondentSessionPage: React.FC = () => {
         tasks.forEach((task) => setSolutions(
             new Map(solutions.set(
                 task.id,
-                {code: findTaskSolution(task, solutionsList), tryCodeResult: {} as IEvaluationResult})
+                {code: findTaskSolution(task, solutionsList), tryCodeResult: {} as ISolutionResult})
             ))
         );
     }

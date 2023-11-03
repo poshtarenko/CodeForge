@@ -1,4 +1,4 @@
-import {IEvaluationResult} from "./IEvaluationResult";
+import {ISolutionResult} from "./ISolutionResult";
 
 export interface IAnswer {
     id: number,
@@ -17,7 +17,7 @@ export interface IRespondent {
 export interface ISolution {
     id: number,
     code: string,
-    evaluationResult: IEvaluationResult,
+    solutionResult: ISolutionResult,
     task: ITask
 }
 
