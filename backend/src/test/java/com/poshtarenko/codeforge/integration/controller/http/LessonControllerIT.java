@@ -3,11 +3,8 @@ package com.poshtarenko.codeforge.integration.controller.http;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poshtarenko.codeforge.dto.request.SaveLessonDTO;
-import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateLessonDTO;
-import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewLessonDTO;
-import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.lesson.Lesson;
 import com.poshtarenko.codeforge.entity.user.ERole;
 import com.poshtarenko.codeforge.integration.IntegrationTest;
@@ -104,7 +101,6 @@ public class LessonControllerIT extends IntegrationTest {
     public void createLesson() throws Exception {
         SaveLessonDTO request = new SaveLessonDTO(
                 "New test",
-                lesson.getLanguage().getId(),
                 lesson.getAuthor().getId()
         );
 
@@ -121,7 +117,6 @@ public class LessonControllerIT extends IntegrationTest {
 
         assertEquals(response.name(), request.name());
         assertEquals(response.authorId(), request.authorId());
-        assertEquals(response.language().id(), request.languageId());
         assertNotNull(response.inviteCode());
     }
 

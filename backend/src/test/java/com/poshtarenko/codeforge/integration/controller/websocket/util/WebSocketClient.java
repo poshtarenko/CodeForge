@@ -6,7 +6,6 @@ import com.poshtarenko.codeforge.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
@@ -29,7 +28,7 @@ public class WebSocketClient {
     private final UserService userService;
 
     @SneakyThrows
-    public StompSession connect(String url, User user){
+    public StompSession connect(String url, User user) {
         List<Transport> transports = List.of(new WebSocketTransport(new StandardWebSocketClient()));
         WebSocketStompClient stompClient = new WebSocketStompClient(new SockJsClient(transports));
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());

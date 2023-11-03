@@ -33,7 +33,7 @@ public class TestSecurityUsersInitializer {
     private Map<ERole, UserDetailsImpl> userDetailsMap;
 
     public void setup() {
-        if (userDetailsMap != null && userDetailsMap.size() > 0) {
+        if (userDetailsMap != null && !userDetailsMap.isEmpty()) {
             return;
         }
 

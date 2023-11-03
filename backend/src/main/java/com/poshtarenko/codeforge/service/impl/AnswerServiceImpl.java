@@ -48,7 +48,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public Optional<ViewAnswerDTO> findRespondentCurrentAnswer(long respondentId, long testId) {
         List<Answer> answers = answerRepository.findAllByRespondentIdAndTestIdOrderByCreatedAtDesc(respondentId, testId);
-        if (answers.size() == 0) {
+        if (answers.isEmpty()) {
             return Optional.empty();
         }
         ViewAnswerDTO answer = answerMapper.toDto(answers.get(0));
