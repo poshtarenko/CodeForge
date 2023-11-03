@@ -1,10 +1,10 @@
 package com.poshtarenko.codeforge.service;
 
 
-import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
 import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
+import com.poshtarenko.codeforge.dto.response.ViewSolutionResultDTO;
 
 public interface SolutionService {
 
@@ -12,7 +12,7 @@ public interface SolutionService {
 
     ViewSolutionDTO put(SaveSolutionDTO answerDTO);
 
-    CodeEvaluationResult tryCode(TryCodeRequest tryCodeRequest);
+    ViewSolutionResultDTO tryCode(TryCodeRequest tryCodeRequest);
 
     void delete(long id);
 

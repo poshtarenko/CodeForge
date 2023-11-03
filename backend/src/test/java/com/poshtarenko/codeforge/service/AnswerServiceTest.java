@@ -4,10 +4,11 @@ import com.poshtarenko.codeforge.dto.mapper.AnswerMapper;
 import com.poshtarenko.codeforge.dto.mapper.AnswerMapperImpl;
 import com.poshtarenko.codeforge.dto.mapper.EntityIdMapper;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
-import com.poshtarenko.codeforge.entity.Answer;
-import com.poshtarenko.codeforge.entity.Respondent;
-import com.poshtarenko.codeforge.entity.Solution;
-import com.poshtarenko.codeforge.entity.Task;
+import com.poshtarenko.codeforge.entity.test.Answer;
+import com.poshtarenko.codeforge.entity.test.Solution;
+import com.poshtarenko.codeforge.entity.test.SolutionResult;
+import com.poshtarenko.codeforge.entity.test.Task;
+import com.poshtarenko.codeforge.entity.user.Respondent;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
 import com.poshtarenko.codeforge.repository.RespondentRepository;
@@ -52,7 +53,7 @@ class AnswerServiceTest {
     @Test
     void find() {
         Answer mockAnswer = new Answer(ANSWER_ID);
-        mockAnswer.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        mockAnswer.setTest(new com.poshtarenko.codeforge.entity.test.Test(TEST_ID));
         mockAnswer.setRespondent(new Respondent(RESPONDENT_ID));
         doReturn(Optional.of(mockAnswer))
                 .when(answerRepository).findById(ANSWER_ID);
@@ -65,10 +66,10 @@ class AnswerServiceTest {
     @Test
     void findByTest() {
         Answer answer1 = new Answer(1L);
-        answer1.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        answer1.setTest(new com.poshtarenko.codeforge.entity.test.Test(TEST_ID));
         answer1.setRespondent(new Respondent(1L));
         Answer answer2 = new Answer(2L);
-        answer2.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        answer2.setTest(new com.poshtarenko.codeforge.entity.test.Test(TEST_ID));
         answer2.setRespondent(new Respondent(2L));
         List<Answer> answers = List.of(answer1, answer2);
         doReturn(answers)
@@ -84,11 +85,11 @@ class AnswerServiceTest {
     @Test
     void findRespondentCurrentAnswerWhenAnswersPresent() {
         Answer answerOld = new Answer(1L);
-        answerOld.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        answerOld.setTest(new com.poshtarenko.codeforge.entity.test.Test(TEST_ID));
         answerOld.setRespondent(new Respondent(RESPONDENT_ID));
 
         Answer answerCurrent = new Answer(2L);
-        answerCurrent.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        answerCurrent.setTest(new com.poshtarenko.codeforge.entity.test.Test(TEST_ID));
         answerCurrent.setRespondent(new Respondent(RESPONDENT_ID));
         List<Answer> answersOrderedByDate = List.of(answerCurrent, answerOld);
 
@@ -113,7 +114,7 @@ class AnswerServiceTest {
 
     @Test
     void startAnswer() {
-        com.poshtarenko.codeforge.entity.Test test = new com.poshtarenko.codeforge.entity.Test(TEST_ID);
+        com.poshtarenko.codeforge.entity.test.Test test = new com.poshtarenko.codeforge.entity.test.Test(TEST_ID);
         Respondent respondent = new Respondent(RESPONDENT_ID);
         Answer answer = new Answer(ANSWER_ID);
         answer.setTest(test);
@@ -135,23 +136,23 @@ class AnswerServiceTest {
         Task task1 = new Task(1L);
         task1.setMaxScore(5);
         Solution rightSolution = new Solution(1L);
-        rightSolution.setIsCompleted(true);
+        rightSolution.setSolutionResult(new SolutionResult(true, null));
         rightSolution.setTask(task1);
 
         Task task2 = new Task(2L);
         task2.setMaxScore(3);
         Solution wrongSolution = new Solution(2L);
-        wrongSolution.setIsCompleted(false);
+        wrongSolution.setSolutionResult(new SolutionResult(false, "some error"));
         wrongSolution.setTask(task2);
 
         Answer initialAnswer = new Answer(ANSWER_ID);
-        initialAnswer.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        initialAnswer.setTest(new com.poshtarenko.codeforge.entity.test.Test(TEST_ID));
         initialAnswer.setRespondent(new Respondent(RESPONDENT_ID));
         initialAnswer.setSolutions(List.of(rightSolution, wrongSolution));
         initialAnswer.setIsFinished(false);
 
         Answer savedAnswer = new Answer(ANSWER_ID);
-        savedAnswer.setTest(new com.poshtarenko.codeforge.entity.Test(TEST_ID));
+        savedAnswer.setTest(new com.poshtarenko.codeforge.entity.test.Test(TEST_ID));
         savedAnswer.setRespondent(new Respondent(RESPONDENT_ID));
         savedAnswer.setSolutions(List.of(rightSolution, wrongSolution));
         savedAnswer.setIsFinished(true);
@@ -184,9 +185,7 @@ class AnswerServiceTest {
         doReturn(Optional.of(answer))
                 .when(answerRepository).findById(ANSWER_ID);
 
-        assertThrows(EntityAccessDeniedException.class, () -> {
-            answerService.checkAccess(ANSWER_ID, RESPONDENT_ID);
-        });
+        assertThrows(EntityAccessDeniedException.class, () -> answerService.checkAccess(ANSWER_ID, RESPONDENT_ID));
     }
 
     @Test
@@ -196,9 +195,7 @@ class AnswerServiceTest {
         doReturn(Optional.of(answer))
                 .when(answerRepository).findById(ANSWER_ID);
 
-        assertDoesNotThrow(() -> {
-            answerService.checkAccess(ANSWER_ID, RESPONDENT_ID);
-        });
+        assertDoesNotThrow(() -> answerService.checkAccess(ANSWER_ID, RESPONDENT_ID));
     }
 
     private void assertAnswer(Answer expected, ViewAnswerDTO actual) {

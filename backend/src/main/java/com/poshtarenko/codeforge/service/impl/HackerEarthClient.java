@@ -1,11 +1,11 @@
 package com.poshtarenko.codeforge.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
+import com.poshtarenko.codeforge.dto.hackerearth.HackerEarthCodeEvaluationResult;
+import com.poshtarenko.codeforge.dto.hackerearth.HackerEarthQueueingResponse;
 import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
 import com.poshtarenko.codeforge.dto.request.HackerEarthCodeEvaluationRequest;
-import com.poshtarenko.codeforge.dto.response.HackerEarthCodeEvaluationResult;
-import com.poshtarenko.codeforge.dto.response.HackerEarthQueueingResponse;
+import com.poshtarenko.codeforge.entity.code.EvaluationResult;
 import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -55,7 +54,7 @@ public class HackerEarthClient implements CodeEvaluationProvider {
     private final ObjectMapper objectMapper;
 
     @SneakyThrows
-    public CodeEvaluationResult evaluateCode(CodeEvaluationRequest request) {
+    public EvaluationResult evaluateCode(CodeEvaluationRequest request) {
         String heId = queueRequest(request).heId();
 
         Thread.sleep(DELAY_BEFORE_REQUEST_MS);
@@ -69,8 +68,6 @@ public class HackerEarthClient implements CodeEvaluationProvider {
         }
 
         String error = null;
-        boolean isCompleted = false;
-
         if (requestCode.equals(CODE_SUCCESSFULLY_COMPILED_STATUS)) {
             String compileStatus = evaluationResult.result().compileStatus();
             if (compileStatus.equals("OK")) {
@@ -84,20 +81,15 @@ public class HackerEarthClient implements CodeEvaluationProvider {
             }
         }
 
+        String output = null;
         if (requestCode.equals(CODE_PROCESSED_STATUS)) {
             String outputURL = evaluationResult.result().runStatus().output();
-            String output = downloadCodeEvaluationResult(outputURL);
-            if (output.equals("SUCCESS")) {
-                isCompleted = true;
-            } else {
-                error = "Task failed";
-            }
+            output = downloadCodeEvaluationResult(outputURL);
         }
 
-        return new CodeEvaluationResult(
-                isCompleted,
-                1L,
-                Optional.ofNullable(error)
+        return new EvaluationResult(
+                output,
+                error
         );
     }
 

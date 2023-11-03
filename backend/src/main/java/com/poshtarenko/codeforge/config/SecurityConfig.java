@@ -21,10 +21,12 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity
+//@EnableWebSocketSecurity
 public class SecurityConfig {
 
     private static final String[] WHITELIST = {
             "/auth/**",
+            "/ws/**",
             "/swagger-resources/**",
             "/swagger-ui/**",
             "/v2/api-docs",

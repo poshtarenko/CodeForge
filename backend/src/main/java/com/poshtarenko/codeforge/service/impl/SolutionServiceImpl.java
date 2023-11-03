@@ -1,14 +1,16 @@
 package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.SolutionMapper;
-import com.poshtarenko.codeforge.dto.model.CodeEvaluationResult;
 import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
 import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
-import com.poshtarenko.codeforge.entity.Answer;
-import com.poshtarenko.codeforge.entity.Problem;
-import com.poshtarenko.codeforge.entity.Solution;
+import com.poshtarenko.codeforge.dto.response.ViewSolutionResultDTO;
+import com.poshtarenko.codeforge.entity.code.EvaluationResult;
+import com.poshtarenko.codeforge.entity.test.Answer;
+import com.poshtarenko.codeforge.entity.test.Problem;
+import com.poshtarenko.codeforge.entity.test.Solution;
+import com.poshtarenko.codeforge.entity.test.SolutionResult;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
@@ -20,8 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,27 +46,32 @@ public class SolutionServiceImpl implements SolutionService {
 
     @Override
     @Transactional
-    public ViewSolutionDTO put(SaveSolutionDTO solution) {
-        Optional<Solution> maybeSolution = solutionRepository
-                .findByTaskIdAndAnswerId(solution.taskId(), solution.answerId());
-        Answer answer = answerRepository.findById(solution.answerId()).orElseThrow(
-                () -> new EntityNotFoundException(Answer.class, "Answer with id " + solution.answerId() + " not found.")
+    public ViewSolutionDTO put(SaveSolutionDTO solutionDTO) {
+        Answer answer = answerRepository.findById(solutionDTO.answerId()).orElseThrow(
+                () -> new EntityNotFoundException(Answer.class, "Answer with id " + solutionDTO.answerId() + " not found.")
         );
         if (answer.getIsFinished().equals(true)) {
             throw new RuntimeException("Trying to put solution to finished answer");
         }
 
-        Solution solutionToSave = solutionMapper.toEntity(solution);
-        maybeSolution.ifPresent(s -> solutionToSave.setId(s.getId()));
-        solutionToSave.setAnswer(answer);
-        tryAnswer(solutionToSave);
-        return solutionMapper.toDto(solutionRepository.save(solutionToSave));
+        Solution solution = solutionMapper.toEntity(solutionDTO);
+        solutionRepository
+                .findByTaskIdAndAnswerId(solutionDTO.taskId(), solutionDTO.answerId())
+                .ifPresent(s -> solution.setId(s.getId()));
+
+        solution.setAnswer(answer);
+
+        SolutionResult solutionResult = evaluateCode(solution.getTask().getId(), solution.getCode());
+        solution.setSolutionResult(solutionResult);
+
+        return solutionMapper.toDto(solutionRepository.save(solution));
     }
 
     @Override
     @Transactional
-    public CodeEvaluationResult tryCode(TryCodeRequest tryCodeRequest) {
-        return tryCode(tryCodeRequest.taskId(), tryCodeRequest.code());
+    public ViewSolutionResultDTO tryCode(TryCodeRequest tryCodeRequest) {
+        SolutionResult solutionResult = evaluateCode(tryCodeRequest.taskId(), tryCodeRequest.code());
+        return new ViewSolutionResultDTO(solutionResult.getIsCompleted(), solutionResult.getError());
     }
 
     @Override
@@ -85,13 +90,7 @@ public class SolutionServiceImpl implements SolutionService {
         }
     }
 
-    private void tryAnswer(Solution solution) {
-        CodeEvaluationResult codeEvaluationResult = tryCode(solution.getTask().getId(), solution.getCode());
-        solution.setIsCompleted(codeEvaluationResult.isCompleted());
-        solution.setEvaluationTime(codeEvaluationResult.evaluationTime());
-    }
-
-    private CodeEvaluationResult tryCode(long taskId, String code) {
+    private SolutionResult evaluateCode(long taskId, String code) {
         Problem problem = problemRepository.findByTask(taskId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         Problem.class, "Problem by task id " + taskId + " not found")
@@ -100,6 +99,9 @@ public class SolutionServiceImpl implements SolutionService {
         String codeToEvaluate = problem.getTestingCode().formatted(code);
 
         CodeEvaluationRequest codeEvaluationRequest = new CodeEvaluationRequest(language, codeToEvaluate);
-        return codeEvaluationProvider.evaluateCode(codeEvaluationRequest);
+        EvaluationResult evaluationResult = codeEvaluationProvider.evaluateCode(codeEvaluationRequest);
+
+        boolean isCompleted = evaluationResult.getOutput().equals("SUCCESS");
+        return new SolutionResult(isCompleted, evaluationResult.getError());
     }
 }

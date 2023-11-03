@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
 import com.poshtarenko.codeforge.dto.response.ViewCategoryDTO;
-import com.poshtarenko.codeforge.entity.Category;
+import com.poshtarenko.codeforge.entity.test.Category;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

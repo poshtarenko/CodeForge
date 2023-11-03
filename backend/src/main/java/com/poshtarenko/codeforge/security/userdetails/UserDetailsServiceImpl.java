@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.security.userdetails;
 
 
-import com.poshtarenko.codeforge.entity.User;
+import com.poshtarenko.codeforge.entity.user.User;
 import com.poshtarenko.codeforge.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

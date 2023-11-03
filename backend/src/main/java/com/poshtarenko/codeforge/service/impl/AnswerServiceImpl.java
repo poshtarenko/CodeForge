@@ -2,7 +2,11 @@ package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.AnswerMapper;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
-import com.poshtarenko.codeforge.entity.*;
+import com.poshtarenko.codeforge.entity.test.Answer;
+import com.poshtarenko.codeforge.entity.test.Solution;
+import com.poshtarenko.codeforge.entity.test.Task;
+import com.poshtarenko.codeforge.entity.test.Test;
+import com.poshtarenko.codeforge.entity.user.Respondent;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
@@ -44,7 +48,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public Optional<ViewAnswerDTO> findRespondentCurrentAnswer(long respondentId, long testId) {
         List<Answer> answers = answerRepository.findAllByRespondentIdAndTestIdOrderByCreatedAtDesc(respondentId, testId);
-        if (answers.size() == 0) {
+        if (answers.isEmpty()) {
             return Optional.empty();
         }
         ViewAnswerDTO answer = answerMapper.toDto(answers.get(0));
@@ -76,7 +80,7 @@ public class AnswerServiceImpl implements AnswerService {
             throw new RuntimeException("Answer with id " + answerId + " already finished");
         }
         int score = answer.getSolutions().stream()
-                .filter(Solution::getIsCompleted)
+                .filter(s -> s.getSolutionResult().getIsCompleted())
                 .map(Solution::getTask)
                 .mapToInt(Task::getMaxScore)
                 .sum();

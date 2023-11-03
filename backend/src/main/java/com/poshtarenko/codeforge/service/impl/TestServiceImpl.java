@@ -4,7 +4,7 @@ import com.poshtarenko.codeforge.dto.mapper.TestMapper;
 import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
-import com.poshtarenko.codeforge.entity.Test;
+import com.poshtarenko.codeforge.entity.test.Test;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -34,28 +33,20 @@ public class TestServiceImpl implements TestService {
     private final TestMapper testMapper;
 
     @Override
-    public ViewTestDTO find(long id) {
-        return testMapper.toDto(findById(id));
+    public ViewTestDTO findAsAuthor(long id) {
+        Test test = findById(id);
+        return testMapper.toDto(test);
     }
 
     @Override
     @PreAuthorize("hasAuthority('RESPONDENT')")
     public ViewTestDTO findAsRespondent(long testId) {
-        return testMapper.toDto(findById(testId));
+        Test test = findById(testId);
+        return testMapper.toDto(test);
     }
 
-    /*@Override
-    @Transactional(readOnly = true)
-    public ViewTestDTO findByInviteCode(String inviteCode) {
-        return testRepository.findByInviteCode(inviteCode)
-                .map(testMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class, "Test with code " + inviteCode + " not found")
-                );
-    }*/
-
     @Override
-    public List<ViewTestDTO> findByAuthor(long authorId) {
+    public List<ViewTestDTO> findAuthorTests(long authorId) {
         return testRepository.findAllByAuthorId(authorId)
                 .stream()
                 .map(testMapper::toDto)
@@ -65,16 +56,12 @@ public class TestServiceImpl implements TestService {
     @Override
     @Transactional
     public ViewTestDTO save(SaveTestDTO testDTO) {
-        Test test = testMapper.toEntity(testDTO);
-
         String code;
-        Optional<Test> testWithCode;
-
         do {
             code = RandomStringUtils.randomAlphabetic(TEST_INVITE_CODE_LENGTH);
-            testWithCode = testRepository.findByInviteCode(code);
-        } while (testWithCode.isPresent());
+        } while (testRepository.findByInviteCode(code).isPresent());
 
+        Test test = testMapper.toEntity(testDTO);
         test.setInviteCode(code);
         Test saved = testRepository.save(test);
 
@@ -84,11 +71,7 @@ public class TestServiceImpl implements TestService {
     @Override
     @Transactional
     public ViewTestDTO update(UpdateTestDTO testDTO) {
-        Test test = testRepository.findById(testDTO.id())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class,
-                        "Test with id %d not found".formatted(testDTO.id())));
-
+        Test test = findById(testDTO.id());
         test.setName(testDTO.name());
         test.setMaxDuration(testDTO.maxDuration());
 

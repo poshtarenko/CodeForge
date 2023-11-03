@@ -1,6 +1,11 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.entity.*;
+import com.poshtarenko.codeforge.entity.BaseEntity;
+import com.poshtarenko.codeforge.entity.code.Language;
+import com.poshtarenko.codeforge.entity.test.*;
+import com.poshtarenko.codeforge.entity.user.Author;
+import com.poshtarenko.codeforge.entity.user.Respondent;
+import com.poshtarenko.codeforge.entity.user.User;
 import org.springframework.stereotype.Component;
 
 @Component

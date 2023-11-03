@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.repository;
 
-import com.poshtarenko.codeforge.entity.RefreshToken;
+import com.poshtarenko.codeforge.entity.user.RefreshToken;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

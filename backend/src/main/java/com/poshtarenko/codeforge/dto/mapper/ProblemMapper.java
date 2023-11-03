@@ -3,7 +3,7 @@ package com.poshtarenko.codeforge.dto.mapper;
 import com.poshtarenko.codeforge.dto.request.SaveProblemDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateProblemDTO;
 import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
-import com.poshtarenko.codeforge.entity.Problem;
+import com.poshtarenko.codeforge.entity.test.Problem;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

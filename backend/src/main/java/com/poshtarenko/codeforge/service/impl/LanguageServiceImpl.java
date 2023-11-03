@@ -2,7 +2,7 @@ package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.LanguageMapper;
 import com.poshtarenko.codeforge.dto.response.ViewLanguageDTO;
-import com.poshtarenko.codeforge.entity.Language;
+import com.poshtarenko.codeforge.entity.code.Language;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.LanguageRepository;
 import com.poshtarenko.codeforge.service.LanguageService;

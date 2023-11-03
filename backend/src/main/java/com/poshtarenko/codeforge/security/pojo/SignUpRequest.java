@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.security.pojo;
 
-import com.poshtarenko.codeforge.entity.ERole;
+import com.poshtarenko.codeforge.entity.user.ERole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
