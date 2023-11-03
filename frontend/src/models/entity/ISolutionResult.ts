@@ -1,4 +1,4 @@
-export interface IEvaluationResult {
+export interface ISolutionResult {
     isCompleted: boolean,
     error: string
 }

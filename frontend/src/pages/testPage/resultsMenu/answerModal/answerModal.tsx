@@ -26,7 +26,7 @@ const AnswerModal: React.FC<IProps> = ({answer}) => {
             {answer?.solutions?.map(solution =>
                 <div key={solution.id} onClick={() => selectAnswer(solution.id)} className={"answer"}>
                     <div className={"answer-header"}>
-                        {solution.evaluationResult.isCompleted
+                        {solution.solutionResult.isCompleted
                             ?
                             <div className={"answer-icon-wrapper completed"}><FontAwesomeIcon className={"answer-icon"} icon={faCheck} /></div>
                             :
@@ -35,7 +35,13 @@ const AnswerModal: React.FC<IProps> = ({answer}) => {
                         <p className={"answer-name"}>{solution.task.problem.name}</p>
                     </div>
                     {selectedAnswerId === solution.id ?
-                        <div onClick={(event) => event.stopPropagation()} className="answer-code">{solution.code}</div>
+                        <div>
+                            <div onClick={(event) => event.stopPropagation()} className="answer-code">{solution.code}</div>
+                            {solution.solutionResult.error ?
+                                <div onClick={(event) => event.stopPropagation()} className="answer-error">
+                                    {solution.solutionResult.error}
+                                </div> : null}
+                        </div>
                         : null
                     }
                 </div>

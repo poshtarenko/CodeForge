@@ -65,3 +65,11 @@
     font-size: 18px;
     cursor: default;
 }
+
+.result-modal .answer-error {
+    margin-top: 30px;
+    font-family: "JetBrains Mono", serif;
+    font-size: 18px;
+    cursor: default;
+    color: #c72a2a;
+}

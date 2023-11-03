@@ -1,0 +1,35 @@
+.lesson-cell {
+    border: #DADCE0 1px solid;
+    border-radius: 10px;
+    width: 250px;
+    height: 200px;
+    font-size: 18px;
+}
+
+.lesson-cell .test-inner {
+    padding: 20px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.lesson-cell .number {
+    font-family: 'JetBrains Mono', serif;
+}
+
+.lesson-cell .test-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1b9d0b;
+}
+
+.lesson-cell .test-lang {
+    margin-top: 15px;
+}
+
+.lesson-cell .test-tasks-count {
+    margin-top: 15px;
+}
+
+.lesson-cell .test-max-score {
+    margin-top: 15px;
+}

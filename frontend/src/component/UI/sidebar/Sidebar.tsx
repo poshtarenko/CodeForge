@@ -1,7 +1,7 @@
 import {observer} from "mobx-react-lite";
 import "./sidebar.css";
 import React, {useContext} from "react";
-import {faPersonChalkboard, faRightFromBracket} from "@fortawesome/free-solid-svg-icons";
+import {faPersonChalkboard, faRightFromBracket, faUsers} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Context} from "../../../index";
 import {Link} from "react-router-dom";
@@ -22,10 +22,16 @@ const Sidebar: React.FC<IProps> = ({isActive, setActive}) => {
             <p className={"sidebar-app-name"}>Codeforge</p>
             <SidebarLink setActive={setActive}>
                 {store.role === "AUTHOR" ?
-                    <Link className={"sidebar-link"} to={"/testsPage"}>
-                        <FontAwesomeIcon className={"sidebar-icon"} icon={faPersonChalkboard} />
-                        <p>Мої тести</p>
-                    </Link>
+                    <>
+                        <Link className={"sidebar-link"} to={"/tests"}>
+                            <FontAwesomeIcon className={"sidebar-icon"} icon={faPersonChalkboard} />
+                            <p>Мої тести</p>
+                        </Link>
+                        <Link className={"sidebar-link"} to={"/lessons"}>
+                            <FontAwesomeIcon className={"sidebar-icon"} icon={faUsers} />
+                            <p>Мої заняття</p>
+                        </Link>
+                    </>
                     : null
                 }
                 {store.role === "RESPONDENT" ?

@@ -1,0 +1,65 @@
+.lesson-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.lesson-title-block {
+    color: #FFFFFF;
+    background-color: #02970E;
+    width: 800px;
+    height: 105px;
+    border-radius: 0 0 30px 30px;
+    padding: 15px 50px 20px 50px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 20px;
+}
+
+.lesson-title-block .number {
+    font-family: 'JetBrains Mono', serif;
+}
+
+.lesson-title-block .lesson-name-block {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.lesson-title-block .lesson-name-block .change-button {
+    cursor: pointer;
+    font-size: 17px;
+}
+
+.lesson-title-block .change-lesson-name-block {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.lesson-title-block .change-lesson-name-block .lesson-name-input {
+    height: 35px;
+    width: 400px;
+    padding: 0 10px;
+    font-size: 30px;
+    font-weight: 700;
+    outline: none;
+    border: none;
+    border-radius: 3px;
+}
+
+.lesson-title-block .change-lesson-name-block .ok-button {
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.lesson-title-block .lesson-name {
+    height: 35px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.lesson-title-block .lesson-lang {
+    margin-top: 10px;
+}
