@@ -185,9 +185,7 @@ class AnswerServiceTest {
         doReturn(Optional.of(answer))
                 .when(answerRepository).findById(ANSWER_ID);
 
-        assertThrows(EntityAccessDeniedException.class, () -> {
-            answerService.checkAccess(ANSWER_ID, RESPONDENT_ID);
-        });
+        assertThrows(EntityAccessDeniedException.class, () -> answerService.checkAccess(ANSWER_ID, RESPONDENT_ID));
     }
 
     @Test
@@ -197,9 +195,7 @@ class AnswerServiceTest {
         doReturn(Optional.of(answer))
                 .when(answerRepository).findById(ANSWER_ID);
 
-        assertDoesNotThrow(() -> {
-            answerService.checkAccess(ANSWER_ID, RESPONDENT_ID);
-        });
+        assertDoesNotThrow(() -> answerService.checkAccess(ANSWER_ID, RESPONDENT_ID));
     }
 
     private void assertAnswer(Answer expected, ViewAnswerDTO actual) {

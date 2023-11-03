@@ -5,6 +5,7 @@ import com.poshtarenko.codeforge.security.pojo.SignInRequest;
 import com.poshtarenko.codeforge.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -42,7 +43,7 @@ public class WebSocketClient {
 
         return stompClient.connectAsync(url, headers, new StompSessionHandlerAdapter() {
             @Override
-            public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+            public void afterConnected(@NotNull StompSession session, @NotNull StompHeaders connectedHeaders) {
                 System.out.println("WS CLIENT: Connected to " + url);
             }
         }).get(10, SECONDS);
