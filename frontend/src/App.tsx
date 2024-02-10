@@ -7,7 +7,7 @@ import "./style/main.css";
 function App() {
 
     useEffect(() => {
-        document.title = "Codeforge";
+        document.title = "CodeForge";
     }, []);
 
     return (

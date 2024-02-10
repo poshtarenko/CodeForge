@@ -4,14 +4,13 @@ import {ITask, ITest} from "../../models/entity/ITest";
 import "./respondentSessionPage.css"
 import {useParams} from "react-router-dom";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
-import {ISolutionResult} from "../../models/entity/ISolutionResult";
 import SolutionService from "../../services/SolutionService";
 import {IAnswer, ISolution} from "../../models/entity/IAnswer";
 import AnswerService from "../../services/AnswerService";
 
 interface AnswerDetails {
     code: string,
-    tryCodeResult: ISolutionResult,
+    taskCompletionStatus: string,
 }
 
 const RespondentSessionPage: React.FC = () => {
@@ -56,7 +55,7 @@ const RespondentSessionPage: React.FC = () => {
         tasks.forEach((task) => setSolutions(
             new Map(solutions.set(
                 task.id,
-                {code: findTaskSolution(task, solutionsList), tryCodeResult: {} as ISolutionResult})
+                {code: findTaskSolution(task, solutionsList), taskCompletionStatus: ""})
             ))
         );
     }
@@ -77,10 +76,10 @@ const RespondentSessionPage: React.FC = () => {
     }
 
     function changeSolutionCode(code: string) {
-        const tryCodeResult = solutions.get(selectedTaskId)?.tryCodeResult!;
+        const taskCompletionStatus = solutions.get(selectedTaskId)?.taskCompletionStatus!;
         setSolutions(new Map(solutions.set(
             selectedTaskId,
-            {code: code, tryCodeResult: tryCodeResult})
+            {code: code, taskCompletionStatus: taskCompletionStatus})
         ));
     }
 
@@ -93,7 +92,7 @@ const RespondentSessionPage: React.FC = () => {
         const solutionCode = solutions.get(selectedTaskId)?.code!;
         setSolutions(new Map(solutions.set(
             selectedTaskId,
-            {code: solutionCode, tryCodeResult: result.data})
+            {code: solutionCode, taskCompletionStatus: result.data})
         ));
 
         await setCheckingCode(false);
@@ -103,21 +102,13 @@ const RespondentSessionPage: React.FC = () => {
         if (checkingCode)
             return "Компіляція...";
 
-        if (currentSolution()?.tryCodeResult === undefined)
+        if (currentSolution()?.taskCompletionStatus === undefined)
             return "";
 
-        if (Object.keys(currentSolution()?.tryCodeResult!).length === 0)
+        if (Object.keys(currentSolution()?.taskCompletionStatus!).length === 0)
             return "";
 
-        const result = currentSolution()?.tryCodeResult!;
-
-        if (result.isCompleted) {
-            return "Завдання виконане"
-        } else if (result.error) {
-            if (result.error === "Task failed") return "Завдання не виконане";
-            return result.error;
-        }
-        return "";
+        return currentSolution()?.taskCompletionStatus!;
     }
 
     async function saveSolution() {

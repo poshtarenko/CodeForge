@@ -10,6 +10,7 @@ import com.poshtarenko.codeforge.security.pojo.JwtRefreshRequest;
 import com.poshtarenko.codeforge.security.pojo.JwtResponse;
 import com.poshtarenko.codeforge.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
@@ -49,8 +51,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         if (isTokenExpired(refreshToken.getExpiration())) {
             refreshTokenRepository.delete(refreshToken);
-            throw new RuntimeException("Refresh Token %s was expired!"
-                    .formatted(refreshRequest.getRefreshToken()));
+            String msg = "Refresh Token %s was expired!".formatted(refreshRequest.getRefreshToken());
+            log.info(msg);
+            throw new RuntimeException(msg);
         }
 
         updateToken(refreshToken);

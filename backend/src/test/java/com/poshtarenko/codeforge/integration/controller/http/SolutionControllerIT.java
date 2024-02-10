@@ -12,7 +12,7 @@ import com.poshtarenko.codeforge.integration.IntegrationTest;
 import com.poshtarenko.codeforge.integration.annotation.HttpTest;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
 import com.poshtarenko.codeforge.integration.security.MockUser;
-import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
+import com.poshtarenko.codeforge.service.CodeEvaluationService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +38,7 @@ public class SolutionControllerIT extends IntegrationTest {
     private final TestDataInitializer dataInitializer;
 
     @MockBean
-    CodeEvaluationProvider codeEvaluationProvider;
+    CodeEvaluationService codeEvaluationService;
 
     Solution solution;
 
@@ -46,7 +46,7 @@ public class SolutionControllerIT extends IntegrationTest {
     public void setup() {
         dataInitializer.setupData();
         solution = dataInitializer.getSolution();
-        when(codeEvaluationProvider.evaluateCode(any())).thenReturn(new EvaluationResult("SUCCESS", null));
+        when(codeEvaluationService.evaluateCode(any())).thenReturn(new EvaluationResult("SUCCESS", null));
     }
 
     @AfterEach

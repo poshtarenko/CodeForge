@@ -6,7 +6,7 @@ import com.poshtarenko.codeforge.dto.hackerearth.HackerEarthQueueingResponse;
 import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
 import com.poshtarenko.codeforge.dto.request.HackerEarthCodeEvaluationRequest;
 import com.poshtarenko.codeforge.entity.code.EvaluationResult;
-import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
+import com.poshtarenko.codeforge.service.CodeEvaluationService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class HackerEarthClient implements CodeEvaluationProvider {
+public class HackerEarthService implements CodeEvaluationService {
 
     private static final String API_URL = "https://api.hackerearth.com/";
     private static final String AUTH_HEADER_KEY = "client-secret";
@@ -38,20 +38,17 @@ public class HackerEarthClient implements CodeEvaluationProvider {
     private static final int DELAY_BEFORE_REQUEST_MS = 150;
     private static final int COMPILATION_WAIT_DELAY = 150;
 
-    private static final List<String> PREPARATORY_REQUEST_STATUSES = List.of(
-            "REQUEST_INITIATED",
-            "REQUEST_QUEUED"
-    );
+    private static final List<String> PREPARATORY_REQUEST_STATUSES = List.of("REQUEST_INITIATED", "REQUEST_QUEUED");
     private static final String CODE_SUCCESSFULLY_COMPILED_STATUS = "CODE_COMPILED";
     private static final String CODE_PROCESSED_STATUS = "REQUEST_COMPLETED";
 
+    private final ObjectMapper objectMapper;
     private final WebClient client = WebClient.builder()
             .baseUrl(API_URL)
             .defaultHeader(AUTH_HEADER_KEY, AUTH_HEADER_VALUE)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build();
 
-    private final ObjectMapper objectMapper;
 
     @SneakyThrows
     public EvaluationResult evaluateCode(CodeEvaluationRequest request) {
@@ -87,10 +84,7 @@ public class HackerEarthClient implements CodeEvaluationProvider {
             output = downloadCodeEvaluationResult(outputURL);
         }
 
-        return new EvaluationResult(
-                output,
-                error
-        );
+        return new EvaluationResult(output, error);
     }
 
     @SneakyThrows
@@ -98,16 +92,11 @@ public class HackerEarthClient implements CodeEvaluationProvider {
         UriSpec<RequestBodySpec> uriSpec = client.method(HttpMethod.POST);
         RequestBodySpec bodySpec = uriSpec.uri(QUEUEING_URL);
 
-        HackerEarthCodeEvaluationRequest codeEvaluationRequest = new HackerEarthCodeEvaluationRequest(
-                "JAVA8",
-                request.code()
-        );
+        HackerEarthCodeEvaluationRequest evaluationRequest = new HackerEarthCodeEvaluationRequest("JAVA8", request.code());
 
-        RequestHeadersSpec<?> headersSpec = bodySpec.bodyValue(objectMapper.writeValueAsString(codeEvaluationRequest));
+        RequestHeadersSpec<?> headersSpec = bodySpec.bodyValue(objectMapper.writeValueAsString(evaluationRequest));
 
-        return headersSpec.retrieve()
-                .bodyToMono(HackerEarthQueueingResponse.class)
-                .block();
+        return headersSpec.retrieve().bodyToMono(HackerEarthQueueingResponse.class).block();
     }
 
     private HackerEarthCodeEvaluationResult getEvaluationResult(String heId) {

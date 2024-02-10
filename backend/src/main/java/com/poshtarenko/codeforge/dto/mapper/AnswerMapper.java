@@ -10,7 +10,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {EntityIdMapper.class, EvaluationResultMapper.class},
+@Mapper(componentModel = "spring", uses = {EntityIdMapper.class},
         injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface AnswerMapper {
 

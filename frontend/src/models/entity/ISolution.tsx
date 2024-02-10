@@ -1,8 +1,6 @@
-import {ISolutionResult} from "./ISolutionResult";
-
 export interface ISolution {
     id: number;
     code: string;
-    solutionResult: ISolutionResult;
+    taskCompletionStatus: string;
     taskId: number;
 }

@@ -10,7 +10,6 @@ import TasksMenu from "./tasksMenu/TasksMenu";
 import AnswersMenu from "./resultsMenu/AnswersMenu";
 import AnswerService from "../../services/AnswerService";
 import {IAnswer, ISolution} from "../../models/entity/IAnswer";
-import {ISolutionResult} from "../../models/entity/ISolutionResult";
 
 enum ActiveMenu {
     TasksMenu,
@@ -70,8 +69,8 @@ const TestPage: React.FC = () => {
         result.forEach(answer => {
             test.tasks.forEach(task => {
                 if (!answer.solutions.find(s => s.task.id === task.id)) {
-                    const solutionResult: ISolutionResult = {isCompleted: false, error: "Нема відповіді"}
-                    const solution: ISolution = {id: 0, code: "", solutionResult: solutionResult, task: task}
+                    const taskCompletionStatus = "No answer"
+                    const solution: ISolution = {id: 0, code: "", taskCompletionStatus: taskCompletionStatus, task: task}
                     answer.solutions.push(solution)
                 }
             })

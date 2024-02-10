@@ -1,5 +1,3 @@
-import {ISolutionResult} from "./ISolutionResult";
-
 export interface IAnswer {
     id: number,
     score: number,
@@ -17,7 +15,7 @@ export interface IRespondent {
 export interface ISolution {
     id: number,
     code: string,
-    solutionResult: ISolutionResult,
+    taskCompletionStatus: string,
     task: ITask
 }
 

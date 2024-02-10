@@ -1,7 +1,5 @@
 package com.poshtarenko.codeforge.dto.response;
 
-import com.poshtarenko.codeforge.entity.test.SolutionResult;
-
 import java.util.List;
 
 public record ViewAnswerDTO(
@@ -22,7 +20,7 @@ public record ViewAnswerDTO(
     public record SolutionDTO(
             Long id,
             String code,
-            SolutionResult solutionResult,
+            String taskCompletionStatus,
             TaskDTO task
     ) {
     }

@@ -26,8 +26,8 @@ public class Solution extends BaseEntity {
     @JoinColumn(name = "answer_id")
     Answer answer;
 
-    @Embedded
-    SolutionResult solutionResult;
+    @Enumerated(EnumType.STRING)
+    TaskCompletionStatus taskCompletionStatus;
 
     public Solution(Long id) {
         super(id);

@@ -2,15 +2,13 @@ package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.AnswerMapper;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
-import com.poshtarenko.codeforge.entity.test.Answer;
-import com.poshtarenko.codeforge.entity.test.Solution;
-import com.poshtarenko.codeforge.entity.test.Task;
-import com.poshtarenko.codeforge.entity.test.Test;
+import com.poshtarenko.codeforge.entity.test.*;
 import com.poshtarenko.codeforge.entity.user.Respondent;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
 import com.poshtarenko.codeforge.repository.RespondentRepository;
+import com.poshtarenko.codeforge.repository.SolutionRepository;
 import com.poshtarenko.codeforge.repository.TestRepository;
 import com.poshtarenko.codeforge.service.AnswerService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.poshtarenko.codeforge.entity.test.TaskCompletionStatus.NO_CODE;
+import static com.poshtarenko.codeforge.entity.test.TaskCompletionStatus.TASK_COMPLETED;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class AnswerServiceImpl implements AnswerService {
 
     private final AnswerRepository answerRepository;
+    private final SolutionRepository solutionRepository;
     private final TestRepository testRepository;
     private final RespondentRepository respondentRepository;
     private final AnswerMapper answerMapper;
@@ -80,15 +83,39 @@ public class AnswerServiceImpl implements AnswerService {
             throw new RuntimeException("Answer with id " + answerId + " already finished");
         }
         int score = answer.getSolutions().stream()
-                .filter(s -> s.getSolutionResult().getIsCompleted())
+                .filter(s -> s.getTaskCompletionStatus().equals(TASK_COMPLETED))
                 .map(Solution::getTask)
                 .mapToInt(Task::getMaxScore)
                 .sum();
         answer.setScore(score);
         answer.setIsFinished(true);
 
+        fillAnswerWithEmptySolutions(answer);
         Answer saved = answerRepository.save(answer);
         return answerMapper.toDto(saved);
+    }
+
+    private void fillAnswerWithEmptySolutions(Answer answer){
+        List<Long> solutionTasksIds = answer.getSolutions().stream().map(s -> s.getTask().getId()).toList();
+        List<Task> uncompletedTasks = answer.getTest().getTasks().stream()
+                .filter(task -> !solutionTasksIds.contains(task.getId()))
+                .toList();
+
+        List<Solution> emptySolutions = new ArrayList<>();
+        for (Task uncompletedTask : uncompletedTasks) {
+            Solution solution = new Solution();
+            solution.setAnswer(answer);
+            solution.setTask(uncompletedTask);
+            solution.setTaskCompletionStatus(NO_CODE);
+            emptySolutions.add(solution);
+        }
+
+        solutionRepository.saveAll(emptySolutions);
+
+        List<Solution> solutions = new ArrayList<>();
+        solutions.addAll(answer.getSolutions());
+        solutions.addAll(emptySolutions);
+        answer.setSolutions(solutions);
     }
 
     @Override

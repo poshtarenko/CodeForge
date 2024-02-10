@@ -14,8 +14,8 @@ CREATE TABLE RefreshToken
 (
     id         BIGSERIAL PRIMARY KEY,
     user_id    BIGINT REFERENCES Users (id) NOT NULL,
-    token      VARCHAR(128)                    NOT NULL,
-    expiration TIMESTAMP                       NOT NULL
+    token      VARCHAR(128)                 NOT NULL,
+    expiration TIMESTAMP                    NOT NULL
 );
 
 --changeset poshtarenko:3
@@ -50,9 +50,9 @@ create table Tests
 (
     id           BIGSERIAL PRIMARY KEY,
     author_id    BIGINT REFERENCES Authors (id) NOT NULL,
-    name         VARCHAR(256)                      NOT NULL,
-    invite_code  VARCHAR(64)                       NOT NULL UNIQUE,
-    max_duration INT                               NOT NULL
+    name         VARCHAR(256)                   NOT NULL,
+    invite_code  VARCHAR(64)                    NOT NULL UNIQUE,
+    max_duration INT                            NOT NULL
 );
 
 
@@ -78,10 +78,10 @@ create table Problems
     id            BIGSERIAL PRIMARY KEY,
     language_id   BIGINT REFERENCES Languages (id)  NOT NULL,
     category_id   BIGINT REFERENCES Categories (id) NOT NULL,
-    name          VARCHAR(256)                         NOT NULL,
-    description   TEXT                                 NOT NULL,
-    testing_code  TEXT                                 NOT NULL,
-    template_code TEXT                                 NOT NULL
+    name          VARCHAR(256)                      NOT NULL,
+    description   TEXT                              NOT NULL,
+    testing_code  TEXT                              NOT NULL,
+    template_code TEXT                              NOT NULL
 );
 
 --changeset poshtarenko:11
@@ -90,8 +90,8 @@ create table Tasks
     id         BIGSERIAL PRIMARY KEY,
     test_id    BIGINT REFERENCES Tests (id) ON DELETE CASCADE    NOT NULL,
     problem_id BIGINT REFERENCES Problems (id) ON DELETE CASCADE NOT NULL,
-    note       TEXT                                                 NOT NULL,
-    max_score  INT                                                  NOT NULL
+    note       TEXT                                              NOT NULL,
+    max_score  INT                                               NOT NULL
 );
 
 --changeset poshtarenko:12
@@ -101,19 +101,18 @@ create table Answers
     respondent_id BIGINT REFERENCES Respondents (id) ON DELETE CASCADE NOT NULL,
     test_id       BIGINT REFERENCES Tests (id) ON DELETE CASCADE       NOT NULL,
     score         INT,
-    is_finished   BOOLEAN                                                 NOT NULL,
-    created_at    TIMESTAMP                                               NOT NULL
+    is_finished   BOOLEAN                                              NOT NULL,
+    created_at    TIMESTAMP                                            NOT NULL
 );
 
 --changeset poshtarenko:13
 create table Solutions
 (
-    id           BIGSERIAL PRIMARY KEY,
-    answer_id    BIGINT REFERENCES Answers (id) ON DELETE CASCADE NOT NULL,
-    task_id      BIGINT REFERENCES Tasks (id) ON DELETE CASCADE   NOT NULL,
-    code         TEXT                                                NOT NULL,
-    is_completed BOOLEAN                                             NOT NULL,
-    error        TEXT
+    id                     BIGSERIAL PRIMARY KEY,
+    answer_id              BIGINT REFERENCES Answers (id) ON DELETE CASCADE NOT NULL,
+    task_id                BIGINT REFERENCES Tasks (id) ON DELETE CASCADE   NOT NULL,
+    code                   TEXT,
+    task_completion_status TEXT
 
 );
 
@@ -123,8 +122,8 @@ create table Lessons
     id          BIGSERIAL PRIMARY KEY,
     author_id   BIGINT REFERENCES Authors (id) ON DELETE CASCADE NOT NULL,
     language_id BIGINT REFERENCES Languages (id) ON DELETE CASCADE,
-    name        VARCHAR(128)                                        NOT NULL,
-    invite_code VARCHAR(64)                                         NOT NULL UNIQUE,
+    name        VARCHAR(128)                                     NOT NULL,
+    invite_code VARCHAR(64)                                      NOT NULL UNIQUE,
     description TEXT
 );
 

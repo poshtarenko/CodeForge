@@ -11,7 +11,7 @@ import com.poshtarenko.codeforge.integration.IntegrationTest;
 import com.poshtarenko.codeforge.integration.annotation.WebsocketTest;
 import com.poshtarenko.codeforge.integration.controller.websocket.util.WebSocketClient;
 import com.poshtarenko.codeforge.integration.data.TestDataInitializer;
-import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
+import com.poshtarenko.codeforge.service.CodeEvaluationService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
@@ -40,7 +40,7 @@ public class LessonWsControllerIT extends IntegrationTest {
     private final WebSocketClient webSocketClient;
 
     @MockBean
-    CodeEvaluationProvider codeEvaluationProvider;
+    CodeEvaluationService codeEvaluationService;
 
     @Value("${local.server.port}")
     private int port;
@@ -62,7 +62,7 @@ public class LessonWsControllerIT extends IntegrationTest {
         URL = "ws://127.0.0.1:" + port + "/ws";
         lessonCompletableFuture = new CompletableFuture<>();
         participationCompletableFuture = new CompletableFuture<>();
-        when(codeEvaluationProvider.evaluateCode(any())).thenReturn(expectedEvaluationResult);
+        when(codeEvaluationService.evaluateCode(any())).thenReturn(expectedEvaluationResult);
     }
 
     @AfterEach

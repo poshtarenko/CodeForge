@@ -3,7 +3,7 @@ package com.poshtarenko.codeforge.dto.response;
 public record ViewSolutionDTO(
         Long id,
         String code,
-        ViewSolutionResultDTO evaluationResult,
+        String taskCompletionStatus,
         Long taskId,
         Long answerId
 ) {

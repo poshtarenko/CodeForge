@@ -3,7 +3,6 @@ package com.poshtarenko.codeforge.controller.http;
 import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
-import com.poshtarenko.codeforge.dto.response.ViewSolutionResultDTO;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import com.poshtarenko.codeforge.service.SolutionService;
 import jakarta.validation.constraints.Positive;
@@ -42,8 +41,8 @@ public class SolutionController {
     }
 
     @PostMapping("/try_code")
-    public ViewSolutionResultDTO tryCode(@RequestBody @Validated TryCodeRequest request) {
-        return solutionService.tryCode(request);
+    public String tryCode(@RequestBody @Validated TryCodeRequest request) {
+        return solutionService.tryCode(request).getMessage();
     }
 
     @DeleteMapping("/{id}")

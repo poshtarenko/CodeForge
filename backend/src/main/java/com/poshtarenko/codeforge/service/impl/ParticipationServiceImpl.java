@@ -9,7 +9,7 @@ import com.poshtarenko.codeforge.entity.code.EvaluationResult;
 import com.poshtarenko.codeforge.entity.lesson.Participation;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.ParticipationRepository;
-import com.poshtarenko.codeforge.service.CodeEvaluationProvider;
+import com.poshtarenko.codeforge.service.CodeEvaluationService;
 import com.poshtarenko.codeforge.service.ParticipationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ParticipationServiceImpl implements ParticipationService {
 
-    private final CodeEvaluationProvider codeEvaluationProvider;
+    private final CodeEvaluationService codeEvaluationService;
     private final ParticipationRepository participationRepository;
     private final ParticipationMapper participationMapper;
 
@@ -49,7 +49,7 @@ public class ParticipationServiceImpl implements ParticipationService {
                 participation.getCode()
         );
 
-        EvaluationResult evaluationResult = codeEvaluationProvider.evaluateCode(codeEvaluationRequest);
+        EvaluationResult evaluationResult = codeEvaluationService.evaluateCode(codeEvaluationRequest);
         participation.setEvaluationResult(evaluationResult);
 
         Participation savedParticipation = participationRepository.save(participation);

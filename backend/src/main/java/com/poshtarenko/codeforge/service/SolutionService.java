@@ -4,7 +4,7 @@ package com.poshtarenko.codeforge.service;
 import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
-import com.poshtarenko.codeforge.dto.response.ViewSolutionResultDTO;
+import com.poshtarenko.codeforge.entity.test.TaskCompletionStatus;
 
 public interface SolutionService {
 
@@ -12,7 +12,7 @@ public interface SolutionService {
 
     ViewSolutionDTO put(SaveSolutionDTO answerDTO);
 
-    ViewSolutionResultDTO tryCode(TryCodeRequest tryCodeRequest);
+    TaskCompletionStatus tryCode(TryCodeRequest tryCodeRequest);
 
     void delete(long id);
 
