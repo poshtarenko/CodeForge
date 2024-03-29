@@ -6,16 +6,12 @@ import {UpdateLessonRequest} from "../models/request/UpdateLessonRequest";
 
 export default class LessonService {
 
-    static async getLessonAsAuthor(id: number): Promise<AxiosResponse<ILesson>> {
-        return $api.get('/lessons/as_author/' + id);
-    }
-
-    static async getLessonAsRespondent(id: number): Promise<AxiosResponse<ILesson>> {
-        return $api.get('/lessons/as_respondent/' + id);
+    static async getLesson(id: number): Promise<AxiosResponse<ILesson>> {
+        return $api.get('/lessons/' + id);
     }
 
     static async getAuthorLessons(): Promise<AxiosResponse<ILesson[]>> {
-        return $api.get('/lessons/as_author/my');
+        return $api.get('/lessons');
     }
 
     static async createLesson(request: CreateLessonRequest): Promise<AxiosResponse<ILesson>> {

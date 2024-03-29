@@ -22,20 +22,20 @@ public class LessonController {
 
     private final LessonService lessonService;
 
-    @GetMapping("")
-    public List<ViewLessonDTO> findAuthorLessons(@AuthenticationPrincipal UserDetailsImpl currentUser) {
-        return lessonService.findAuthorLessons(currentUser.getId());
+    @GetMapping
+    public List<ViewLessonDTO> findAuthorLessons(@AuthenticationPrincipal UserDetailsImpl user) {
+        return lessonService.findAuthorLessons(user.getId());
     }
 
     @GetMapping("/{id}")
     public ViewLessonDTO findLesson(@PathVariable @Positive long id) {
-        return lessonService.findAsRespondent(id);
+        return lessonService.find(id);
     }
 
     @PostMapping
     public ViewLessonDTO createLesson(@RequestBody @Validated SaveLessonDTO lessonDTO,
-                                      @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        return lessonService.save(currentUser.getId(), lessonDTO);
+                                      @AuthenticationPrincipal UserDetailsImpl user) {
+        return lessonService.save(user.getId(), lessonDTO);
     }
 
     @PutMapping("/{id}")

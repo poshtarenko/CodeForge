@@ -32,7 +32,7 @@ const LessonPage: React.FC = () => {
 
     async function loadLesson() {
         try {
-            const responseLesson = await LessonService.getLessonAsAuthor(Number(id));
+            const responseLesson = await LessonService.getLesson(Number(id));
             setLesson(responseLesson.data);
             setNewName(responseLesson.data.name);
         } catch (e) {

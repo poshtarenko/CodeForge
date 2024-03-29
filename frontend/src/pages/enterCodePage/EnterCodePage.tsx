@@ -15,7 +15,7 @@ function EnterCodePage() {
     async function navigateToSession() {
         try {
             const startTestResponse = await AnswerService.startTest(code);
-            const response = await TestService.getTestAsRespondent(startTestResponse.data.testId);
+            const response = await TestService.getTest(startTestResponse.data.testId);
             if (response.data.id) {
                 navigate("/session/" + response.data.id)
             }

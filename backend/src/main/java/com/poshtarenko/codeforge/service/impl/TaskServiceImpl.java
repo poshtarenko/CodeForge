@@ -39,10 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
         @Override
         @Transactional
         public ViewTaskDTO update(Long taskId, UpdateTaskDTO taskDTO) {
-            taskRepository.findById(taskId)
-                    .orElseThrow(() -> new EntityNotFoundException(Task.class, taskId));
-            Task task = taskRepository.save(taskMapper.toEntity(taskDTO));
-            return taskMapper.toDto(task);
+            Task task = taskMapper.toEntity(taskDTO);
+            task.setId(taskId);
+            return taskMapper.toDto(taskRepository.save(task));
         }
 
         @Override
@@ -53,7 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 
         @Override
         public void checkAccess(long taskId, long authorId) {
-            if (taskRepository.existsById(taskId)) {
+            if (!taskRepository.existsById(taskId)) {
                 throw new EntityNotFoundException(Task.class, taskId);
             }
             if (!taskRepository.existsByIdAndTestAuthorId(taskId, authorId)) {

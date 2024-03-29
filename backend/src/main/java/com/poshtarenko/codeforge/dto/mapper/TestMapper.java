@@ -22,7 +22,6 @@ public interface TestMapper {
 
     ViewTestDTO.ProblemDTO toDto(Problem problem);
 
-    @Mapping(source = "authorId", target = "author")
     Test toEntity(SaveTestDTO dto);
 
     Test toEntity(UpdateTestDTO dto);

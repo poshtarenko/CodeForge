@@ -34,7 +34,7 @@ const LessonSessionPage: React.FC = () => {
 
     async function loadLesson() {
         try {
-            const response = await LessonService.getLessonAsAuthor(Number(lessonId));
+            const response = await LessonService.getLesson(Number(lessonId));
             setLesson(response.data);
         } catch (e) {
             console.log(e);

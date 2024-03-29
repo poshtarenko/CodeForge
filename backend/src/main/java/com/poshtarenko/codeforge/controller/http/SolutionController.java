@@ -22,8 +22,8 @@ public class SolutionController {
 
     @GetMapping("/{id}")
     public ViewSolutionDTO findSolution(@PathVariable @Positive long id,
-                                        @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        solutionService.checkAccess(id, currentUser.getId());
+                                        @AuthenticationPrincipal UserDetailsImpl user) {
+        solutionService.checkAccess(id, user.getId());
         return solutionService.find(id);
     }
 
@@ -39,8 +39,8 @@ public class SolutionController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSolution(@PathVariable @Positive long id,
-                                            @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        solutionService.checkAccess(id, currentUser.getId());
+                                            @AuthenticationPrincipal UserDetailsImpl user) {
+        solutionService.checkAccess(id, user.getId());
         solutionService.delete(id);
         return ResponseEntity.ok().build();
     }

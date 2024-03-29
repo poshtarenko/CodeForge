@@ -22,36 +22,28 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ViewTaskDTO findTask(@PathVariable @Positive long id,
-                                @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        taskService.checkAccess(id, currentUser.getId());
+                                @AuthenticationPrincipal UserDetailsImpl user) {
+        taskService.checkAccess(id, user.getId());
         return taskService.find(id);
     }
 
     @PostMapping
     public ViewTaskDTO createTask(@RequestBody @Validated SaveTaskDTO taskDTO) {
-        SaveTaskDTO saveTaskDTO = new SaveTaskDTO(
-                taskDTO.note(),
-                taskDTO.maxScore(),
-                taskDTO.problemId(),
-                taskDTO.testId()
-        );
-
-        return taskService.save(saveTaskDTO);
+        return taskService.save(taskDTO);
     }
 
     @PutMapping("/{id}")
     public ViewTaskDTO updateTask(@PathVariable @Positive long id,
                                   @RequestBody @Validated UpdateTaskDTO taskDTO,
-                                  @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        taskService.checkAccess(id, currentUser.getId());
+                                  @AuthenticationPrincipal UserDetailsImpl user) {
+        taskService.checkAccess(id, user.getId());
         return taskService.update(id, taskDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable @Positive long id,
-                                        @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        taskService.checkAccess(id, currentUser.getId());
-
+                                        @AuthenticationPrincipal UserDetailsImpl user) {
+        taskService.checkAccess(id, user.getId());
         taskService.delete(id);
         return ResponseEntity.ok().build();
     }

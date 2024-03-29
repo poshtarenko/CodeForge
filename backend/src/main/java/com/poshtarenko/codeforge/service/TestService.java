@@ -13,7 +13,7 @@ public interface TestService {
 
     List<ViewTestDTO> findAuthorTests(long authorId);
 
-    ViewTestDTO save(SaveTestDTO testDTO);
+    ViewTestDTO save(Long userId, SaveTestDTO testDTO);
 
     ViewTestDTO update(Long testId, UpdateTestDTO testDTO);
 

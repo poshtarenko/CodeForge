@@ -36,7 +36,7 @@ const RespondentSessionPage: React.FC = () => {
 
     async function loadTest() {
         try {
-            const responseTest = await TestService.getTestAsRespondent(Number(testId));
+            const responseTest = await TestService.getTest(Number(testId));
             const responseAnswer = await AnswerService.findRespondentCurrentAnswer(responseTest.data.id);
 
             if (responseAnswer.data.isFinished) {

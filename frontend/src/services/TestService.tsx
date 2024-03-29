@@ -6,16 +6,12 @@ import {UpdateTestRequest} from "../models/request/UpdateTestRequest";
 
 export default class TestService {
 
-    static async getTestAsAuthor(id: number): Promise<AxiosResponse<ITest>> {
-        return $api.get('/tests/as_author/' + id);
-    }
-
-    static async getTestAsRespondent(id: number): Promise<AxiosResponse<ITest>> {
-        return $api.get('/tests/as_respondent/' + id);
+    static async getTest(id: number): Promise<AxiosResponse<ITest>> {
+        return $api.get('/tests/' + id);
     }
 
     static async getAuthorTests(): Promise<AxiosResponse<ITest[]>> {
-        return $api.get('/tests/as_author/my');
+        return $api.get('/tests');
     }
 
     static async createTest(request: CreateTestRequest): Promise<AxiosResponse<ITest>> {

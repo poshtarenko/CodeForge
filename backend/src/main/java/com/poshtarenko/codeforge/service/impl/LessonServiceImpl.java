@@ -7,7 +7,9 @@ import com.poshtarenko.codeforge.dto.request.UpdateLessonDescriptionDTO;
 import com.poshtarenko.codeforge.dto.response.ViewLessonDTO;
 import com.poshtarenko.codeforge.entity.code.Language;
 import com.poshtarenko.codeforge.entity.lesson.Lesson;
+import com.poshtarenko.codeforge.entity.user.Author;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
+import com.poshtarenko.codeforge.repository.AuthorRepository;
 import com.poshtarenko.codeforge.repository.LessonRepository;
 import com.poshtarenko.codeforge.service.LessonService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
 
+    private final AuthorRepository authorRepository;
     private final LessonRepository lessonRepository;
     private final LessonMapper lessonMapper;
 
@@ -54,6 +57,8 @@ public class LessonServiceImpl implements LessonService {
             code = RandomStringUtils.randomAlphabetic(LESSON_INVITE_CODE_LENGTH);
         } while (lessonRepository.existsLessonByInviteCode(code));
         Lesson lesson = lessonMapper.toEntity(lessonDTO);
+        lesson.setAuthor(authorRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException(Author.class, userId)));
         lesson.setInviteCode(code);
         return lessonMapper.toDto(lessonRepository.save(lesson));
     }

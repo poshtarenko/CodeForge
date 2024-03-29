@@ -22,44 +22,35 @@ public class TestController {
 
     private final TestService testService;
 
-    @GetMapping("/as_author/{id}")
-    public ViewTestDTO findTestAsAuthor(@PathVariable @Positive long id,
-                                        @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        testService.checkAccess(id, currentUser.getId());
+    @GetMapping("/{id}")
+    public ViewTestDTO findTest(@PathVariable @Positive long id) {
         return testService.find(id);
     }
 
-    @GetMapping("/as_respondent/{testId}")
-    public ViewTestDTO findTestAsRespondent(@PathVariable @Positive long testId,
-                                            @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        testService.checkRespondentConnectedToTest(currentUser.getId(), testId);
-        return testService.findAsRespondent(testId);
-    }
-
-    @GetMapping("/as_author/my")
-    public List<ViewTestDTO> findAuthorTests(@AuthenticationPrincipal UserDetailsImpl currentUser) {
-        return testService.findAuthorTests(currentUser.getId());
+    @GetMapping
+    public List<ViewTestDTO> findAuthorTests(@AuthenticationPrincipal UserDetailsImpl user) {
+        return testService.findAuthorTests(user.getId());
     }
 
     @PostMapping
-    public ViewTestDTO createTest(@RequestBody @Validated SaveTestDTO testDTO) {
-        return testService.save(testDTO);
+    public ViewTestDTO createTest(@AuthenticationPrincipal UserDetailsImpl user,
+                                  @RequestBody @Validated SaveTestDTO testDTO) {
+        return testService.save(user.getId(), testDTO);
     }
 
     @PutMapping("/{id}")
     public ViewTestDTO updateTest(@PathVariable @Positive long id,
                                   @RequestBody @Validated UpdateTestDTO testDTO,
-                                  @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        testService.checkAccess(id, currentUser.getId());
+                                  @AuthenticationPrincipal UserDetailsImpl user) {
+        testService.checkAccess(id, user.getId());
         return testService.update(id, testDTO);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTest(@PathVariable @Positive long id,
-                                        @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        testService.checkAccess(id, currentUser.getId());
+                                        @AuthenticationPrincipal UserDetailsImpl user) {
+        testService.checkAccess(id, user.getId());
         testService.delete(id);
         return ResponseEntity.ok().build();
     }
-
 }

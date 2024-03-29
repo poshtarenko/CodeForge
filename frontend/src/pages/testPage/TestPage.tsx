@@ -37,7 +37,7 @@ const TestPage: React.FC = () => {
 
     async function loadTest() {
         try {
-            const responseTest = await TestService.getTestAsAuthor(Number(id));
+            const responseTest = await TestService.getTest(Number(id));
             setTest(responseTest.data);
             setNewName(responseTest.data.name);
         } catch (e) {

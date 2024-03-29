@@ -5,9 +5,11 @@ import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.test.Test;
+import com.poshtarenko.codeforge.entity.user.Author;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.AnswerRepository;
+import com.poshtarenko.codeforge.repository.AuthorRepository;
 import com.poshtarenko.codeforge.repository.TestRepository;
 import com.poshtarenko.codeforge.service.TestService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,7 @@ public class TestServiceImpl implements TestService {
     private static final int TEST_INVITE_CODE_LENGTH = 8;
 
     private final TestRepository testRepository;
+    private final AuthorRepository authorRepository;
     private final AnswerRepository answerRepository;
     private final TestMapper testMapper;
 
@@ -49,12 +52,14 @@ public class TestServiceImpl implements TestService {
 
     @Override
     @Transactional
-    public ViewTestDTO save(SaveTestDTO testDTO) {
+    public ViewTestDTO save(Long userId, SaveTestDTO testDTO) {
         String code;
         do {
             code = RandomStringUtils.randomAlphabetic(TEST_INVITE_CODE_LENGTH);
         } while (testRepository.findByInviteCode(code).isPresent());
         Test test = testMapper.toEntity(testDTO);
+        test.setAuthor(authorRepository.findById(userId).orElseThrow(
+                () -> new EntityNotFoundException(Author.class, userId)));
         test.setInviteCode(code);
         return testMapper.toDto(testRepository.save(test));
     }

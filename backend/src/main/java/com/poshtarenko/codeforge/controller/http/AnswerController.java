@@ -25,42 +25,42 @@ public class AnswerController {
 
     @GetMapping("/{id}")
     public ViewAnswerDTO findAnswer(@PathVariable @Positive long id,
-                                    @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        answerService.checkAccess(id, currentUser.getId());
+                                    @AuthenticationPrincipal UserDetailsImpl user) {
+        answerService.checkAccess(id, user.getId());
         return answerService.find(id);
     }
 
     @GetMapping("/by_test/{testId}")
     public List<ViewAnswerDTO> findTestAnswers(@PathVariable @Positive long testId,
-                                               @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        testService.checkAccess(testId, currentUser.getId());
+                                               @AuthenticationPrincipal UserDetailsImpl user) {
+        testService.checkAccess(testId, user.getId());
         return answerService.findByTest(testId);
     }
 
     @GetMapping("/current/{testId}")
     public ViewAnswerDTO findRespondentCurrentAnswer(@PathVariable @Positive long testId,
-                                                     @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        Optional<ViewAnswerDTO> result = answerService.findRespondentCurrentAnswer(currentUser.getId(), testId);
+                                                     @AuthenticationPrincipal UserDetailsImpl user) {
+        Optional<ViewAnswerDTO> result = answerService.findRespondentCurrentAnswer(user.getId(), testId);
         return result.orElse(null);
     }
 
     @PostMapping("/start/{testCode}")
     public ViewAnswerDTO startAnswer(@PathVariable @Size(min = 8, max = 8) String testCode,
-                                     @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        return answerService.startAnswer(currentUser.getId(), testCode);
+                                     @AuthenticationPrincipal UserDetailsImpl user) {
+        return answerService.startAnswer(user.getId(), testCode);
     }
 
     @PostMapping("/finish/{answerId}")
     public ViewAnswerDTO finishAnswer(@PathVariable @Positive long answerId,
-                                      @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        answerService.checkAccess(answerId, currentUser.getId());
+                                      @AuthenticationPrincipal UserDetailsImpl user) {
+        answerService.checkAccess(answerId, user.getId());
         return answerService.finishAnswer(answerId);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAnswer(@PathVariable @Positive long id,
-                                          @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        answerService.checkAccess(id, currentUser.getId());
+                                          @AuthenticationPrincipal UserDetailsImpl user) {
+        answerService.checkAccess(id, user.getId());
         answerService.delete(id);
         return ResponseEntity.ok().build();
     }

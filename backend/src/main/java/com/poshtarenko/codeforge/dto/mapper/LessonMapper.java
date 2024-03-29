@@ -15,7 +15,6 @@ public interface LessonMapper {
     @Mapping(source = "author", target = "authorId")
     ViewLessonDTO toDto(Lesson entity);
 
-    @Mapping(source = "authorId", target = "author")
     Lesson toEntity(SaveLessonDTO dto);
 
     @Mapping(source = "languageId", target = "language")
