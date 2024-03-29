@@ -25,9 +25,7 @@ public class LanguageServiceImpl implements LanguageService {
     public ViewLanguageDTO find(long id) {
         return languageRepository.findById(id)
                 .map(categoryRepository::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Language.class, "Language with id " + id + " not found")
-                );
+                .orElseThrow(() -> new EntityNotFoundException(Language.class, id));
     }
 
     @Override
@@ -36,5 +34,4 @@ public class LanguageServiceImpl implements LanguageService {
                 .map(categoryRepository::toDto)
                 .collect(Collectors.toList());
     }
-
 }

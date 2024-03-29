@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import "./lessonPage.css"
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
 import {ILesson} from "../../models/entity/ILesson";
 import LessonService from "../../services/LessonService";
@@ -14,6 +14,13 @@ const LessonPage: React.FC = () => {
     const [lesson, setLesson] = useState<ILesson>({} as ILesson);
     const [changingName, setChangingName] = useState<boolean>(false);
     const [newName, setNewName] = useState<string>("");
+
+
+    let navigate = useNavigate();
+
+    async function navigateToSession() {
+        navigate("/lesson/session/" + id)
+    }
 
     useEffect(() => {
         loadAll();
@@ -68,6 +75,8 @@ const LessonPage: React.FC = () => {
                         <p className={"lesson-lang"}>Код для входу : {lesson.inviteCode}</p>
                     </div>
                 </div>
+                <button onClick={() => navigateToSession()} className={"standard-button"}>Підключитися до заняття
+                </button>
             </div>
         </PageTemplate>
     );

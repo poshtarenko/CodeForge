@@ -33,15 +33,9 @@ public class TestServiceImpl implements TestService {
     private final TestMapper testMapper;
 
     @Override
-    public ViewTestDTO findAsAuthor(long id) {
+    @PreAuthorize("hasAnyAuthority('AUTHOR', 'RESPONDENT')")
+    public ViewTestDTO find(long id) {
         Test test = findById(id);
-        return testMapper.toDto(test);
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('RESPONDENT')")
-    public ViewTestDTO findAsRespondent(long testId) {
-        Test test = findById(testId);
         return testMapper.toDto(test);
     }
 
@@ -60,23 +54,18 @@ public class TestServiceImpl implements TestService {
         do {
             code = RandomStringUtils.randomAlphabetic(TEST_INVITE_CODE_LENGTH);
         } while (testRepository.findByInviteCode(code).isPresent());
-
         Test test = testMapper.toEntity(testDTO);
         test.setInviteCode(code);
-        Test saved = testRepository.save(test);
-
-        return testMapper.toDto(saved);
+        return testMapper.toDto(testRepository.save(test));
     }
 
     @Override
     @Transactional
-    public ViewTestDTO update(UpdateTestDTO testDTO) {
-        Test test = findById(testDTO.id());
+    public ViewTestDTO update(Long testId, UpdateTestDTO testDTO) {
+        Test test = findById(testId);
         test.setName(testDTO.name());
         test.setMaxDuration(testDTO.maxDuration());
-
-        Test savedTest = testRepository.save(test);
-        return testMapper.toDto(savedTest);
+        return testMapper.toDto(testRepository.save(test));
     }
 
     @Override
@@ -103,8 +92,6 @@ public class TestServiceImpl implements TestService {
 
     private Test findById(long testId) {
         return testRepository.findById(testId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class, "Test with id " + testId + " not found")
-                );
+                .orElseThrow(() -> new EntityNotFoundException(Test.class, testId));
     }
 }

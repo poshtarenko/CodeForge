@@ -6,6 +6,5 @@ import jakarta.validation.constraints.Positive;
 
 public record SaveTestDTO(
         @NotBlank String name,
-        @Positive Integer maxDuration,
-        @JsonIgnore Long authorId) {
+        @Positive Integer maxDuration) {
 }

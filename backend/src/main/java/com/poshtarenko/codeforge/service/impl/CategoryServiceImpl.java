@@ -25,9 +25,7 @@ public class CategoryServiceImpl implements CategoryService {
     public ViewCategoryDTO find(long id) {
         return categoryRepository.findById(id)
                 .map(categoryMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Category.class, "Category with id " + id + " not found")
-                );
+                .orElseThrow(() -> new EntityNotFoundException(Category.class, id));
     }
 
     @Override
@@ -36,6 +34,4 @@ public class CategoryServiceImpl implements CategoryService {
                 .map(categoryMapper::toDto)
                 .collect(Collectors.toList());
     }
-
-
 }

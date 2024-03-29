@@ -31,18 +31,19 @@
 .sidebar-link {
     cursor: pointer;
     display: flex;
-    padding: 20px 70px;
+    padding: 20px 30px;
     background-color: #efefef;
     font-size: 22px;
-    gap: 15px;
+    gap: 25px;
     margin-top: 10px;
     align-items: center;
     color: #2f2f2f;
-    transition: 100ms;
+    transition: 200ms;
 }
 
 .sidebar-link:hover {
-    background-color: #e0e0e0;
+    background-color: #1A73E9;
+    color: #FFFFFF;
 }
 
 .sidebar-link .sidebar-icon {

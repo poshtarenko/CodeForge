@@ -7,6 +7,5 @@ import jakarta.validation.constraints.Positive;
 public record SaveSolutionDTO(
         @NotBlank String code,
         @Positive Long taskId,
-        @Positive Long answerId,
-        @JsonIgnore Long respondentId) {
+        @Positive Long answerId) {
 }

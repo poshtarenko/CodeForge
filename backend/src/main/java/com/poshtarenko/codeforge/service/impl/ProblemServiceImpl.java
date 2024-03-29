@@ -27,9 +27,7 @@ public class ProblemServiceImpl implements ProblemService {
     public ViewProblemDTO find(long id) {
         return problemRepository.findById(id)
                 .map(problemMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Problem.class, "Problem with id " + id + " not found")
-                );
+                .orElseThrow(() -> new EntityNotFoundException(Problem.class, id));
     }
 
     @Override
@@ -42,9 +40,7 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public Problem findByTask(long taskId) {
         return problemRepository.findByTask(taskId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Problem.class, "Problem by task_id " + taskId + " not found")
-                );
+                .orElseThrow(() -> new EntityNotFoundException(Problem.class, taskId));
     }
 
     @Override
@@ -56,11 +52,9 @@ public class ProblemServiceImpl implements ProblemService {
 
     @Override
     @Transactional
-    public ViewProblemDTO update(UpdateProblemDTO problemDTO) {
-        problemRepository.findById(problemDTO.id())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class,
-                        "Test with id %d not found".formatted(problemDTO.id())));
+    public ViewProblemDTO update(Long problemId, UpdateProblemDTO problemDTO) {
+        problemRepository.findById(problemId)
+                .orElseThrow(() -> new EntityNotFoundException(Test.class, problemId));
 
         Problem problem = problemRepository.save(problemMapper.toEntity(problemDTO));
         return problemMapper.toDto(problem);

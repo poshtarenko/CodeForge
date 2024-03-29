@@ -22,53 +22,31 @@ public class LessonController {
 
     private final LessonService lessonService;
 
-    @GetMapping("/as_author/{id}")
-    public ViewLessonDTO findLessonAsAuthor(@PathVariable @Positive long id,
-                                            @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        return lessonService.findAsAuthor(id);
-    }
-
-    @GetMapping("/as_respondent/{testId}")
-    public ViewLessonDTO findLessonAsRespondent(@PathVariable @Positive long testId,
-                                                @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        return lessonService.findAsRespondent(testId);
-    }
-
-    @GetMapping("/as_author/my")
+    @GetMapping("")
     public List<ViewLessonDTO> findAuthorLessons(@AuthenticationPrincipal UserDetailsImpl currentUser) {
         return lessonService.findAuthorLessons(currentUser.getId());
+    }
+
+    @GetMapping("/{id}")
+    public ViewLessonDTO findLesson(@PathVariable @Positive long id) {
+        return lessonService.findAsRespondent(id);
     }
 
     @PostMapping
     public ViewLessonDTO createLesson(@RequestBody @Validated SaveLessonDTO lessonDTO,
                                       @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        SaveLessonDTO saveLessonDTO = new SaveLessonDTO(
-                lessonDTO.name(),
-                currentUser.getId()
-        );
-
-        return lessonService.save(saveLessonDTO);
+        return lessonService.save(currentUser.getId(), lessonDTO);
     }
 
     @PutMapping("/{id}")
     public ViewLessonDTO updateLesson(@PathVariable @Positive long id,
-                                      @RequestBody @Validated UpdateLessonDTO lessonDTO,
-                                      @AuthenticationPrincipal UserDetailsImpl currentUser) {
-
-        UpdateLessonDTO updateLessonDTO = new UpdateLessonDTO(
-                id,
-                lessonDTO.name(),
-                lessonDTO.languageId()
-        );
-
-        return lessonService.update(updateLessonDTO);
+                                      @RequestBody @Validated UpdateLessonDTO lessonDTO) {
+        return lessonService.update(id, lessonDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteLesson(@PathVariable @Positive long id,
-                                          @AuthenticationPrincipal UserDetailsImpl currentUser) {
+    public ResponseEntity<?> deleteLesson(@PathVariable @Positive long id) {
         lessonService.delete(id);
         return ResponseEntity.ok().build();
     }
-
 }

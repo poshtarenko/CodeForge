@@ -37,32 +37,24 @@ public class SolutionServiceImpl implements SolutionService {
     public ViewSolutionDTO find(long id) {
         return solutionRepository.findById(id)
                 .map(solutionMapper::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Solution.class, "Answer with id " + id + " not found")
-                );
+                .orElseThrow(() -> new EntityNotFoundException(Solution.class, id));
     }
 
     @Override
     @Transactional
     public ViewSolutionDTO put(SaveSolutionDTO solutionDTO) {
         Answer answer = answerRepository.findById(solutionDTO.answerId()).orElseThrow(
-                () -> new EntityNotFoundException(Answer.class, "Answer with id " + solutionDTO.answerId() + " not found.")
-        );
+                () -> new EntityNotFoundException(Answer.class, solutionDTO.answerId()));
         if (answer.getIsFinished().equals(true)) {
             throw new RuntimeException("Trying to put solution to finished answer");
         }
-
         Solution solution = solutionMapper.toEntity(solutionDTO);
         solutionRepository.findByTaskIdAndAnswerId(solutionDTO.taskId(), solutionDTO.answerId())
                 .ifPresent(s -> solution.setId(s.getId()));
-
         solution.setAnswer(answer);
-
         TaskCompletionStatus status = checkTaskCompletion(solution.getTask().getId(), solution.getCode());
         solution.setTaskCompletionStatus(status);
-
-        Solution saved = solutionRepository.save(solution);
-        return solutionMapper.toDto(saved);
+        return solutionMapper.toDto(solutionRepository.save(solution));
     }
 
     @Override
@@ -89,8 +81,7 @@ public class SolutionServiceImpl implements SolutionService {
 
     private TaskCompletionStatus checkTaskCompletion(long taskId, String code) {
         Problem problem = problemRepository.findByTask(taskId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Problem.class, "Problem by task id " + taskId + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException(Problem.class, "Task problem not found"));
         String language = problem.getLanguage().getName();
         String codeToEvaluate = problem.getTestingCode().formatted(code);
 
@@ -109,7 +100,6 @@ public class SolutionServiceImpl implements SolutionService {
         } else {
             throw new RuntimeException("Unknown task completion status");
         }
-
         return status;
     }
 }

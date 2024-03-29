@@ -22,6 +22,4 @@ public class CategoryController {
     public List<ViewCategoryDTO> findAll() {
         return categoryService.findAll();
     }
-
-
 }

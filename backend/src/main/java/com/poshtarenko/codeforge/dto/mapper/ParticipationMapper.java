@@ -15,6 +15,4 @@ public interface ParticipationMapper {
 
     ViewParticipationDTO.EvaluationResultDTO toDto(EvaluationResult entity);
 
-    Participation toEntity(SaveParticipationDTO dto);
-
 }

@@ -26,7 +26,7 @@ public class TestController {
     public ViewTestDTO findTestAsAuthor(@PathVariable @Positive long id,
                                         @AuthenticationPrincipal UserDetailsImpl currentUser) {
         testService.checkAccess(id, currentUser.getId());
-        return testService.findAsAuthor(id);
+        return testService.find(id);
     }
 
     @GetMapping("/as_respondent/{testId}")
@@ -42,15 +42,8 @@ public class TestController {
     }
 
     @PostMapping
-    public ViewTestDTO createTest(@RequestBody @Validated SaveTestDTO testDTO,
-                                  @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        SaveTestDTO saveTestDTO = new SaveTestDTO(
-                testDTO.name(),
-                testDTO.maxDuration(),
-                currentUser.getId()
-        );
-
-        return testService.save(saveTestDTO);
+    public ViewTestDTO createTest(@RequestBody @Validated SaveTestDTO testDTO) {
+        return testService.save(testDTO);
     }
 
     @PutMapping("/{id}")
@@ -58,14 +51,7 @@ public class TestController {
                                   @RequestBody @Validated UpdateTestDTO testDTO,
                                   @AuthenticationPrincipal UserDetailsImpl currentUser) {
         testService.checkAccess(id, currentUser.getId());
-
-        UpdateTestDTO updateTestDTO = new UpdateTestDTO(
-                id,
-                testDTO.name(),
-                testDTO.maxDuration()
-        );
-
-        return testService.update(updateTestDTO);
+        return testService.update(id, testDTO);
     }
 
     @DeleteMapping("/{id}")

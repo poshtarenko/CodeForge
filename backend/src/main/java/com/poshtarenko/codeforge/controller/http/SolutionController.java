@@ -28,16 +28,8 @@ public class SolutionController {
     }
 
     @PostMapping
-    public ViewSolutionDTO putSolution(@RequestBody @Validated SaveSolutionDTO solutionDTO,
-                                       @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        SaveSolutionDTO saveSolutionDTO = new SaveSolutionDTO(
-                solutionDTO.code(),
-                solutionDTO.taskId(),
-                solutionDTO.answerId(),
-                currentUser.getId()
-        );
-
-        return solutionService.put(saveSolutionDTO);
+    public ViewSolutionDTO putSolution(@RequestBody @Validated SaveSolutionDTO solutionDTO) {
+        return solutionService.put(solutionDTO);
     }
 
     @PostMapping("/try_code")

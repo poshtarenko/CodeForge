@@ -21,7 +21,6 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-//@PreAuthorize("hasAuthority('AUTHOR')")
 public class LessonServiceImpl implements LessonService {
 
     private final LessonRepository lessonRepository;
@@ -37,60 +36,44 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
-    public ViewLessonDTO findAsAuthor(Long id) {
-        Lesson lesson = findById(id);
-        return lessonMapper.toDto(lesson);
-    }
-
-    @Override
-    @PreAuthorize("hasAuthority('RESPONDENT')")
-    public ViewLessonDTO findAsRespondent(Long id) {
-        Lesson lesson = findById(id);
-        return lessonMapper.toDto(lesson);
+    @PreAuthorize("hasAnyAuthority('AUTHOR', 'RESPONDENT')")
+    public ViewLessonDTO find(Long id) {
+        return lessonMapper.toDto(findById(id));
     }
 
     private Lesson findById(long id) {
         return lessonRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Lesson.class, "Lesson with id " + id + " not found")
-                );
+                .orElseThrow(() -> new EntityNotFoundException(Lesson.class, id));
     }
 
     @Override
     @Transactional
-    public ViewLessonDTO save(SaveLessonDTO lessonDTO) {
+    public ViewLessonDTO save(Long userId, SaveLessonDTO lessonDTO) {
         String code;
         do {
             code = RandomStringUtils.randomAlphabetic(LESSON_INVITE_CODE_LENGTH);
         } while (lessonRepository.existsLessonByInviteCode(code));
-
         Lesson lesson = lessonMapper.toEntity(lessonDTO);
         lesson.setInviteCode(code);
-
-        Lesson saved = lessonRepository.save(lesson);
-        return lessonMapper.toDto(saved);
+        return lessonMapper.toDto(lessonRepository.save(lesson));
     }
 
     @Override
     @Transactional
-    public ViewLessonDTO update(UpdateLessonDTO lessonDTO) {
-        Lesson lesson = findById(lessonDTO.id());
+    public ViewLessonDTO update(Long lessonId, UpdateLessonDTO lessonDTO) {
+        Lesson lesson = findById(lessonId);
         lesson.setName(lessonDTO.name());
         if (lessonDTO.languageId() != null) {
             lesson.setLanguage(new Language(lessonDTO.languageId()));
         }
-
-        Lesson savedLesson = lessonRepository.save(lesson);
-        return lessonMapper.toDto(savedLesson);
+        return lessonMapper.toDto(lessonRepository.save(lesson));
     }
 
     @Override
-    public ViewLessonDTO updateCurrentDescription(UpdateLessonDescriptionDTO request) {
-        Lesson lesson = findById(request.id());
+    public ViewLessonDTO updateCurrentDescription(Long lessonId, UpdateLessonDescriptionDTO request) {
+        Lesson lesson = findById(lessonId);
         lesson.setDescription(request.description());
-
-        Lesson savedLesson = lessonRepository.save(lesson);
-        return lessonMapper.toDto(savedLesson);
+        return lessonMapper.toDto(lessonRepository.save(lesson));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.poshtarenko.codeforge.entity.lesson;
 import com.poshtarenko.codeforge.entity.BaseEntity;
 import com.poshtarenko.codeforge.entity.code.EvaluationResult;
 import com.poshtarenko.codeforge.entity.user.Respondent;
+import com.poshtarenko.codeforge.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,8 +23,8 @@ public class Participation extends BaseEntity {
     Lesson lesson;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "respondent_id")
-    Respondent respondent;
+    @JoinColumn(name = "user_id")
+    User user;
 
     @Column(name = "code")
     String code;

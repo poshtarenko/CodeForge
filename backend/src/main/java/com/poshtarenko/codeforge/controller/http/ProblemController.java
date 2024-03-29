@@ -22,6 +22,4 @@ public class ProblemController {
     public List<ViewProblemDTO> findAll() {
         return problemService.findAll();
     }
-
-
 }

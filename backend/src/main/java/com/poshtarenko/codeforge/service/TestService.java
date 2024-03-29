@@ -9,15 +9,13 @@ import java.util.List;
 
 public interface TestService {
 
-    ViewTestDTO findAsAuthor(long id);
-
-    ViewTestDTO findAsRespondent(long testId);
+    ViewTestDTO find(long id);
 
     List<ViewTestDTO> findAuthorTests(long authorId);
 
     ViewTestDTO save(SaveTestDTO testDTO);
 
-    ViewTestDTO update(UpdateTestDTO testDTO);
+    ViewTestDTO update(Long testId, UpdateTestDTO testDTO);
 
     void delete(long id);
 

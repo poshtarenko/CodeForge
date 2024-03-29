@@ -22,6 +22,4 @@ public class LanguageController {
     public List<ViewLanguageDTO> findAll() {
         return languageService.findAll();
     }
-
-
 }

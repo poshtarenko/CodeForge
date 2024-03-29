@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public record UpdateLessonDTO(
-        @Positive @JsonIgnore Long id,
         @NotBlank String name,
         Long languageId
 ) {

@@ -63,3 +63,16 @@
 .lesson-title-block .lesson-lang {
     margin-top: 10px;
 }
+
+.lesson-page button {
+    width: 400px;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 15px 0;
+    margin-top: 40px;
+    background-color: #02970E;
+}
+
+.lesson-page button:hover {
+    background-color: #06690d;
+}

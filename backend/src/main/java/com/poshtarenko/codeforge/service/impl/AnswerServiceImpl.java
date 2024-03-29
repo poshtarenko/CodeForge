@@ -63,13 +63,9 @@ public class AnswerServiceImpl implements AnswerService {
     public ViewAnswerDTO startAnswer(long respondentId, String testCode) {
         Answer answer = new Answer();
         answer.setTest(testRepository.findByInviteCode(testCode)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Test.class, "Test with code " + testCode + " not found")
-                ));
+                .orElseThrow(() -> new EntityNotFoundException(Test.class, "Test with code " + testCode + " not found")));
         answer.setRespondent(respondentRepository.findById(respondentId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Respondent.class, "Respondent with id " + respondentId + " not found")
-                ));
+                .orElseThrow(() -> new EntityNotFoundException(Respondent.class, respondentId)));
         answer.setIsFinished(false);
         return answerMapper.toDto(answerRepository.save(answer));
     }
@@ -134,8 +130,6 @@ public class AnswerServiceImpl implements AnswerService {
 
     private Answer findById(long answerId) {
         return answerRepository.findById(answerId)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        Answer.class, "Answer with id " + answerId + " not found")
-                );
+                .orElseThrow(() -> new EntityNotFoundException(Answer.class, answerId));
     }
 }

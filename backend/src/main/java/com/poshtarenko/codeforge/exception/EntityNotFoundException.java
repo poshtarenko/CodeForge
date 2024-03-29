@@ -15,6 +15,11 @@ public class EntityNotFoundException extends APIException {
         this.entityClass = entityClass;
     }
 
+    public EntityNotFoundException(Class<? extends BaseEntity> entityClass, Long id) {
+        super("%s with id %s not found".formatted(entityClass, id), EXCEPTION_CODE, HTTP_STATUS);
+        this.entityClass = entityClass;
+    }
+
     public Class<? extends BaseEntity> getEntityClass() {
         return entityClass;
     }

@@ -11,16 +11,14 @@ public interface LessonService {
 
     List<ViewLessonDTO> findAuthorLessons(Long authorId);
 
-    ViewLessonDTO findAsAuthor(Long id);
+    ViewLessonDTO find(Long id);
 
-    ViewLessonDTO findAsRespondent(Long id);
+    ViewLessonDTO save(Long userId, SaveLessonDTO lessonDTO);
 
-    ViewLessonDTO save(SaveLessonDTO lessonDTO);
-
-    ViewLessonDTO update(UpdateLessonDTO lessonDTO);
+    ViewLessonDTO update(Long lessonId, UpdateLessonDTO lessonDTO);
 
 
-    ViewLessonDTO updateCurrentDescription(UpdateLessonDescriptionDTO request);
+    ViewLessonDTO updateCurrentDescription(Long lessonId, UpdateLessonDescriptionDTO request);
 
     void delete(Long id);
 }

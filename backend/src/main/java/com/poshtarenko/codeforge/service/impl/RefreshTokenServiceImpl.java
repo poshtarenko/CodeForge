@@ -55,9 +55,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
             log.info(msg);
             throw new RuntimeException(msg);
         }
-
         updateToken(refreshToken);
-
         String jwt = jwtUtils.generateJwt(refreshToken.getUser().getEmail());
         String token = refreshToken.getToken();
         List<String> roles = refreshToken.getUser().getRoles().stream()

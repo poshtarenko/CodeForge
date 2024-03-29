@@ -18,7 +18,7 @@ public interface ProblemService {
 
     ViewProblemDTO save(SaveProblemDTO problemDTO);
 
-    ViewProblemDTO update(UpdateProblemDTO problemDTO);
+    ViewProblemDTO update(Long problemId, UpdateProblemDTO problemDTO);
 
     void delete(long id);
 }

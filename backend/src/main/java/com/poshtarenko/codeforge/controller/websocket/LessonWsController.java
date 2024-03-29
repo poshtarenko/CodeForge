@@ -25,14 +25,14 @@ public class LessonWsController {
     @SendTo("/topic/lesson/{lessonId}/description_updates")
     public ViewLessonDTO updateLessonDesc(@DestinationVariable Long lessonId,
                                           @RequestBody @Validated UpdateLessonDescriptionDTO dto) {
-        return lessonService.updateCurrentDescription(dto);
+        return lessonService.updateCurrentDescription(lessonId, dto);
     }
 
     @MessageMapping("/lesson/{lessonId}/participation/update_code")
     @SendTo("/topic/lesson/{lessonId}/participation_updates")
     public ViewParticipationDTO updateParticipationCode(@DestinationVariable Long lessonId,
                                                         @RequestBody @Validated UpdateParticipationCodeDTO dto) {
-        return participationService.updateCode(dto);
+        return participationService.updateCode(lessonId, dto);
     }
 
     @MessageMapping("/lesson/{lessonId}/participation/{participationId}/evaluate_code")
@@ -41,5 +41,4 @@ public class LessonWsController {
                                                           @DestinationVariable Long participationId) {
         return participationService.evaluateCode(participationId);
     }
-
 }

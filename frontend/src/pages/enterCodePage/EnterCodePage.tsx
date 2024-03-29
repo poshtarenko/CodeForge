@@ -22,7 +22,6 @@ function EnterCodePage() {
         } catch (e) {
             setCodeIsWrong(true);
         }
-
     }
 
     return (

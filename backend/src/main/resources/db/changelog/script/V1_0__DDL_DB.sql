@@ -130,10 +130,10 @@ create table Lessons
 --changeset poshtarenko:15
 create table Participations
 (
-    id            BIGSERIAL PRIMARY KEY,
-    respondent_id BIGINT REFERENCES Respondents (id) ON DELETE CASCADE NOT NULL,
-    lesson_id     BIGINT REFERENCES Lessons (id) ON DELETE CASCADE     NOT NULL,
-    code          TEXT,
-    output        TEXT,
-    error         TEXT
+    id        BIGSERIAL PRIMARY KEY,
+    user_id   BIGINT REFERENCES Users (id) ON DELETE CASCADE   NOT NULL,
+    lesson_id BIGINT REFERENCES Lessons (id) ON DELETE CASCADE NOT NULL,
+    code      TEXT,
+    output    TEXT,
+    error     TEXT
 );

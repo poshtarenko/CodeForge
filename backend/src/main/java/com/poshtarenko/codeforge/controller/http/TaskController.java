@@ -44,16 +44,7 @@ public class TaskController {
                                   @RequestBody @Validated UpdateTaskDTO taskDTO,
                                   @AuthenticationPrincipal UserDetailsImpl currentUser) {
         taskService.checkAccess(id, currentUser.getId());
-
-        UpdateTaskDTO updateTaskDTO = new UpdateTaskDTO(
-                id,
-                taskDTO.note(),
-                taskDTO.maxScore(),
-                taskDTO.problemId(),
-                taskDTO.testId()
-        );
-
-        return taskService.update(updateTaskDTO);
+        return taskService.update(id, taskDTO);
     }
 
     @DeleteMapping("/{id}")

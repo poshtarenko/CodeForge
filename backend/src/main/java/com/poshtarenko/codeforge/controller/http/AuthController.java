@@ -38,5 +38,4 @@ public class AuthController {
     public ResponseEntity<JwtResponse> refreshJwt(@RequestBody @Validated JwtRefreshRequest refreshRequest) {
         return ResponseEntity.ok(refreshTokenService.refreshToken(refreshRequest));
     }
-
 }

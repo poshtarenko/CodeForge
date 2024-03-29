@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 public record UpdateProblemDTO(
-        @Positive Long id,
         @NotBlank String name,
         @NotBlank String description,
         @Positive Long languageId,
