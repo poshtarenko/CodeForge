@@ -3,7 +3,7 @@ import TestService from "../../services/TestService";
 import {ITest} from "../../models/entity/ITest";
 import "./lessonsPage.css"
 import Test from "../../component/testCell/TestCell";
-import AddTest from "../../component/addTest/AddTest";
+import AddTest from "../../component/addTestCell/AddTestCell";
 import PageTemplate from "../../component/UI/page-template/PageTemplate";
 import {ILesson} from "../../models/entity/ILesson";
 import LessonService from "../../services/LessonService";

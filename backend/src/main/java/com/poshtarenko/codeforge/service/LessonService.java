@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.service;
 
-import com.poshtarenko.codeforge.dto.request.SaveLessonDTO;
+import com.poshtarenko.codeforge.dto.request.CreateLessonDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateLessonDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateLessonDescriptionDTO;
 import com.poshtarenko.codeforge.dto.response.ViewLessonDTO;
@@ -13,7 +13,9 @@ public interface LessonService {
 
     ViewLessonDTO find(Long id);
 
-    ViewLessonDTO save(Long userId, SaveLessonDTO lessonDTO);
+    ViewLessonDTO save(Long userId, CreateLessonDTO lessonDTO);
+
+    ViewLessonDTO connectToLesson(String lessonCode, Long userId);
 
     ViewLessonDTO update(Long lessonId, UpdateLessonDTO lessonDTO);
 

@@ -76,12 +76,14 @@ create table Categories
 create table Problems
 (
     id            BIGSERIAL PRIMARY KEY,
+    owner_id      BIGINT REFERENCES Authors (id),
     language_id   BIGINT REFERENCES Languages (id)  NOT NULL,
     category_id   BIGINT REFERENCES Categories (id) NOT NULL,
     name          VARCHAR(256)                      NOT NULL,
-    description   TEXT                              NOT NULL,
-    testing_code  TEXT                              NOT NULL,
-    template_code TEXT                              NOT NULL
+    description   TEXT,
+    testing_code  TEXT,
+    template_code TEXT,
+    is_completed   BOOLEAN                           NOT NULL
 );
 
 --changeset poshtarenko:11

@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.controller.http;
 
-import com.poshtarenko.codeforge.dto.request.SaveLessonDTO;
+import com.poshtarenko.codeforge.dto.request.CreateLessonDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateLessonDTO;
 import com.poshtarenko.codeforge.dto.response.ViewLessonDTO;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
@@ -32,8 +32,14 @@ public class LessonController {
         return lessonService.find(id);
     }
 
+    @GetMapping("/connect/{inviteCode}")
+    public ViewLessonDTO connectToLesson(@PathVariable @Positive String inviteCode,
+                                         @AuthenticationPrincipal UserDetailsImpl user) {
+        return lessonService.connectToLesson(inviteCode, user.getId());
+    }
+
     @PostMapping
-    public ViewLessonDTO createLesson(@RequestBody @Validated SaveLessonDTO lessonDTO,
+    public ViewLessonDTO createLesson(@RequestBody @Validated CreateLessonDTO lessonDTO,
                                       @AuthenticationPrincipal UserDetailsImpl user) {
         return lessonService.save(user.getId(), lessonDTO);
     }

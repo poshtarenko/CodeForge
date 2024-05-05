@@ -55,7 +55,7 @@ const TasksMenu: React.FC<IProps> = ({test, reloadFunc, isActive}) => {
 
     async function loadProblems() {
         try {
-            const response = await ProblemService.getAllProblems();
+            const response = await ProblemService.getAvailableProblems();
             await extractLanguages(response.data);
             await extractCategories(response.data);
             await setProblems(response.data);

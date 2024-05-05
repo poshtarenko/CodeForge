@@ -1,0 +1,35 @@
+.problem-cell {
+    border: #DADCE0 1px solid;
+    border-radius: 10px;
+    width: 250px;
+    height: 200px;
+    font-size: 18px;
+}
+
+.problem-cell .problem-inner {
+    padding: 20px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.problem-cell .number {
+    font-family: 'JetBrains Mono', serif;
+}
+
+.problem-cell .problem-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A73E8;
+}
+
+.problem-cell .problem-lang {
+    margin-top: 15px;
+}
+
+.problem-cell .problem-tasks-count {
+    margin-top: 15px;
+}
+
+.problem-cell .problem-language {
+    margin-top: 15px;
+}

@@ -7,7 +7,7 @@ public interface ParticipationService {
 
     ViewParticipationDTO startParticipation(Long lessonId, Long userId);
 
-    ViewParticipationDTO updateCode(Long lessonId, UpdateParticipationCodeDTO participationDTO);
+    ViewParticipationDTO updateCode(Long participationId, UpdateParticipationCodeDTO participationDTO);
 
     ViewParticipationDTO evaluateCode(Long participationId);
 

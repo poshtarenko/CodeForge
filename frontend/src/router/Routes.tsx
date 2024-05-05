@@ -1,5 +1,4 @@
 import RegistrationPage from "../pages/authPages/RegistrationPage";
-import Login from "../pages/authPages/LoginPage";
 import {FC} from "react";
 import TestsPage from "../pages/testsPage/TestsPage";
 import TestPage from "../pages/./testPage/TestPage";
@@ -21,11 +20,13 @@ export const authorRoutes: IRoute[] = [
     {path: '/lessons', component: LessonsPage},
     {path: '/lesson/:id', component: LessonPage},
     {path: '/lesson/session/:lessonId', component: LessonSessionPage},
+    {path: '/lesson/session/:lessonId', component: LessonSessionPage},
 ]
 
 export const respondentRoutes: IRoute[] = [
     {path: '/start', component: EnterCodePage},
     {path: '/session/:testId', component: RespondentSessionPage},
+    {path: '/lesson/session/:lessonId', component: LessonSessionPage},
 ]
 
 export const publicRoutes: IRoute[] = [

@@ -5,7 +5,7 @@ import {ILanguage} from "../models/entity/ILanguage";
 export default class LanguageService {
 
     static async getAllLanguages(): Promise<AxiosResponse<ILanguage[]>> {
-        return $api.get('/languages/all');
+        return $api.get('/languages');
     }
 
 }

@@ -1,11 +1,10 @@
 package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.TaskMapper;
-import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.request.CreateTaskDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.test.Task;
-import com.poshtarenko.codeforge.entity.test.Test;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
 import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.TaskRepository;
@@ -31,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
         @Override
         @Transactional
-        public ViewTaskDTO save(SaveTaskDTO taskDTO) {
+        public ViewTaskDTO save(CreateTaskDTO taskDTO) {
             Task task = taskRepository.save(taskMapper.toEntity(taskDTO));
             return taskMapper.toDto(task);
         }

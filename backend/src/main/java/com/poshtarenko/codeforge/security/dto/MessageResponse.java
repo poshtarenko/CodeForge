@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.security.pojo;
+package com.poshtarenko.codeforge.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

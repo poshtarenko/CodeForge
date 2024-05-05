@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.controller.http;
 
-import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.request.CreateTaskDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
@@ -28,7 +28,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ViewTaskDTO createTask(@RequestBody @Validated SaveTaskDTO taskDTO) {
+    public ViewTaskDTO createTask(@RequestBody @Validated CreateTaskDTO taskDTO) {
         return taskService.save(taskDTO);
     }
 

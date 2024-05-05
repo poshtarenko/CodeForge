@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -33,6 +35,10 @@ public class ParticipationServiceImpl implements ParticipationService {
 
     @Override
     public ViewParticipationDTO startParticipation(Long lessonId, Long userId) {
+        Optional<Participation> participationOpt = participationRepository.findByUserIdAndLessonId(userId, lessonId);
+        if (participationOpt.isPresent()) {
+            return participationMapper.toDto(participationOpt.get());
+        }
         Participation participation = new Participation();
         participation.setLesson(lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new EntityNotFoundException(Lesson.class, lessonId)));
@@ -43,14 +49,16 @@ public class ParticipationServiceImpl implements ParticipationService {
     }
 
     @Override
-    public ViewParticipationDTO updateCode(Long lessonId, UpdateParticipationCodeDTO participationDTO) {
-        Participation participation = findById(lessonId);
+    @Transactional
+    public ViewParticipationDTO updateCode(Long participationId, UpdateParticipationCodeDTO participationDTO) {
+        Participation participation = findById(participationId);
         participation.setCode(participationDTO.code());
         Participation savedParticipation = participationRepository.save(participation);
         return participationMapper.toDto(savedParticipation);
     }
 
     @Override
+    @Transactional
     public ViewParticipationDTO evaluateCode(Long participationId) {
         Participation participation = findById(participationId);
 
@@ -70,5 +78,4 @@ public class ParticipationServiceImpl implements ParticipationService {
         return participationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Participation.class, id));
     }
-
 }

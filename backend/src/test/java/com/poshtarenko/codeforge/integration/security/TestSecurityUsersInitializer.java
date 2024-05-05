@@ -7,7 +7,7 @@ import com.poshtarenko.codeforge.entity.user.User;
 import com.poshtarenko.codeforge.repository.AuthorRepository;
 import com.poshtarenko.codeforge.repository.RespondentRepository;
 import com.poshtarenko.codeforge.repository.UserRepository;
-import com.poshtarenko.codeforge.security.pojo.SignUpRequest;
+import com.poshtarenko.codeforge.security.dto.SignUpRequest;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsServiceImpl;
 import com.poshtarenko.codeforge.service.UserService;

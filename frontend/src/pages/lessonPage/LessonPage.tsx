@@ -6,6 +6,9 @@ import {ILesson} from "../../models/entity/ILesson";
 import LessonService from "../../services/LessonService";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faPenToSquare} from "@fortawesome/free-solid-svg-icons";
+import {ILanguage} from "../../models/entity/ILanguage";
+import LanguageService from "../../services/LanguageService";
+import LessonSessionPage from "../lessonSessionPage/lessonSessionPage";
 
 const LessonPage: React.FC = () => {
 
@@ -14,6 +17,7 @@ const LessonPage: React.FC = () => {
     const [lesson, setLesson] = useState<ILesson>({} as ILesson);
     const [changingName, setChangingName] = useState<boolean>(false);
     const [newName, setNewName] = useState<string>("");
+    const [languages, setLanguages] = useState<ILanguage[]>([]);
 
 
     let navigate = useNavigate();
@@ -23,18 +27,34 @@ const LessonPage: React.FC = () => {
     }
 
     useEffect(() => {
-        loadAll();
+        loadLesson()
+        loadLanguages()
     }, []);
-
-    async function loadAll() {
-        loadLesson();
-    }
 
     async function loadLesson() {
         try {
             const responseLesson = await LessonService.getLesson(Number(id));
             setLesson(responseLesson.data);
             setNewName(responseLesson.data.name);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function loadLanguages() {
+        try {
+            const languages = await LanguageService.getAllLanguages();
+            setLanguages(languages.data);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function selectLanguage(id : number) {
+        try {
+            lesson.language = languages.find(l => l.id === id)!
+            await LessonService.updateLesson(lesson.id, {name: newName, languageId: id});
+            loadLesson();
         } catch (e) {
             console.log(e);
         }
@@ -74,6 +94,16 @@ const LessonPage: React.FC = () => {
                         }
                         <p className={"lesson-lang"}>Код для входу : {lesson.inviteCode}</p>
                     </div>
+                </div>
+                <div>
+                    <p>Мова програмування :</p>
+                    <select className={"add-task-input language-select add-task-modal-select"}
+                            onChange={(e) => selectLanguage(Number(e.target.value))}
+                            defaultValue={"NONE"}>
+                        <option value="NONE" disabled>Мова</option>
+                        {languages.map(language =>
+                            <option key={Number(language.id)} value={String(language.id)}>{language.name}</option>)}
+                    </select>
                 </div>
                 <button onClick={() => navigateToSession()} className={"standard-button"}>Підключитися до заняття
                 </button>

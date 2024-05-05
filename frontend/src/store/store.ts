@@ -1,15 +1,21 @@
 import {makeAutoObservable} from "mobx";
 import AuthService from "../services/AuthService";
 import {RegisterRequest} from "../models/request/RegisterRequest";
+import {AuthResponse} from "../models/response/AuthResponse";
 
 export default class Store {
 
+    userId = 0;
     isAuth = false;
     isLoading = false;
     role = "";
 
     constructor() {
         makeAutoObservable(this);
+    }
+
+    setUserId(id: number) {
+        this.userId = id;
     }
 
     setAuth(bool: boolean) {
@@ -24,12 +30,18 @@ export default class Store {
         this.role = role;
     }
 
+    private updateData(data : AuthResponse) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('refreshToken', data.refreshToken);
+        this.setUserId(data.userId);
+        this.setRole(data.roles[0])
+        this.setAuth(true);
+    }
+
     async login(email: string, password: string) {
         try {
             const response = await AuthService.login(email, password);
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-            this.setAuth(true);
+            this.updateData(response.data);
         } catch (e) {
             // @ts-ignore
             console.log(e.response?.data?.message)
@@ -39,9 +51,7 @@ export default class Store {
     async register(request: RegisterRequest) {
         try {
             const response = await AuthService.register(request);
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('refreshToken', response.data.refreshToken);
-            this.setAuth(true);
+            this.updateData(response.data);
         } catch (e) {
             // @ts-ignore
             console.log(e.response?.data?.message)
@@ -57,9 +67,7 @@ export default class Store {
         this.isLoading = true;
         try {
             const response = await AuthService.refresh(localStorage.getItem('refreshToken')!);
-            localStorage.setItem('token', response.data.token);
-            this.setAuth(true);
-            this.setRole(response.data.roles[0]);
+            this.updateData(response.data);
         } catch (e) {
             // @ts-ignore
             console.log(e.response?.data?.message);

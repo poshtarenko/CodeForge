@@ -6,7 +6,6 @@ import com.poshtarenko.codeforge.dto.mapper.EntityIdMapper;
 import com.poshtarenko.codeforge.dto.response.ViewAnswerDTO;
 import com.poshtarenko.codeforge.entity.test.Answer;
 import com.poshtarenko.codeforge.entity.test.Solution;
-import com.poshtarenko.codeforge.entity.test.SolutionResult;
 import com.poshtarenko.codeforge.entity.test.Task;
 import com.poshtarenko.codeforge.entity.user.Respondent;
 import com.poshtarenko.codeforge.exception.EntityAccessDeniedException;
@@ -136,13 +135,13 @@ class AnswerServiceTest {
         Task task1 = new Task(1L);
         task1.setMaxScore(5);
         Solution rightSolution = new Solution(1L);
-        rightSolution.setSolutionResult(new SolutionResult(true, null));
+//        rightSolution.setSolutionResult(new SolutionResult(true, null));
         rightSolution.setTask(task1);
 
         Task task2 = new Task(2L);
         task2.setMaxScore(3);
         Solution wrongSolution = new Solution(2L);
-        wrongSolution.setSolutionResult(new SolutionResult(false, "some error"));
+//        wrongSolution.setSolutionResult(new SolutionResult(false, "some error"));
         wrongSolution.setTask(task2);
 
         Answer initialAnswer = new Answer(ANSWER_ID);

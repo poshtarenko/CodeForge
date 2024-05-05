@@ -2,11 +2,12 @@ export interface IParticipation {
     id: number,
     lessonId: number,
     code: string,
-    respondent: IRespondent,
+    user: IUser,
     evaluationResult: IEvaluationResult
+    evaluating: boolean
 }
 
-export interface IRespondent {
+export interface IUser {
     id: number,
     username: string
 }

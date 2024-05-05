@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.request.CreateTaskDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.test.Task;
@@ -19,7 +19,7 @@ public interface TaskMapper {
 
     @Mapping(source = "problemId", target = "problem")
     @Mapping(source = "testId", target = "test")
-    Task toEntity(SaveTaskDTO dto);
+    Task toEntity(CreateTaskDTO dto);
 
     @Mapping(source = "problemId", target = "problem")
     @Mapping(source = "testId", target = "test")

@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.security.pojo;
+package com.poshtarenko.codeforge.security.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,6 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JwtResponse {
+    Long userId;
     String token;
     String refreshToken;
     List<String> roles;

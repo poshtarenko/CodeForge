@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.service;
 
 
-import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
+import com.poshtarenko.codeforge.dto.request.CreateTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 
@@ -13,7 +13,7 @@ public interface TestService {
 
     List<ViewTestDTO> findAuthorTests(long authorId);
 
-    ViewTestDTO save(Long userId, SaveTestDTO testDTO);
+    ViewTestDTO save(Long userId, CreateTestDTO testDTO);
 
     ViewTestDTO update(Long testId, UpdateTestDTO testDTO);
 

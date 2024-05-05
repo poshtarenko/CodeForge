@@ -1,9 +1,8 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
+import com.poshtarenko.codeforge.dto.request.CreateSolutionDTO;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
 import com.poshtarenko.codeforge.entity.test.Solution;
-import com.poshtarenko.codeforge.entity.test.TaskCompletionStatus;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -20,6 +19,6 @@ public interface SolutionMapper {
 
     @Mapping(source = "taskId", target = "task")
     @Mapping(source = "answerId", target = "answer")
-    Solution toEntity(SaveSolutionDTO dto);
+    Solution toEntity(CreateSolutionDTO dto);
 
 }

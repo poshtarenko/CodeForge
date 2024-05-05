@@ -7,6 +7,6 @@ public record UpdateProblemDTO(
         @NotBlank String name,
         @NotBlank String description,
         @Positive Long languageId,
-        @Positive Long categoryId,
+        @NotBlank String templateCode,
         @NotBlank String testingCode) {
 }

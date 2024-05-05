@@ -38,5 +38,4 @@ export default class TestService {
             return sum + score
         }, 0);
     }
-
 }

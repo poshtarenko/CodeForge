@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
+import com.poshtarenko.codeforge.dto.request.CreateTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.test.Problem;
@@ -22,7 +22,7 @@ public interface TestMapper {
 
     ViewTestDTO.ProblemDTO toDto(Problem problem);
 
-    Test toEntity(SaveTestDTO dto);
+    Test toEntity(CreateTestDTO dto);
 
     Test toEntity(UpdateTestDTO dto);
 

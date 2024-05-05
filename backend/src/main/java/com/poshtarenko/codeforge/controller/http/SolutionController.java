@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.controller.http;
 
-import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
+import com.poshtarenko.codeforge.dto.request.CreateSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
@@ -28,7 +28,7 @@ public class SolutionController {
     }
 
     @PostMapping
-    public ViewSolutionDTO putSolution(@RequestBody @Validated SaveSolutionDTO solutionDTO) {
+    public ViewSolutionDTO putSolution(@RequestBody @Validated CreateSolutionDTO solutionDTO) {
         return solutionService.put(solutionDTO);
     }
 

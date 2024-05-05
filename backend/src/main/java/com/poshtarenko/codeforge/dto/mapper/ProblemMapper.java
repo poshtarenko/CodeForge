@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.dto.mapper;
 
-import com.poshtarenko.codeforge.dto.request.SaveProblemDTO;
+import com.poshtarenko.codeforge.dto.request.CreateProblemDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateProblemDTO;
 import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
 import com.poshtarenko.codeforge.entity.test.Problem;
@@ -16,11 +16,8 @@ public interface ProblemMapper {
     ViewProblemDTO toDto(Problem entity);
 
     @Mapping(source = "languageId", target = "language")
-    @Mapping(source = "categoryId", target = "category")
-    Problem toEntity(SaveProblemDTO dto);
+    Problem toEntity(CreateProblemDTO dto);
 
     @Mapping(source = "languageId", target = "language")
-    @Mapping(source = "categoryId", target = "category")
     Problem toEntity(UpdateProblemDTO dto);
-
 }

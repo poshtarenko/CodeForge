@@ -1,9 +1,9 @@
 package com.poshtarenko.codeforge.controller.http;
 
-import com.poshtarenko.codeforge.security.pojo.JwtRefreshRequest;
-import com.poshtarenko.codeforge.security.pojo.JwtResponse;
-import com.poshtarenko.codeforge.security.pojo.SignInRequest;
-import com.poshtarenko.codeforge.security.pojo.SignUpRequest;
+import com.poshtarenko.codeforge.security.dto.JwtRefreshRequest;
+import com.poshtarenko.codeforge.security.dto.JwtResponse;
+import com.poshtarenko.codeforge.security.dto.SignInRequest;
+import com.poshtarenko.codeforge.security.dto.SignUpRequest;
 import com.poshtarenko.codeforge.service.RefreshTokenService;
 import com.poshtarenko.codeforge.service.UserService;
 import lombok.RequiredArgsConstructor;

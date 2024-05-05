@@ -7,5 +7,6 @@ export interface Problem {
     description: string;
     language: ILanguage;
     category: ICategory;
+    testingCode: string;
     templateCode: string;
 }

@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.service;
 
 
-import com.poshtarenko.codeforge.dto.request.SaveProblemDTO;
+import com.poshtarenko.codeforge.dto.request.CreateProblemDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateProblemDTO;
 import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
 import com.poshtarenko.codeforge.entity.test.Problem;
@@ -12,11 +12,13 @@ public interface ProblemService {
 
     ViewProblemDTO find(long id);
 
-    List<ViewProblemDTO> findAll();
+    List<ViewProblemDTO> findAllAvailableToAuthor(Long authorId);
+
+    List<ViewProblemDTO> findAuthorCustomProblems(Long authorId);
 
     Problem findByTask(long taskId);
 
-    ViewProblemDTO save(SaveProblemDTO problemDTO);
+    ViewProblemDTO createCustomProblem(CreateProblemDTO problemDTO, Long authorId);
 
     ViewProblemDTO update(Long problemId, UpdateProblemDTO problemDTO);
 

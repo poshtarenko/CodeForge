@@ -77,17 +77,17 @@ public class LessonWsControllerIT extends IntegrationTest {
         StompSession stompSession = webSocketClient.connect(URL, dataInitializer.getAuthor());
 
         String sendUrl = "/app/lesson/%s/update_description".formatted(lesson.getId());
-        UpdateLessonDescriptionDTO sendData = new UpdateLessonDescriptionDTO(lesson.getId(), "New desc");
+        UpdateLessonDescriptionDTO sendData = new UpdateLessonDescriptionDTO("New desc");
         stompSession.send(sendUrl, sendData);
 
         String subscribeUrl = "/topic/lesson/%s/description_updates".formatted(lesson.getId());
         stompSession.subscribe(subscribeUrl, new LessonStompFrameHandler());
 
-        ViewLessonDTO lesson = lessonCompletableFuture.get(5, SECONDS);
+        ViewLessonDTO response = lessonCompletableFuture.get(5, SECONDS);
 
-        assertNotNull(lesson);
-        assertEquals(lesson.id(), sendData.id());
-        assertEquals(lesson.description(), sendData.description());
+        assertNotNull(response);
+        assertEquals(response.id(), lesson.getId());
+        assertEquals(response.description(), sendData.description());
     }
 
     @Test
@@ -96,17 +96,17 @@ public class LessonWsControllerIT extends IntegrationTest {
         StompSession stompSession = webSocketClient.connect(URL, dataInitializer.getAuthor());
 
         String sendUrl = "/app/lesson/%s/participation/update_code".formatted(lesson.getId());
-        UpdateParticipationCodeDTO sendData = new UpdateParticipationCodeDTO(participation.getId(), "New code");
+        UpdateParticipationCodeDTO sendData = new UpdateParticipationCodeDTO("New code");
         stompSession.send(sendUrl, sendData);
 
         String subscribeUrl = "/topic/lesson/%s/participation_updates".formatted(lesson.getId());
         stompSession.subscribe(subscribeUrl, new ParticipationStompFrameHandler());
 
-        ViewParticipationDTO participation = participationCompletableFuture.get(5, SECONDS);
+        ViewParticipationDTO response = participationCompletableFuture.get(5, SECONDS);
 
-        assertNotNull(participation);
-        assertEquals(participation.id(), sendData.id());
-        assertEquals(participation.code(), sendData.code());
+        assertNotNull(response);
+        assertEquals(participation.getId(), response.id());
+        assertEquals(sendData.code(), response.code());
     }
 
     @Test

@@ -18,7 +18,7 @@ public class LanguageController {
 
     private final LanguageService languageService;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<ViewLanguageDTO> findAll() {
         return languageService.findAll();
     }

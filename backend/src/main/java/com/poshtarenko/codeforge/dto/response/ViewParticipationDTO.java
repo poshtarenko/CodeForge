@@ -3,11 +3,11 @@ package com.poshtarenko.codeforge.dto.response;
 public record ViewParticipationDTO(
         Long id,
         Long lessonId,
-        RespondentDTO respondent,
+        UserDTO user,
         String code,
         EvaluationResultDTO evaluationResult
 ) {
-    public record RespondentDTO(
+    public record UserDTO(
             Long id,
             String username
     ) {

@@ -4,6 +4,7 @@ import PageTemplate from "../../component/UI/page-template/PageTemplate";
 import {useNavigate} from "react-router-dom";
 import TestService from "../../services/TestService";
 import AnswerService from "../../services/AnswerService";
+import LessonService from "../../services/LessonService";
 
 function EnterCodePage() {
 
@@ -14,10 +15,17 @@ function EnterCodePage() {
 
     async function navigateToSession() {
         try {
-            const startTestResponse = await AnswerService.startTest(code);
-            const response = await TestService.getTest(startTestResponse.data.testId);
-            if (response.data.id) {
+            if (code.length === 8) {
+                const startTestResponse = await AnswerService.startTest(code);
+                const response = await TestService.getTest(startTestResponse.data.testId);
                 navigate("/session/" + response.data.id)
+            }
+            else if (code.length === 9) {
+                const response = await LessonService.connectToLesson(code);
+                navigate("/lesson/session/" + response.data.id)
+            }
+            else {
+                setCodeIsWrong(true);
             }
         } catch (e) {
             setCodeIsWrong(true);

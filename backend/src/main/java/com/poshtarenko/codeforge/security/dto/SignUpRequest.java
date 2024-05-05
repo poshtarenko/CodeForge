@@ -1,4 +1,4 @@
-package com.poshtarenko.codeforge.security.pojo;
+package com.poshtarenko.codeforge.security.dto;
 
 import com.poshtarenko.codeforge.entity.user.ERole;
 import jakarta.validation.constraints.Email;

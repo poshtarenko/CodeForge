@@ -3,6 +3,7 @@ import {observer} from "mobx-react-lite";
 import {BrowserRouter} from "react-router-dom";
 import AppRouter from "./router/AppRouter";
 import "./style/main.css";
+import {StompSessionProvider} from "react-stomp-hooks";
 
 function App() {
 
@@ -11,9 +12,11 @@ function App() {
     }, []);
 
     return (
-        <BrowserRouter>
-            <AppRouter/>
-        </BrowserRouter>
+        <StompSessionProvider url={"http://localhost:8080/ws"}>
+            <BrowserRouter>
+                <AppRouter/>
+            </BrowserRouter>
+        </StompSessionProvider>
     )
 }
 

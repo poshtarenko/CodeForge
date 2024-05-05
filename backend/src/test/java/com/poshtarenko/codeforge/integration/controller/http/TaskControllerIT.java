@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.integration.controller.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.poshtarenko.codeforge.dto.request.SaveTaskDTO;
+import com.poshtarenko.codeforge.dto.request.CreateTaskDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTaskDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTaskDTO;
 import com.poshtarenko.codeforge.entity.test.Task;
@@ -65,7 +65,7 @@ public class TaskControllerIT extends IntegrationTest {
     @Test
     @MockUser(role = ERole.AUTHOR)
     public void createTask() throws Exception {
-        SaveTaskDTO request = new SaveTaskDTO(
+        CreateTaskDTO request = new CreateTaskDTO(
                 "New note...",
                 3,
                 task.getProblem().getId(),
@@ -93,7 +93,6 @@ public class TaskControllerIT extends IntegrationTest {
     @MockUser(role = ERole.AUTHOR)
     public void updateTask() throws Exception {
         UpdateTaskDTO request = new UpdateTaskDTO(
-                task.getId(),
                 task.getNote() + "updated",
                 task.getMaxScore() + 1,
                 task.getProblem().getId(),
@@ -111,7 +110,7 @@ public class TaskControllerIT extends IntegrationTest {
                 ViewTaskDTO.class
         );
 
-        assertEquals(response.id(), request.id());
+//        assertEquals(response.id(), request.id());
         assertEquals(response.note(), request.note());
         assertEquals(response.maxScore(), request.maxScore());
         assertEquals(response.problemId(), request.problemId());

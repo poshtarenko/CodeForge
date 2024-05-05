@@ -8,9 +8,9 @@ import com.poshtarenko.codeforge.repository.AuthorRepository;
 import com.poshtarenko.codeforge.repository.RespondentRepository;
 import com.poshtarenko.codeforge.repository.RoleRepository;
 import com.poshtarenko.codeforge.security.jwt.JwtUtils;
-import com.poshtarenko.codeforge.security.pojo.JwtResponse;
-import com.poshtarenko.codeforge.security.pojo.SignInRequest;
-import com.poshtarenko.codeforge.security.pojo.SignUpRequest;
+import com.poshtarenko.codeforge.security.dto.JwtResponse;
+import com.poshtarenko.codeforge.security.dto.SignInRequest;
+import com.poshtarenko.codeforge.security.dto.SignUpRequest;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
 import com.poshtarenko.codeforge.service.RefreshTokenService;
 import com.poshtarenko.codeforge.service.UserService;
@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService {
                 .toList();
 
         return new JwtResponse(
+                userDetails.getId(),
                 jwt,
                 refreshToken,
                 roles

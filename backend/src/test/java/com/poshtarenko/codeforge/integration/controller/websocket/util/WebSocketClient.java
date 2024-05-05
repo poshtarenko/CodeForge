@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.integration.controller.websocket.util;
 
 import com.poshtarenko.codeforge.entity.user.User;
-import com.poshtarenko.codeforge.security.pojo.SignInRequest;
+import com.poshtarenko.codeforge.security.dto.SignInRequest;
 import com.poshtarenko.codeforge.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -39,7 +39,7 @@ public class WebSocketClient {
                 user.getEmail(),
                 "password"
         )).getToken();
-        headers.add("Authorization", "Bearer " + jwtToken);
+//        headers.add("Authorization", "Bearer " + jwtToken);
 
         return stompClient.connectAsync(url, headers, new StompSessionHandlerAdapter() {
             @Override

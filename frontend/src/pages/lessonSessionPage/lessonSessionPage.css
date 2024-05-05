@@ -1,4 +1,4 @@
-.respondent-session-page {
+.lesson-session-page {
     width: 100%;
     height: calc(100% - 60px);
     display: flex;
@@ -6,7 +6,7 @@
     overflow-y: hidden;
 }
 
-.respondent-session-page .respondent-session-sidebar {
+.lesson-session-page .lesson-session-sidebar {
     min-width: 550px;
     display: flex;
     flex-direction: column;
@@ -15,7 +15,7 @@
     border-right: #DADCE0 1px solid;
 }
 
-.respondent-session-sidebar .test-name {
+.lesson-session-sidebar .test-name {
     text-align: center;
     font-size: 22px;
     font-weight: 700;
@@ -23,14 +23,35 @@
     margin-bottom: 20px;
 }
 
-.respondent-session-sidebar .tasks {
+.lesson-session-sidebar .test-language {
+    text-align: left;
+    padding: 0 20px;
+    font-weight: 700;
+    font-size: 20px;
+    align-self: start;
+}
+
+.lesson-session-sidebar .description-textarea {
+    border: none;
+    background-color: transparent;
+    padding: 10px 20px;
+    border-left: none;
+    border-top: none;
+    outline: none;
+    width: 100%;
+    resize: none;
+    font-size: 17px;
+}
+
+.lesson-session-sidebar .participants {
     max-width: 550px;
     display: flex;
     flex-direction: column;
+    margin-top: auto;
     width: 100%;
 }
 
-.respondent-session-sidebar .task {
+.lesson-session-sidebar .participant {
     cursor: pointer;
     border: #DADCE0 1px solid;
     border-right: none;
@@ -39,59 +60,32 @@
     width: 100%;
 }
 
-.respondent-session-sidebar .task:hover {
+.lesson-session-sidebar .participant:hover {
     background-color: #ececec;
     border: #ececec 1px solid;
     border-right: none;
 }
 
-.respondent-session-sidebar .task.active {
+.lesson-session-sidebar .participant.active {
     cursor: default;
     background-color: #ececec;
     border: #ececec 1px solid;
     border-right: none;
     padding-bottom: 15px;
+    font-weight: bold;
 }
 
-.respondent-session-sidebar .task-name {
+.lesson-session-sidebar .participant-name {
     font-size: 22px;
     font-weight: 600;
     padding: 15px 0;
 }
 
-.respondent-session-sidebar .task-info {
-    font-size: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.respondent-session-sidebar .task .task-info{
-    opacity: 0;
-    height: 0;
-    pointer-events: none;
-}
-
-.respondent-session-sidebar .task.active .task-info{
-    opacity: 1;
-    height: auto;
-    pointer-events: all;
-}
-
-.respondent-session-sidebar .finish-test-button {
-    width: 90%;
-    margin-top: auto;
-    margin-bottom: 10px;
-    font-weight: 600;
-    font-size: 17px;
-    padding: 8px 0;
-}
-
-.respondent-session-page .answer-block {
+.lesson-session-page .answer-block {
     width: 100%;
 }
 
-.respondent-session-page .answer-block .answer-input {
+.lesson-session-page .answer-block .answer-input {
     padding: 10px;
     margin: 0;
     border: 1px solid #DADCE0;

@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.LessonMapper;
-import com.poshtarenko.codeforge.dto.request.SaveLessonDTO;
+import com.poshtarenko.codeforge.dto.request.CreateLessonDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateLessonDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateLessonDescriptionDTO;
 import com.poshtarenko.codeforge.dto.response.ViewLessonDTO;
@@ -12,6 +12,7 @@ import com.poshtarenko.codeforge.exception.EntityNotFoundException;
 import com.poshtarenko.codeforge.repository.AuthorRepository;
 import com.poshtarenko.codeforge.repository.LessonRepository;
 import com.poshtarenko.codeforge.service.LessonService;
+import com.poshtarenko.codeforge.service.ParticipationService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LessonServiceImpl implements LessonService {
 
+    private final ParticipationService participationService;
     private final AuthorRepository authorRepository;
     private final LessonRepository lessonRepository;
     private final LessonMapper lessonMapper;
@@ -51,7 +53,7 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     @Transactional
-    public ViewLessonDTO save(Long userId, SaveLessonDTO lessonDTO) {
+    public ViewLessonDTO save(Long userId, CreateLessonDTO lessonDTO) {
         String code;
         do {
             code = RandomStringUtils.randomAlphabetic(LESSON_INVITE_CODE_LENGTH);
@@ -60,7 +62,18 @@ public class LessonServiceImpl implements LessonService {
         lesson.setAuthor(authorRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException(Author.class, userId)));
         lesson.setInviteCode(code);
-        return lessonMapper.toDto(lessonRepository.save(lesson));
+        lesson = lessonRepository.save(lesson);
+        participationService.startParticipation(lesson.getId(), userId);
+        return lessonMapper.toDto(lesson);
+    }
+
+    @Override
+    @Transactional
+    public ViewLessonDTO connectToLesson(String lessonCode, Long userId) {
+        Lesson lesson = lessonRepository.findByInviteCode(lessonCode).orElseThrow(() ->
+                new EntityNotFoundException(Lesson.class, "Lesson with code %s not exists".formatted(lessonCode)));
+        participationService.startParticipation(lesson.getId(), userId);
+        return lessonMapper.toDto(lesson);
     }
 
     @Override
@@ -75,6 +88,7 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    @Transactional
     public ViewLessonDTO updateCurrentDescription(Long lessonId, UpdateLessonDescriptionDTO request) {
         Lesson lesson = findById(lessonId);
         lesson.setDescription(request.description());

@@ -6,8 +6,8 @@ import com.poshtarenko.codeforge.entity.user.Role;
 import com.poshtarenko.codeforge.entity.user.User;
 import com.poshtarenko.codeforge.repository.RefreshTokenRepository;
 import com.poshtarenko.codeforge.security.jwt.JwtUtils;
-import com.poshtarenko.codeforge.security.pojo.JwtRefreshRequest;
-import com.poshtarenko.codeforge.security.pojo.JwtResponse;
+import com.poshtarenko.codeforge.security.dto.JwtRefreshRequest;
+import com.poshtarenko.codeforge.security.dto.JwtResponse;
 import com.poshtarenko.codeforge.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +44,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public JwtResponse refreshToken(JwtRefreshRequest refreshRequest) {
-        var refreshToken = refreshTokenRepository
+        RefreshToken refreshToken = refreshTokenRepository
                 .findRefreshTokenByToken(refreshRequest.getRefreshToken())
                 .orElseThrow(() -> new RuntimeException("Refresh Token %s not found!"
                         .formatted(refreshRequest.getRefreshToken())));
@@ -62,7 +62,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .map(Role::getName)
                 .map(ERole::getAuthority)
                 .toList();
-        return new JwtResponse(jwt, token, roles);
+        return new JwtResponse(refreshToken.getUser().getId(), jwt, token, roles);
     }
 
     private void updateToken(RefreshToken token) {

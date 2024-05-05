@@ -32,7 +32,6 @@ const LoginPage: React.FC = () => {
             </div>
         </div>
     );
-
 }
 
 export default observer(LoginPage);

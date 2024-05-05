@@ -76,7 +76,7 @@ public class TestDataInitializer {
         Participation p = new Participation();
         p.setLesson(lesson);
         p.setCode("some code");
-        p.setRespondent(getRespondent());
+        p.setUser(getAuthor());
         return participationRepository.save(p);
     }
 
@@ -131,7 +131,7 @@ public class TestDataInitializer {
         s.setCode("class Solution { public List<Integer> sort(List<Integer> list){ Collections.sort(list); return list; } }");
         s.setTask(task);
         s.setAnswer(answer);
-        s.setSolutionResult(new SolutionResult(true, ""));
+//        s.setSolutionResult(new SolutionResult(true, ""));
         return solutionRepository.save(s);
     }
 

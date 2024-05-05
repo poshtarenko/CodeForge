@@ -2,7 +2,7 @@ package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.SolutionMapper;
 import com.poshtarenko.codeforge.dto.request.CodeEvaluationRequest;
-import com.poshtarenko.codeforge.dto.request.SaveSolutionDTO;
+import com.poshtarenko.codeforge.dto.request.CreateSolutionDTO;
 import com.poshtarenko.codeforge.dto.request.TryCodeRequest;
 import com.poshtarenko.codeforge.dto.response.ViewSolutionDTO;
 import com.poshtarenko.codeforge.entity.code.EvaluationResult;
@@ -42,7 +42,7 @@ public class SolutionServiceImpl implements SolutionService {
 
     @Override
     @Transactional
-    public ViewSolutionDTO put(SaveSolutionDTO solutionDTO) {
+    public ViewSolutionDTO put(CreateSolutionDTO solutionDTO) {
         Answer answer = answerRepository.findById(solutionDTO.answerId()).orElseThrow(
                 () -> new EntityNotFoundException(Answer.class, solutionDTO.answerId()));
         if (answer.getIsFinished().equals(true)) {
@@ -83,7 +83,7 @@ public class SolutionServiceImpl implements SolutionService {
         Problem problem = problemRepository.findByTask(taskId)
                 .orElseThrow(() -> new EntityNotFoundException(Problem.class, "Task problem not found"));
         String language = problem.getLanguage().getName();
-        String codeToEvaluate = problem.getTestingCode().formatted(code);
+        String codeToEvaluate = problem.getTestingCode() + " " + code;
 
         CodeEvaluationRequest codeEvaluationRequest = new CodeEvaluationRequest(language, codeToEvaluate);
         EvaluationResult evaluationResult = codeEvaluationService.evaluateCode(codeEvaluationRequest);

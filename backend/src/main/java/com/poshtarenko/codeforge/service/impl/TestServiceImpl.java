@@ -1,7 +1,7 @@
 package com.poshtarenko.codeforge.service.impl;
 
 import com.poshtarenko.codeforge.dto.mapper.TestMapper;
-import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
+import com.poshtarenko.codeforge.dto.request.CreateTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.entity.test.Test;
@@ -52,7 +52,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     @Transactional
-    public ViewTestDTO save(Long userId, SaveTestDTO testDTO) {
+    public ViewTestDTO save(Long userId, CreateTestDTO testDTO) {
         String code;
         do {
             code = RandomStringUtils.randomAlphabetic(TEST_INVITE_CODE_LENGTH);

@@ -13,4 +13,10 @@ $api.interceptors.request.use((config) => {
     return config;
 })
 
+$api.interceptors.response.use((response) => {
+    console.log(`RESPONSE ${response.config.url} :`)
+    console.log(response.data)
+    return response;
+})
+
 export default $api;

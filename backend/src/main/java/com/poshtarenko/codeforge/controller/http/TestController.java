@@ -1,6 +1,6 @@
 package com.poshtarenko.codeforge.controller.http;
 
-import com.poshtarenko.codeforge.dto.request.SaveTestDTO;
+import com.poshtarenko.codeforge.dto.request.CreateTestDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateTestDTO;
 import com.poshtarenko.codeforge.dto.response.ViewTestDTO;
 import com.poshtarenko.codeforge.security.userdetails.UserDetailsImpl;
@@ -34,7 +34,7 @@ public class TestController {
 
     @PostMapping
     public ViewTestDTO createTest(@AuthenticationPrincipal UserDetailsImpl user,
-                                  @RequestBody @Validated SaveTestDTO testDTO) {
+                                  @RequestBody @Validated CreateTestDTO testDTO) {
         return testService.save(user.getId(), testDTO);
     }
 

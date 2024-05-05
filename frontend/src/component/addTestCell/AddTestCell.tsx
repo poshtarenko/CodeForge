@@ -1,21 +1,21 @@
 import {observer} from "mobx-react-lite";
 import React, {useState} from "react";
-import "./addTest.css";
+import "./addTestCell.css";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faPlus} from "@fortawesome/free-solid-svg-icons";
 import TestService from "../../services/TestService";
 
 interface IProps {
-    addTest: () => void;
+    afterSave: () => void;
 }
 
-const AddTest: React.FC<IProps> = ({addTest}) => {
+const AddTestCell: React.FC<IProps> = ({afterSave}) => {
     const [active, setActive] = useState<boolean>(false);
     const [testName, setTestName] = useState<string>("");
 
     async function createTest() {
         await TestService.createTest({name: testName, maxDuration: 10500});
-        addTest();
+        afterSave();
         setActive(false);
     }
 
@@ -45,4 +45,4 @@ const AddTest: React.FC<IProps> = ({addTest}) => {
     );
 };
 
-export default observer(AddTest);
+export default observer(AddTestCell);

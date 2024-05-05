@@ -74,7 +74,6 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public ViewAnswerDTO finishAnswer(long answerId) {
         Answer answer = findById(answerId);
-
         if (answer.getIsFinished().equals(true)) {
             throw new RuntimeException("Answer with id " + answerId + " already finished");
         }
@@ -85,7 +84,6 @@ public class AnswerServiceImpl implements AnswerService {
                 .sum();
         answer.setScore(score);
         answer.setIsFinished(true);
-
         fillAnswerWithEmptySolutions(answer);
         Answer saved = answerRepository.save(answer);
         return answerMapper.toDto(saved);
@@ -96,7 +94,6 @@ public class AnswerServiceImpl implements AnswerService {
         List<Task> uncompletedTasks = answer.getTest().getTasks().stream()
                 .filter(task -> !solutionTasksIds.contains(task.getId()))
                 .toList();
-
         List<Solution> emptySolutions = new ArrayList<>();
         for (Task uncompletedTask : uncompletedTasks) {
             Solution solution = new Solution();
@@ -105,9 +102,7 @@ public class AnswerServiceImpl implements AnswerService {
             solution.setTaskCompletionStatus(NO_CODE);
             emptySolutions.add(solution);
         }
-
         solutionRepository.saveAll(emptySolutions);
-
         List<Solution> solutions = new ArrayList<>();
         solutions.addAll(answer.getSolutions());
         solutions.addAll(emptySolutions);

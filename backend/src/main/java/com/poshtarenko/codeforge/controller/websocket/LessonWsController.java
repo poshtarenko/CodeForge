@@ -12,6 +12,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
@@ -21,22 +22,23 @@ public class LessonWsController {
     private final LessonService lessonService;
     private final ParticipationService participationService;
 
-    @MessageMapping("/lesson/{lessonId}/update_description")
-    @SendTo("/topic/lesson/{lessonId}/description_updates")
+    @MessageMapping("/lessons/{lessonId}/update_description")
+    @SendTo("/topic/lessons/{lessonId}/description_updates")
     public ViewLessonDTO updateLessonDesc(@DestinationVariable Long lessonId,
                                           @RequestBody @Validated UpdateLessonDescriptionDTO dto) {
         return lessonService.updateCurrentDescription(lessonId, dto);
     }
 
-    @MessageMapping("/lesson/{lessonId}/participation/update_code")
-    @SendTo("/topic/lesson/{lessonId}/participation_updates")
+    @MessageMapping("/lessons/{lessonId}/participations/{participationId}/update_code")
+    @SendTo("/topic/lessons/{lessonId}/participation_updates")
     public ViewParticipationDTO updateParticipationCode(@DestinationVariable Long lessonId,
+                                                        @DestinationVariable Long participationId,
                                                         @RequestBody @Validated UpdateParticipationCodeDTO dto) {
-        return participationService.updateCode(lessonId, dto);
+        return participationService.updateCode(participationId, dto);
     }
 
-    @MessageMapping("/lesson/{lessonId}/participation/{participationId}/evaluate_code")
-    @SendTo("/topic/lesson/{lessonId}/participation_updates")
+    @MessageMapping("/lessons/{lessonId}/participations/{participationId}/evaluate")
+    @SendTo("/topic/lessons/{lessonId}/participation_updates")
     public ViewParticipationDTO evaluateParticipationCode(@DestinationVariable Long lessonId,
                                                           @DestinationVariable Long participationId) {
         return participationService.evaluateCode(participationId);

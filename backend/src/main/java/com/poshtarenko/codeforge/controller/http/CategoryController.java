@@ -18,7 +18,7 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("/all")
+    @GetMapping
     public List<ViewCategoryDTO> findAll() {
         return categoryService.findAll();
     }

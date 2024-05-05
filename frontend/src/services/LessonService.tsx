@@ -22,4 +22,7 @@ export default class LessonService {
         return $api.put(`/lessons/${id}`, request);
     }
 
+    static async connectToLesson(code: string): Promise<AxiosResponse<ILesson>> {
+        return $api.get(`/lessons/connect/${code}`);
+    }
 }
