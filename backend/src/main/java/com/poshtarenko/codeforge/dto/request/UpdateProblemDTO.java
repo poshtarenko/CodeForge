@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Positive;
 
 public record UpdateProblemDTO(
         @NotBlank String name,
-        @NotBlank String description,
+        String description,
         @Positive Long languageId,
-        @NotBlank String templateCode,
-        @NotBlank String testingCode) {
+        String templateCode,
+        String testingCode) {
 }

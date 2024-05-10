@@ -13,11 +13,15 @@ import com.poshtarenko.codeforge.repository.AnswerRepository;
 import com.poshtarenko.codeforge.repository.ProblemRepository;
 import com.poshtarenko.codeforge.repository.SolutionRepository;
 import com.poshtarenko.codeforge.service.CodeEvaluationService;
+import com.poshtarenko.codeforge.service.CodeTunerService;
 import com.poshtarenko.codeforge.service.SolutionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.poshtarenko.codeforge.entity.test.TaskCompletionStatus.*;
 
@@ -27,7 +31,23 @@ import static com.poshtarenko.codeforge.entity.test.TaskCompletionStatus.*;
 @PreAuthorize("hasAuthority('RESPONDENT')")
 public class SolutionServiceImpl implements SolutionService {
 
+    private static final String TESTING_CODE_TEMPLATE = """
+            public class Main {
+                public static void main(String[] args) {
+                    Test test = new Test();
+                    Solution solution = new Solution();
+                    boolean isCompleted = test.test(solution);
+                    if (isCompleted) {
+                        System.out.println("SUCCESS");
+                    } else {
+                        System.out.println("FAILURE");
+                    }
+                }
+            }
+            """;
+
     private final CodeEvaluationService codeEvaluationService;
+    private final CodeTunerService codeTunerService;
     private final SolutionRepository solutionRepository;
     private final ProblemRepository problemRepository;
     private final AnswerRepository answerRepository;
@@ -52,15 +72,18 @@ public class SolutionServiceImpl implements SolutionService {
         solutionRepository.findByTaskIdAndAnswerId(solutionDTO.taskId(), solutionDTO.answerId())
                 .ifPresent(s -> solution.setId(s.getId()));
         solution.setAnswer(answer);
-        TaskCompletionStatus status = checkTaskCompletion(solution.getTask().getId(), solution.getCode());
+        Problem problem = problemRepository.findByTask(solution.getTask().getId())
+                .orElseThrow(() -> new EntityNotFoundException(Problem.class, "Task problem not found"));
+        TaskCompletionStatus status = checkTaskCompletion(problem.getId(), solution.getCode());
         solution.setTaskCompletionStatus(status);
         return solutionMapper.toDto(solutionRepository.save(solution));
     }
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyAuthority('AUTHOR', 'RESPONDENT')")
     public TaskCompletionStatus tryCode(TryCodeRequest tryCodeRequest) {
-        return checkTaskCompletion(tryCodeRequest.taskId(), tryCodeRequest.code());
+        return checkTaskCompletion(tryCodeRequest.problemId(), tryCodeRequest.code());
     }
 
     @Override
@@ -79,11 +102,12 @@ public class SolutionServiceImpl implements SolutionService {
         }
     }
 
-    private TaskCompletionStatus checkTaskCompletion(long taskId, String code) {
-        Problem problem = problemRepository.findByTask(taskId)
-                .orElseThrow(() -> new EntityNotFoundException(Problem.class, "Task problem not found"));
+    private TaskCompletionStatus checkTaskCompletion(long problemId, String code) {
+        Problem problem = problemRepository.findById(problemId)
+                .orElseThrow(() -> new EntityNotFoundException(Problem.class, problemId));
         String language = problem.getLanguage().getName();
-        String codeToEvaluate = problem.getTestingCode() + " " + code;
+        String codeToEvaluate = "%s %s %s".formatted(TESTING_CODE_TEMPLATE, problem.getTestingCode(), code);
+        codeToEvaluate = codeTunerService.tune(codeToEvaluate, language);
 
         CodeEvaluationRequest codeEvaluationRequest = new CodeEvaluationRequest(language, codeToEvaluate);
         EvaluationResult evaluationResult = codeEvaluationService.evaluateCode(codeEvaluationRequest);

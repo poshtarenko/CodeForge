@@ -13,7 +13,7 @@ const ProblemCell: React.FC<IProps> = ({problem}) => {
     return (
         <div className={"problem-cell"}>
             <div className={"problem-inner"}>
-                <Link className={"problem-name"} to={`/task/${problem.id}`}>{problem.name}</Link>
+                <Link className={"problem-name"} to={`/problem/${problem.id}`}>{problem.name}</Link>
                 <p className={"problem-language"}>{problem.language.name}</p>
             </div>
         </div>

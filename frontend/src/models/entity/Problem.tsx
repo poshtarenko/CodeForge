@@ -9,4 +9,5 @@ export interface Problem {
     category: ICategory;
     testingCode: string;
     templateCode: string;
+    isCompleted: boolean;
 }

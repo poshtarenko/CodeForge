@@ -16,7 +16,7 @@ public interface ProblemService {
 
     List<ViewProblemDTO> findAuthorCustomProblems(Long authorId);
 
-    Problem findByTask(long taskId);
+    ViewProblemDTO findAuthorCustomProblem(long id, Long authorId);
 
     ViewProblemDTO createCustomProblem(CreateProblemDTO problemDTO, Long authorId);
 

@@ -4,6 +4,7 @@ import com.poshtarenko.codeforge.dto.mapper.ProblemMapper;
 import com.poshtarenko.codeforge.dto.request.CreateProblemDTO;
 import com.poshtarenko.codeforge.dto.request.UpdateProblemDTO;
 import com.poshtarenko.codeforge.dto.response.ViewProblemDTO;
+import com.poshtarenko.codeforge.entity.code.Language;
 import com.poshtarenko.codeforge.entity.test.Category;
 import com.poshtarenko.codeforge.entity.test.Problem;
 import com.poshtarenko.codeforge.entity.test.Test;
@@ -14,6 +15,7 @@ import com.poshtarenko.codeforge.repository.CategoryRepository;
 import com.poshtarenko.codeforge.repository.ProblemRepository;
 import com.poshtarenko.codeforge.service.ProblemService;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +54,10 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public Problem findByTask(long taskId) {
-        return problemRepository.findByTask(taskId)
-                .orElseThrow(() -> new EntityNotFoundException(Problem.class, taskId));
+    public ViewProblemDTO findAuthorCustomProblem(long id, Long authorId) {
+        return problemRepository.findByIdAndOwnerId(id, authorId)
+                .map(problemMapper::toDto)
+                .orElseThrow(() -> new EntityNotFoundException(Problem.class, id));
     }
 
     @Override
@@ -74,10 +77,35 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     @Transactional
     public ViewProblemDTO update(Long problemId, UpdateProblemDTO problemDTO) {
-        problemRepository.findById(problemId)
+        Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new EntityNotFoundException(Problem.class, problemId));
-        Problem problem = problemRepository.save(problemMapper.toEntity(problemDTO));
+        problem.setName(problemDTO.name());
+        problem.setDescription(problemDTO.description());
+        problem.setTemplateCode(problemDTO.templateCode());
+        problem.setTestingCode(problemDTO.testingCode());
+        problem.setLanguage(new Language(problemDTO.languageId()));
+        problem.setIsCompleted(isProblemComplete(problem));
+        problem = problemRepository.save(problem);
         return problemMapper.toDto(problem);
+    }
+
+    private boolean isProblemComplete(Problem problem) {
+        if (StringUtils.isBlank(problem.getName())) {
+            return false;
+        }
+        if (StringUtils.isBlank(problem.getDescription())) {
+            return false;
+        }
+        if (StringUtils.isBlank(problem.getTemplateCode())) {
+            return false;
+        }
+        if (StringUtils.isBlank(problem.getTestingCode())) {
+            return false;
+        }
+        if (problem.getLanguage() == null) {
+            return false;
+        }
+        return true;
     }
 
     @Override

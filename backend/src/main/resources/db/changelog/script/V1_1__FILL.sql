@@ -42,7 +42,7 @@ INSERT INTO problems (name, description, language_id, category_id, testing_code,
 VALUES ('Сортування масиву',
         'Відсортуйте масив чисел за збільшенням',
         1, 1,
-        'import java.util.Arrays; public class Task1 { public static void main(String[] args) { System.out.println(check(new Solution())); } public static String check(Solution solution){ int[] array1 = {1, 3, 2}; int[] arrayExpected1 = {1, 2, 3}; solution.sort(array1); if (!Arrays.equals(array1, arrayExpected1)) { return "FAILURE"; } int[] array2 = {20, 1, 5, 4, 6, 0}; int[] arrayExpected2 = {0, 1, 4, 5, 6, 20}; solution.sort(array2); if (!Arrays.equals(array2, arrayExpected2)) { return "FAILURE"; } return "SUCCESS"; } }',
+        'import java.util.Arrays; class Test { public boolean test(Solution solution) { int[] array1 = {1, 3, 2}; int[] arrayExpected1 = {1, 2, 3}; solution.sort(array1); if (!Arrays.equals(array1, arrayExpected1)) { return false; } int[] array2 = {20, 1, 5, 4, 6, 0}; int[] arrayExpected2 = {0, 1, 4, 5, 6, 20}; solution.sort(array2); if (!Arrays.equals(array2, arrayExpected2)) { return false; } return true; } }',
         'class Solution {
     public void sort(int[] array) {
 
@@ -61,7 +61,7 @@ INSERT INTO problems (name, description, language_id, category_id, testing_code,
 VALUES ('Знайти середнє значення',
         'Знайдіть середнє значення у масиві дробових чисел',
         1, 1,
-        'public class Task1 { public static void main(String[] args) { System.out.println(check(new Solution())); } public static String check(Solution solution) { float[] array1 = {5, 2, 3, 10}; float expected1 = 5; float result1 = solution.average(array1); if (result1 != expected1) { return "FAILURE"; } return "SUCCESS"; } }',
+        'class Test { public boolean test(Solution solution) { float[] array1 = {5, 2, 3, 10}; float expected1 = 5; float result1 = solution.average(array1); if (result1 != expected1) { return false; } return true; } }',
         'class Solution {
     public float average(float[] numbers) {
 

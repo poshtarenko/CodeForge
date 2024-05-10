@@ -1,4 +1,4 @@
-export interface CreateProblemRequest {
+export interface UpdateProblemRequest {
     name: string,
     description: string,
     languageId: number,

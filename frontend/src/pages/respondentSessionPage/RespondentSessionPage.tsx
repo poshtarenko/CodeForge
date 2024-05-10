@@ -87,7 +87,8 @@ const RespondentSessionPage: React.FC = () => {
         await setCheckingCode(true);
         const code = solutionTextarea.current?.value!;
 
-        const result = await SolutionService.tryCode({code: code, taskId: selectedTaskId});
+        let problemId = test.tasks.find(t => t.id === selectedTaskId)?.problem.id!;
+        const result = await SolutionService.tryCode({code: code, problemId: problemId});
 
         const solutionCode = solutions.get(selectedTaskId)?.code!;
         setSolutions(new Map(solutions.set(

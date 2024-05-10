@@ -1,0 +1,294 @@
+.problem-app-section {
+    color: #212121;
+    height: calc(100% - 60px);
+}
+
+.problem-page {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow-y: hidden;
+}
+
+.problem-page .form {
+    width: 100%;
+    height: 100%;
+    border-right: 1px #DADCE0 solid;
+    border-left: 1px #DADCE0 solid;
+    display: flex;
+    justify-content: center;
+}
+
+.problem-page .form-inner {
+    width: 90%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.problem-page .input-element {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.problem-page .input-element p {
+    width: 100%;
+    font-size: 17px;
+    font-weight: 700;
+    color: #4d4d4d;
+    padding-bottom: 4px;
+    padding-left: 5px;
+}
+
+.problem-page .input-element input {
+    width: 100%;
+    height: 35px;
+    border-radius: 5px;
+    border: #424242 1px solid;
+    padding: 0px 10px;
+    font-size: 19px;
+}
+
+.problem-page .input-element input:focus {
+    border: #277BE9 solid 2px;
+}
+
+.problem-page .input-element select {
+    width: 100%;
+    outline: none;
+    padding: 0 7px;
+    height: 35px;
+    border-radius: 5px;
+    border: #424242 1px solid;
+    font-size: 17px;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem top 50%;
+    background-size: 0.65rem auto;
+    cursor: pointer;
+}
+
+.problem-page .input-element textarea {
+    width: 100%;
+    resize: none;
+    font-size: 14px;
+    outline: none;
+    padding: 15px 9px;
+    border-radius: 5px;
+}
+
+.problem-page .description-input {
+    height: 65px;
+}
+
+.problem-page .signature-input {
+    font-family: "JetBrains Mono", serif;
+    height: 123px;
+}
+
+.problem-page .testing-code-input {
+    font-family: "JetBrains Mono", serif;
+    height: calc(100% - 50px);
+}
+
+.problem-page .testing-code-input-element {
+    height: 100%;
+}
+
+.problem-page .status-and-guide {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.problem-page .problem-status-block {
+    margin-top: 20px;
+    width: 100%;
+    border-bottom: 1px #DADCE0 solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.problem-page .problem-status-block-inner {
+    width: 90%;
+}
+
+.problem-page .status-title {
+    font-size: 20px;
+}
+
+.problem-page .problem-status {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    transition: 200ms;
+}
+
+.problem-page .problem-status p {
+    margin-left: 10px;
+    font-weight: 700;
+}
+
+.problem-page .problem-status-icon {
+    font-size: 28px;
+}
+
+.problem-page .problem-status-completed {
+    color: #00ab1c;
+}
+
+.problem-page .problem-status-uncompleted {
+    color: #dcb400;
+}
+
+.problem-page .guide {
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.problem-page .guide-inner {
+    width: 90%;
+}
+
+.problem-page .guide-title {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 30px;
+    font-size: 20px;
+    color: #1A73E8;
+    font-weight: 700;
+}
+
+.problem-page .guide-icon {
+    font-size: 25px;
+}
+
+.problem-page .guide-title p {
+    font-weight: 700;
+}
+
+.problem-page .guide-content {
+    margin-top: 20px;
+}
+
+.problem-page .guide-content p {
+    color: #565656;
+    font-size: 17px;
+    margin-bottom: 15px;
+    line-height: 1.2;
+    text-align: justify;
+}
+
+.problem-page .guide:hover .guide-paragraph {
+    color: #000000;
+}
+
+.problem-page .evaluation {
+    width: 100%;
+    height: 100%;
+}
+
+.problem-page .evaluation-title {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px #DADCE0 solid;
+}
+
+.problem-page .evaluation-title-inner {
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    margin-left: 20px;
+}
+
+.problem-page .evaluation-title-inner p {
+    width: 100%;
+    font-size: 17px;
+    font-weight: 700;
+    color: #4d4d4d;
+}
+
+.problem-page .answer-block {
+    width: 100%;
+    height: 100%;
+}
+
+.problem-page .answer-block .answer-input {
+    padding: 10px;
+    margin: 0;
+    border: 1px solid #DADCE0;
+    border-left: none;
+    border-top: none;
+    outline: none;
+    width: 100%;
+    height: calc(100% - 290px);
+    resize: none;
+    font-family: "JetBrains Mono", serif;
+    font-size: 16px;
+}
+
+.problem-page .answer-evaluation-block {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 30px 20px 30px;
+    height: 240px;
+    align-items: end;
+}
+
+.problem-page .answer-evaluation-block .evaluation-result {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    font-weight: 600;
+    font-size: 18px;
+    border: 1px solid #DADCE0;
+    margin: 10px 0;
+    overflow-y: auto;
+}
+
+.problem-page .answer-evaluation-block .standard-button {
+    height: 55px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.problem-page .answer-evaluation-block .evaluate-code-button {
+    width: 100%;
+}
+
+.problem-page .result-page {
+    display: flex;
+    justify-content: center;
+}
+
+.problem-page .result-block {
+    padding: 20px 40px;
+    margin-top: 40px;
+    border: #1A73E8 2px solid;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.problem-page .result-block p {
+    text-align: center;
+    color: #1A73E8;
+    font-weight: 600;
+    font-size: 25px;
+}

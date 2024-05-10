@@ -7,6 +7,7 @@ public record ViewProblemDTO(
         ViewLanguageDTO language,
         ViewCategoryDTO category,
         String testingCode,
-        String templateCode
+        String templateCode,
+        Boolean isCompleted
 ) {
 }

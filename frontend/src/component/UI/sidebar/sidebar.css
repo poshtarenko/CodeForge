@@ -7,7 +7,7 @@
     background-color: #FFFFFF;
     z-index: 2;
     position: fixed;
-    transition: 200ms;
+    transition: 150ms;
     transform: translateX(-100%);
     pointer-events: none;
 }
@@ -38,7 +38,7 @@
     margin-top: 10px;
     align-items: center;
     color: #2f2f2f;
-    transition: 200ms;
+    transition: 100ms;
 }
 
 .sidebar-link:hover {

@@ -8,6 +8,7 @@ import LoginPage from "../pages/authPages/LoginPage";
 import LessonsPage from "../pages/lessonsPage/LessonsPage";
 import LessonPage from "../pages/lessonPage/LessonPage";
 import LessonSessionPage from "../pages/lessonSessionPage/lessonSessionPage";
+import ProblemPage from "../pages/problemPage/ProblemPage";
 
 export interface IRoute {
     path: string,
@@ -21,6 +22,7 @@ export const authorRoutes: IRoute[] = [
     {path: '/lesson/:id', component: LessonPage},
     {path: '/lesson/session/:lessonId', component: LessonSessionPage},
     {path: '/lesson/session/:lessonId', component: LessonSessionPage},
+    {path: '/problem/:id', component: ProblemPage},
 ]
 
 export const respondentRoutes: IRoute[] = [

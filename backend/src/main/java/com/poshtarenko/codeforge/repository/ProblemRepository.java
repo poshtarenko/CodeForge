@@ -14,11 +14,17 @@ import java.util.Optional;
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
     @EntityGraph(attributePaths = {"language", "category"})
+    Optional<Problem> findById(long problemId);
+
+    @EntityGraph(attributePaths = {"language", "category"})
     @Query("select t.problem from Task t where t.id = :taskId")
     Optional<Problem> findByTask(long taskId);
 
     @EntityGraph(attributePaths = {"language", "category"})
     List<Problem> findByOwnerId(long ownerId);
+
+    @EntityGraph(attributePaths = {"language", "category"})
+    Optional<Problem> findByIdAndOwnerId(long id, long ownerId);
 
     @EntityGraph(attributePaths = {"language", "category"})
     @Query("select p from Problem p where (p.owner.id = null) or (p.owner.id = :authorId and p.isCompleted)")

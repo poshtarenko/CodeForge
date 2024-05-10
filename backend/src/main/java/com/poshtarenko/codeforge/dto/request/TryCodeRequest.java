@@ -5,5 +5,5 @@ import jakarta.validation.constraints.Positive;
 
 public record TryCodeRequest(
         @NotBlank String code,
-        @Positive Long taskId) {
+        @Positive Long problemId) {
 }
