@@ -95,14 +95,15 @@ const LessonPage: React.FC = () => {
                         <p className={"lesson-lang"}>Код для входу : {lesson.inviteCode}</p>
                     </div>
                 </div>
-                <div>
-                    <p>Мова програмування :</p>
-                    <select className={"add-task-input language-select add-task-modal-select"}
-                            onChange={(e) => selectLanguage(Number(e.target.value))}
+                <div className={"language-select"}>
+                    <p>Мова програмування</p>
+                    <select onChange={(e) => selectLanguage(Number(e.target.value))}
                             defaultValue={"NONE"}>
                         <option value="NONE" disabled>Мова</option>
                         {languages.map(language =>
-                            <option key={Number(language.id)} value={String(language.id)}>{language.name}</option>)}
+                            <option key={Number(language.id)} value={String(language.id)} selected={language.id === lesson?.language.id}>
+                                {language.name}
+                            </option>)}
                     </select>
                 </div>
                 <button onClick={() => navigateToSession()} className={"standard-button"}>Підключитися до заняття

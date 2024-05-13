@@ -192,10 +192,23 @@ const LessonSessionPage: React.FC = () => {
                                 <p className={"participant-name"}>{participation.user.username}</p>
                             </div>
                         )}
+                    {/*    */}
+                        <div className={"participant"}><p className={"participant-name"}>Андрій Онопрієнко</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Семен Кучеренко</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Євгенія Таран</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Олег Романенко</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Віктор Мельник</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Ірина Середа</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Микита Пономарчук</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Назар Васильчук</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Данило Сомов</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Леонід Шульга</p></div>
+                        <div className={"participant"}><p className={"participant-name"}>Надія Кравчук</p></div>
+                    {/*    */}
                     </div>
                 </div>
                 <div className={"answer-block"}>
-                    <textarea onChange={(e) => updateCode(e.target.value)}
+                    <textarea spellCheck={false} onChange={(e) => updateCode(e.target.value)}
                               ref={codeTextarea} className={"answer-input"}
                               readOnly={selectedParticipationId !== myParticipationId}
                               value={getCurrentCode()}>

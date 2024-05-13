@@ -53,6 +53,10 @@
     padding-bottom: 15px;
 }
 
+.respondent-session-sidebar .task.completed {
+    background-color: #d9efd9;
+}
+
 .respondent-session-sidebar .task-name {
     font-size: 22px;
     font-weight: 600;

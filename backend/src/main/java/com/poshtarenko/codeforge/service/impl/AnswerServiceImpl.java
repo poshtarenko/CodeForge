@@ -61,6 +61,10 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public ViewAnswerDTO startAnswer(long respondentId, String testCode) {
+        Optional<Answer> answerOpt = answerRepository.findByRespondentIdAndTestInviteCode(respondentId, testCode);
+        if (answerOpt.isPresent()) {
+            return answerMapper.toDto(answerOpt.get());
+        }
         Answer answer = new Answer();
         answer.setTest(testRepository.findByInviteCode(testCode)
                 .orElseThrow(() -> new EntityNotFoundException(Test.class, "Test with code " + testCode + " not found")));

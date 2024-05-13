@@ -15,6 +15,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     Optional<Answer> findById(long id);
 
     @EntityGraph(attributePaths = {"respondent", "solutions", "solutions.task", "solutions.task.problem"})
+    Optional<Answer> findByRespondentIdAndTestInviteCode(Long respondentId, String inviteCode);
+
+    @EntityGraph(attributePaths = {"respondent", "solutions", "solutions.task", "solutions.task.problem"})
     List<Answer> findAllByRespondentIdAndTestIdOrderByCreatedAtDesc(long respondentId, long testId);
 
     boolean existsByRespondentIdAndTestId(long respondentId, long testId);
@@ -22,4 +25,10 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @EntityGraph(attributePaths = {"respondent", "solutions", "solutions.task", "solutions.task.problem"})
     List<Answer> findAllByTestId(long testId);
 
+}
+
+class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello world!");
+    }
 }

@@ -15,5 +15,4 @@ public class ConsoleLoggingExtension implements BeforeTestExecutionCallback, Aft
     public void afterTestExecution(ExtensionContext extensionContext) {
         System.out.println("--< TEST \"" + extensionContext.getTestMethod().get().getName() + "\" FINISHED >--");
     }
-
 }

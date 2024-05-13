@@ -28,7 +28,6 @@
     padding: 0 20px;
     font-weight: 700;
     font-size: 20px;
-    align-self: start;
 }
 
 .lesson-session-sidebar .description-textarea {
@@ -41,6 +40,7 @@
     width: 100%;
     resize: none;
     font-size: 17px;
+    margin-top: 10px;
 }
 
 .lesson-session-sidebar .participants {

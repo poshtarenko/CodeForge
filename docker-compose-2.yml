@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  backend:
+    image: poshtarenko/codeforge-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # POSTGRESQL_URL: jdbc:postgresql://db:5432/codeforge
+      POSTGRESQL_URL: jdbc:postgresql://codeforge-2.ct2mug8skrgy.eu-north-1.rds.amazonaws.com:5432/codeforge
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: postgres
+    depends_on:
+      - db
+  frontend:
+    image: poshtarenko/codeforge-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      API_URL: backend
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: codeforge
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      

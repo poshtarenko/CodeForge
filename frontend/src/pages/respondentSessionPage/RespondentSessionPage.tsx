@@ -29,7 +29,6 @@ const RespondentSessionPage: React.FC = () => {
 
     const {testId} = useParams<string>();
 
-
     useEffect(() => {
         loadTest();
     }, []);
@@ -55,7 +54,7 @@ const RespondentSessionPage: React.FC = () => {
         tasks.forEach((task) => setSolutions(
             new Map(solutions.set(
                 task.id,
-                {code: findTaskSolution(task, solutionsList), taskCompletionStatus: ""})
+                {code: findTaskSolution(task, solutionsList), taskCompletionStatus: findSolutionStatus(task, solutionsList)})
             ))
         );
     }
@@ -65,6 +64,11 @@ const RespondentSessionPage: React.FC = () => {
         if (solution)
             return solution.code;
         return task.problem.templateCode;
+    }
+
+    function findSolutionStatus(task: ITask, solutionsList: ISolution[]): string {
+        const solution: ISolution = solutionsList.find((s) => s.task.id === task.id)!;
+        return solution?.taskCompletionStatus;
     }
 
     function getTasksSorted(tasks: ITask[]) {
@@ -125,6 +129,17 @@ const RespondentSessionPage: React.FC = () => {
         await loadTest();
     }
 
+    function defineTaskClass(taskId: number): string {
+        let classes = "task"
+        if (selectedTaskId === taskId) {
+            classes+=" active";
+        }
+        if (solutions.get(taskId)?.taskCompletionStatus === "TASK_COMPLETED") {
+            classes+=" completed";
+        }
+        return classes
+    }
+
     if (testFinished) {
         return (
             <PageTemplate>
@@ -149,7 +164,8 @@ const RespondentSessionPage: React.FC = () => {
                     <div className={"tasks"}>
                         {test.tasks?.map(task =>
                             <div onClick={() => setSelectedTaskId(task.id)}
-                                 className={selectedTaskId === task.id ? "task active" : "task"}
+                                 // className={selectedTaskId === task.id ? "task active" : "task"}
+                                 className={defineTaskClass(task.id)}
                                  key={task.id}>
                                 <p className={"task-name"}>{task.problem.name}</p>
                                 <div className={"task-info"}>
