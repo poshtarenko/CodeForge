@@ -14,6 +14,6 @@ spring:
 
 jwt:
   secret: 'roezrjeoijROrjeOJrojgreogkeropGJeroijGREOjreojORIJGergRJerioJERiogjEORIgiojGOEIJej23FOjIOJwfioRJeklgkrjekjERKGJerkljerklgjeKERLJkljGErklerjKLERjGergKLERjklregl'
-  expiration: 15000000
+  expiration: 1500000000
   refreshToken:
-    expiration: 120000000
+    expiration: 1200000000

@@ -49,6 +49,7 @@ public class TestDataInitializer {
     private Participation participation;
 
     public void setupData() {
+        clearData();
         usersInitializer.setup();
         category = createCategory();
         language = createLanguage();
